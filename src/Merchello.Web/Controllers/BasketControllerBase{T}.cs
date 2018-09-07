@@ -133,9 +133,8 @@
 
             // In this case we want to get the product without any data modification
             var merchello = new MerchelloHelper(false);
-
-            try
-            {
+			try
+			{
                 var product = merchello.Query.Product.GetByKey(model.ProductKey);
 
                 // ensure the quantity on the model
@@ -182,7 +181,10 @@
                 MultiLogHelper.Error<BasketControllerBase<TBasketModel, TBasketItemModel, TAddItem>>("Failed to add item to basket", ex, logData);
                 return this.HandleAddItemException(model, ex);
             }
-        }
+
+		
+
+		}
 
 
         /// <summary>

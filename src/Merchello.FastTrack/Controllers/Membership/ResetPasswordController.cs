@@ -43,6 +43,9 @@ namespace Merchello.FastTrack.Controllers.Membership
 		{
 			if (!this.ModelState.IsValid)
 				return (ActionResult)this.CurrentUmbracoPage();
+
+			model.NewPassword = model.NewPassword.Trim();
+
 			IMember entity = ResetPasswordController.VerifyResetData(model);
 			if (entity == null)
 			{
@@ -58,9 +61,19 @@ namespace Merchello.FastTrack.Controllers.Membership
 					IMemberService memberService = ApplicationContext.Current.Services.MemberService;
 					entity.IsLockedOut = false;
 					entity.FailedPasswordAttempts = 0;
-					memberService.Save(entity, true);
+					memberService.Save(entity, false);
 					string oldPassword = user.ResetPassword();
-					user.ChangePassword(oldPassword, model.NewPassword);
+
+					try
+					{
+						user.ChangePassword(oldPassword, model.NewPassword);
+					}
+					catch (Exception ex)
+					{
+						this.ModelState.AddModelError("", "Can't reset your password with the provided information");
+						return (ActionResult)this.CurrentUmbracoPage();
+					}
+					
 					try
 					{
 						entity.SetValue("passwordResetToken", (object)string.Empty);
@@ -69,7 +82,8 @@ namespace Merchello.FastTrack.Controllers.Membership
 					catch (Exception ex)
 					{
 					}
-					memberService.Save(entity, true);
+					
+					memberService.Save(entity, false);
 					queryStringValues.Add("success", "true");
 				}
 				else

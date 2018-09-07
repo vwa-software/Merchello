@@ -1363,7 +1363,7 @@
 
             for (int i = 0; i < addresses.Count(); i++)
             {
-                if (addresses[i].CustomerKey.Equals(Guid.Empty))
+                if (addresses[i] != null && addresses[i].CustomerKey.Equals(Guid.Empty))
                 {
                     ((CustomerAddress)addresses[i]).CustomerKey = customer.Key;
                 }

@@ -100,13 +100,34 @@
 		public virtual ActionResult Login(LoginModel model)
 		{
 			if (!ModelState.IsValid) return CurrentUmbracoPage();
+			var viewData = new StoreViewData { Success = false };
 
-			if (!Members.Login(model.Username, model.Password))
+			model.Username = model.Username.Trim();
+			model.Password = model.Password.Trim();
+
+			bool logedIn = false;
+			try
+			{
+				logedIn =  Members.Login(model.Username, model.Password);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error<CustomerMembershipController>("Password for user " + model.Username + " could not be validated", ex);
+
+				var messages = new List<string>
+					{
+						"Account does not have a valid password, please use the forgot password link."
+					};
+				viewData.Messages = messages;
+				ViewData["MerchelloViewData"] = viewData;
+				return CurrentUmbracoPage();
+			}
+
+			if (!logedIn)
 			{
 				var member = Members.GetByUsername(model.Username);
 
-				var viewData = new StoreViewData { Success = false };
-
+				
 				if (member == null)
 				{
 					viewData.Messages = new[] { "Account does not exist for this email address." };
@@ -331,6 +352,9 @@
 		{
 			if (!ModelState.IsValid) return CurrentUmbracoPage();
 			var viewData = new StoreViewData();
+									
+			model.Password = model.Password.Trim();
+
 
 			if (!((model.Password.Length >= Membership.MinRequiredPasswordLength) &&
 				(model.Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) >= Membership.MinRequiredNonAlphanumericCharacters)))
