@@ -60,9 +60,15 @@
                 </td>
                 <td>@Model.Items[i].Amount.AsFormattedCurrency()</td>
                 <td>
-                    @if (isProduct)
-                    {
-                        @Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", min = "1", data_muiaction = "updatequantity" })
+					  @if (isProduct)
+					{
+						int step = 1;
+						if(product.GetPropertyValue<int>("ftProduct_PackingUnit") > 1)
+						{
+							step = product.GetPropertyValue<int>("ftProduct_PackingUnit");
+						}
+
+						@Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", min = step.ToString(), step = step.ToString(), data_muiaction = "updatequantity" })
                     }
                     else
                     {
