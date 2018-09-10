@@ -4,11 +4,30 @@
 @using Merchello.FastTrack.Ui
 @using Umbraco.Web
 @{
-    Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetAccount().Url;
+	Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetAccount().Url;
+
+	IEnumerable<string> messages = null;
+
+	if (ViewBag.MerchelloViewData != null)
+	{
+		messages = (ViewBag.MerchelloViewData as Merchello.Web.Store.Models.StoreViewData).Messages;
+	}
 }
+
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Login to existing account</strong></div>
     <div class="panel-body">
+
+
+		@if(messages != null && messages.Count() > 0)
+		{
+		<ul class="error">
+			@foreach (var message in messages)
+			{
+			<li>@message</li>
+			}
+		</ul>
+		}
 
         @using (Html.BeginUmbracoForm<CustomerMembershipController>("Login", new { area = "FastTrack" }))
         {

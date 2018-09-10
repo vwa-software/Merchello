@@ -8,6 +8,9 @@
 @{
 	Layout = "Master.cshtml";
 
+	//http://projecten.vwa.nu:888/redmine/issues/5316
+	// Remember this page for basket return button
+	Session["lastcollectionId"] = UmbracoContext.Current.PageId;
 
 	// Products is the property of documenttype FtCategory, of datatype Merchello.ProductListView
 	// Name Produts can vary per implementation
@@ -71,7 +74,7 @@
 
 #if true
 
-	/* 
+	/*
 	Sort and page in Lucerne (best performance)
 	*/
 
@@ -89,7 +92,8 @@
 	switch (paging.SortTerm.ToLower())
 	{
 		case "priceasc":
-			ordererd = searchResults.OrderBy<SearchResult, decimal>(a=> {
+			ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
+			{
 				decimal price;
 				decimal.TryParse(a.Fields["price"], out price);
 				return price;
@@ -115,45 +119,45 @@
 	{
 		return this.Merchello.TypedProductContent(new Guid(a.Fields["productKey"]));
 	}
-).Where(a => a != null).ToList();
-
-#else
-	
-	
-	 /* 
-	 Sort and page in merchello object set
-	 */
-	 
-
-	// perform lucerne search
-	var searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-
-
-	// Check if products are active/available (stock/price etc)
-	products = searchResults.Select(a =>
-	{
-		return this.Merchello.TypedProductContent(new Guid(a.Fields["productKey"]));
-	}
 	).Where(a => a != null).ToList();
 
-	total = products.Count();
+#else
 
-	// calculate pager
-	paging.CalculatePages(total);
 
-	// sorting
-	switch (paging.SortTerm.ToLower())
-	{
-		case "priceasc":
-			products = products.OrderBy(a => a.Price);
-			break;
-		case "pricedesc":
-			products = products.OrderByDescending(a => a.Price);
-			break;
-	}
+/*
+Sort and page in merchello object set
+*/
 
-	// paging
-	products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage);
+
+// perform lucerne search
+var searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+
+
+// Check if products are active/available (stock/price etc)
+products = searchResults.Select(a =>
+{
+return this.Merchello.TypedProductContent(new Guid(a.Fields["productKey"]));
+}
+).Where(a => a != null).ToList();
+
+total = products.Count();
+
+// calculate pager
+paging.CalculatePages(total);
+
+// sorting
+switch (paging.SortTerm.ToLower())
+{
+case "priceasc":
+products = products.OrderBy(a => a.Price);
+break;
+case "pricedesc":
+products = products.OrderByDescending(a => a.Price);
+break;
+}
+
+// paging
+products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage);
 
 #endif
 
@@ -171,11 +175,11 @@
 	@Html.Partial("_Headline")
 *@
 
-
+<!--ftCategoryView -->
 <div class="container-fluid hk_collections hk_category" id="hk_cat_@currentPageId">
 	<div class="row">
 		<div class="col-12 hk_categorie_media hk_categorie_media_top">
-			@Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGridTop")
+			@Html.GetGridHtml(Model, "collectionGridTop")
 		</div>
 		<div class="col-3 col-xl-3 col-md-3">
 			@*@Html.Partial("hkSearch")*@
@@ -202,8 +206,28 @@
 		</div>
 	</div>
 </div>
+
+@{
+	//IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent>
+	if (Model.FeaturedProducts != null)
+	{
+
+
+		IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
+
+		if (featuredProducts != null && featuredProducts.Count() > 0)
+		{
+		<div class="col-12 hk_categorie_media">
+			<h2 class="hk_category_name">Featured Products</h2>
+			@Html.Partial("_ProductBoxList", featuredProducts)
+		</div>
+
+			}
+		}
+	}
+
 <div class="col-12 hk_categorie_media">
-	@Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGrid")
+	@Html.GetGridHtml(Model, "collectionGrid")
 </div>
 
 
@@ -267,7 +291,7 @@
 					}
 				}
 				@sortname
-                <i class="fa fa-caret-down"></i>
+				<i class="fa fa-caret-down"></i>
 			</button>
 
 			<ul class="dropdown-menu">
@@ -284,7 +308,7 @@
 		<div class="dropdown">
 			<button class="form-control form-sort" type="button" data-toggle="dropdown">
 				show @paging.ItemsPerPage results
-                <i class="fa fa-caret-down"></i>
+				<i class="fa fa-caret-down"></i>
 			</button>
 			<ul class="dropdown-menu">
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
@@ -315,15 +339,15 @@
 
 
 				@*<ul>
-				<li>
-					<input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
-				</li>
-				<li>
-					<button class="btn btn-info btn-lg" type="submit" >
-						<i class="glyphicon fa fa-search "></i>
-					</button>
-				</li>
-			</ul>*@
+						<li>
+							<input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
+						</li>
+						<li>
+							<button class="btn btn-info btn-lg" type="submit" >
+								<i class="glyphicon fa fa-search "></i>
+							</button>
+						</li>
+					</ul>*@
 			</form>
 		</div>
 }

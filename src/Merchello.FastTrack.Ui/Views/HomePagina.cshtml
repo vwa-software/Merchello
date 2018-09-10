@@ -13,9 +13,39 @@
     </div>
 </div>
 
+
 @section Scripts {
 
-	<link rel="stylesheet" href="/scripts/css/image-map-pro.min.css">
-	<script type="text/javascript" src="/scripts/js/image-map-pro.js"></script>
+        <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+        <script>
+				        $(document).ready(function () {
+					        $(".hk_media_display_list_double").lightSlider({
+						        adaptiveHeight: false,
+						        autoWidth: true,
+						        item: 2,
+						        slideMargin: 0,
+						        //slideMargin: 0,
+						        loop: true
+					        });
+				        });
+
+				        $('.hk_media_display_list').each(function (i, e) {
+					        var id = 'adaptive';
+					        $(e).attr('id', id + i);
+					        var selector = '#' + id + i;
+					        $(selector).lightSlider({
+						        adaptiveHeight: false,
+						        item: 1,
+						        slideMargin: 0,
+						        loop: true,
+						        pager: false
+					        });
+				        });
+
+        </script>
+
+
+    <link rel="stylesheet" href="/scripts/css/image-map-pro.min.css">
+    <script type="text/javascript" src="/scripts/js/image-map-pro.min.js"></script>
 
 }

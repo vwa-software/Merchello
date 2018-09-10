@@ -2,13 +2,22 @@
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
 	Layout = "Master.cshtml";
+    var mediaImagesList = Model.Content.GetPropertyValue<string>("loginAfbeelding").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+	var mediaImagesCollection = Umbraco.TypedMedia(mediaImagesList).Where(x => x != null);
+				
 }
 <div class="row hk_account_forms">
     <div class="col-md-6">
-    	
+    	@if (Model.Content.HasValue("loginAfbeelding"))
+				{
+				foreach (var mediaImage in mediaImagesCollection)
+						{      
+							<img src="@mediaImage.Url.GetCropUrl(width:260, height:170)" /> 
+						}                                                               
+				}
                 @Html.Action("LoginForm", "CustomerMembership", new { area = "FastTrack" })
     </div>
     <div class="col-md-6">
-                @Html.Action("RegisterForm", "CustomerMembership", new { area = "FastTrack" })
+     
     </div>
 </div>

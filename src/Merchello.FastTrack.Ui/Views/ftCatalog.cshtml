@@ -6,11 +6,16 @@
 @using Merchello.Web.Models.Ui.Rendering
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
-    Layout = "Master.cshtml";
+	Layout = "Master.cshtml";
 
-    //var title = Model.Categories == null ? Model.Name : Model.Categories.Name;
-    var categories = Model.Categories != null ? Model.Categories.Children().ToArray() : Enumerable.Empty<IProductCollection>();
+	//http://projecten.vwa.nu:888/redmine/issues/5316
+	// Remember this page for basket return button
+	Session["lastcollectionId"] = UmbracoContext.Current.PageId;
+
+	//var title = Model.Categories == null ? Model.Name : Model.Categories.Name;
+	var categories = Model.Categories != null ? Model.Categories.Children().ToArray() : Enumerable.Empty<IProductCollection>();
 }
+
 @*
     @Html.Partial("_Headline")
 *@
@@ -80,3 +85,44 @@ else
 
 
 
+                @section Scripts {
+
+                <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+                <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+
+                <script>
+				$('.hk_media_display_list').each(function (i, e) {
+					var id = 'adaptive';
+					$(e).attr('id', id + i);
+					var selector = '#' + id + i;
+					$(selector).lightSlider({
+						autoWidth: false,
+						loop: true,
+						keyPress: true
+					});
+				});
+
+                </script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/js/lightgallery-all.min.js"></script>
+                <script type="text/javascript">
+				jQuery(document).ready(function () {
+					window.prettyPrint && prettyPrint();
+					jQuery('#image-gallery').lightSlider({
+						gallery: true,
+						item: 1,
+						loop: true,
+						thumbItem: 9,
+						slideMargin: 0,
+						enableDrag: false,
+						currentPagerPosition: 'left',
+						onSliderLoad: function (el) {
+							el.lightGallery({
+								selector: '#image-gallery .lslide'
+							});
+						}
+					});
+				});
+                </script>
+
+
+                }

@@ -120,6 +120,8 @@
 		if (formName == 'Image Map Settings') {
 			var m = $.wcpEditorGetModelOfFormWithName(formName);
 
+			m.general.image_map_name = 'empty';
+
 			// Did the image URL change?
 			if (m.image.image_url && m.image.image_url.length > 0 && settings.image.url !== m.image.image_url) {
 				settings.image.url = m.image.image_url;

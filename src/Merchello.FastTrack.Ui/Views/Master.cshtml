@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="@Umbraco.Field("descriptionMain")@Umbraco.Field("metaDescription")">
+    <meta name="keywords" content="@Umbraco.Field("metaKeywords")">
     <meta name="author" content="">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -86,32 +87,12 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
-    <script>
-
-        
-    </script>
    
 </head>
 <body class="@CurrentPage.Name" style="background:/*#ebebeb;*/">
 	<header class="header header-absolute">
 		<!-- Navbar-->
-
-		<nav class="navbar navbar-expand-lg bg-transparent navbar-sticky navbar-dark bg-hover-white bg-fixed-white navbar-hover-light navbar-fixed-light">
-			<div class="container">
-				<!-- Navbar Header  --><a href="/" class="navbar-brand"><img src="/Media/HK_logo_black.png" border="0" /></a>
-				<button type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><i class="fa fa-bars"></i></button>
-				<!-- Navbar Collapse -->
-				<div id="navbarCollapse" class="collapse navbar-collapse">
-					                    @Html.Partial("MainNavigation")
-					<div class="right-col d-flex align-items-center justify-content-between justify-content-lg-end my-3 my-lg-0">
-						<!-- Search Button-->
-						<div data-toggle="search" class="nav-item navbar-icon-link">
-							<i class="fas fa-search"></i>
-						</div>
-					</div>
-				</div>
-			</div>
-		</nav>
+		@Html.Partial("MainNavigation")
 		<!-- /Navbar -->
 		<!-- Fullscreen search area-->
 		<div class="search-area-wrapper">
@@ -194,143 +175,39 @@
 	<!-- Bootstrap core JavaScript
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/jquery/jquery.min.js"></script>
-	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
-	<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
-	<script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
+	@*
+			@Henk : Dubbel script verwijderd
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/jquery/jquery.min.js"></script>
+*@
 
-	<script src="~/Scripts/underscore.min.js"></script>
-	<script src="~/Scripts/bootstrap.min.js?@randomNumber"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
 
-	<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/jquery.cookie/jquery.cookie.js"></script>
-	<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/nouislider/nouislider.min.js"></script>
-	<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
 
-	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-	<script src="~/Scripts/ie10-viewport-bug-workaround.js?@randomNumber"></script>
-	<!-- Custom JS functions -->
-	<script src="~/Scripts/vwa_functions.js?@randomNumber"></script>
-	<!-- Slick slider -->
-	<!-- MUI dependencies
-	<script src="~/Scripts/jquery-1.10.2.min.js"></script> -->
-	<script src="~/Scripts/jquery.validate.min.js"></script>
-	@*<script src="~/Scripts/bootstrap.min.js"></script>*@
-	@{
-		if (CurrentPage.Id == 3885)
-		// if (Umbraco.Content("3885"))
-		{
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
-			<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
-			<script>
-				$(document).ready(function () {
-					$(".hk_media_display_list_double").lightSlider({
-						adaptiveHeight: false,
-						autoWidth: true,
-						item: 2,
-						slideMargin: 0,
-						loop: true
-					});
-				});
+		<script src="~/Scripts/underscore.min.js"></script>
+		<script src="~/Scripts/bootstrap.min.js?@randomNumber"></script>
 
-				$('.hk_media_display_list').each(function (i, e) {
-					var id = 'adaptive';
-					$(e).attr('id', id + i);
-					var selector = '#' + id + i;
-					$(selector).lightSlider({
-						adaptiveHeight: false,
-						item: 1,
-						slideMargin: 0,
-						loop: true,
-						pager: false
-					});
-				});
-			</script>
+		<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/jquery.cookie/jquery.cookie.js"></script>
+		<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/nouislider/nouislider.min.js"></script>
+		<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/smooth-scroll/smooth-scroll.polyfills.min.js"></script>
 
-		}
-		else if (@CurrentPage.Id == 1098)
-		{
-			<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-			<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-			<script src="~/Scripts/underscore.min.js"></script>
-			<!-- new Merchello UI scripts -->
-			<script src="~/App_Plugins/Merchello/client/js/merchello.ui.min.js"></script>
-			<script src="~/App_Plugins/Merchello/client/js/merchello.ui.settings.js"></script>
-			<script src="~/App_Plugins/Merchello/client/js/fasttrack.js"></script>
+		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+		<script src="~/Scripts/ie10-viewport-bug-workaround.js?@randomNumber"></script>
+		<!-- Custom JS functions -->
+		<script src="~/Scripts/vwa_functions.js?@randomNumber"></script>
+		<!-- Slick slider -->
+		<!-- MUI dependencies
+		<script src="~/Scripts/jquery-1.10.2.min.js"></script> -->
+		@*
+			@Henk : Dubbel script verwijderd
+			<script src="~/Scripts/jquery.validate.min.js"></script>*@
 
-		}
-		else if (@CurrentPage.Parent.Id == 1099)
-		{
-
-			<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
-			<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
-
-			<script>
-				/* $(document).ready(function () {
-					 $("#hk_media_slider").lightSlider({
-						 autoWidth: false,
-						 loop: true,
-						 keyPress: true
-					 });
-				 });*/
-
-
-				$('.hk_media_display_list').each(function (i, e) {
-					var id = 'adaptive';
-					$(e).attr('id', id + i);
-					var selector = '#' + id + i;
-					$(selector).lightSlider({
-						autoWidth: false,
-						loop: true,
-						keyPress: true
-					});
-				});
-
-			</script>
-		}
-		else if (@CurrentPage.Parent.Id == 1098)
-		{
-			<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-			<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-			<script src="~/Scripts/underscore.min.js"></script>
-
-			@*<script src="~/Scripts/sliders/lightslider.js"></script>
-				<script src="~/Scripts/sliders/lightgallery.js"></script>*@
-
-			<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/js/lightgallery-all.min.js"></script>
-			<script type="text/javascript">
-				jQuery(document).ready(function () {
-					window.prettyPrint && prettyPrint();
-					jQuery('#image-gallery').lightSlider({
-						gallery: true,
-						item: 1,
-						loop: true,
-						thumbItem: 9,
-						slideMargin: 0,
-						enableDrag: false,
-						currentPagerPosition: 'left',
-						onSliderLoad: function (el) {
-							el.lightGallery({
-								selector: '#image-gallery .lslide'
-							});
-						}
-					});
-				});
-			</script>
-			<!-- Lity Lightbox -->
-			<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
-
-
-		}
-		else
-		{
-			// certain specific scripting
-			<!-- Product Slider -->
-		}
-	}    <!-- new Merchello UI scripts // alway at the bottom!! -->
-
+    
+    <!-- new Merchello UI scripts // alway at the bottom!! -->
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.min.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.settings.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/fasttrack.js"></script>

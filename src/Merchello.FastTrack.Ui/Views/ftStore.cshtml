@@ -1,5 +1,12 @@
 ﻿@using Merchello.Core
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<FtStore>
+    
+@using System.Web.Mvc.Html
+@using Merchello.FastTrack.Ui
+@using Merchello.Web
+@using Merchello.Web.Models
+@using Merchello.Web.Models.Ui.Rendering
+@using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
 	Layout = "Master.cshtml";
 
@@ -30,4 +37,45 @@
         }
 
     </section>
+}
+
+
+@section Scripts {
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/underscore.min.js"></script>
+<!-- new Merchello UI scripts! -->
+<script src="~/App_Plugins/Merchello/client/js/merchello.ui.min.js"></script>
+<script src="~/App_Plugins/Merchello/client/js/merchello.ui.settings.js"></script>
+<script src="~/App_Plugins/Merchello/client/js/fasttrack.js"></script>
+
+<script src="~/Scripts/sliders/lightslider.js"></script>
+<script src="~/Scripts/sliders/lightgallery.js"></script>
+
+<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/js/lightgallery-all.min.js"></script>
+<script type="text/javascript">
+				jQuery(document).ready(function () {
+					window.prettyPrint && prettyPrint();
+					jQuery('#image-gallery').lightSlider({
+						gallery: true,
+						item: 1,
+						loop: true,
+						thumbItem: 9,
+						slideMargin: 0,
+						enableDrag: false,
+						currentPagerPosition: 'left',
+						onSliderLoad: function (el) {
+							el.lightGallery({
+								selector: '#image-gallery .lslide'
+							});
+						}
+					});
+				});
+</script>
+<!-- Lity Lightbox -->
+<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+
+
 }

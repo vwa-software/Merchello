@@ -7,48 +7,135 @@
     Layout = "Master.cshtml";
 
     var customer = (ICustomer)CurrentCustomer;
+    var profile = Members.GetCurrentMemberProfileModel();
+    var umbracomember = Members.GetByUsername(profile.UserName);
+
 }
 
 <div class="hk_order hk_checkout">
-
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="hk_shop">@string.Format("{0} {1}", customer.FirstName, customer.LastName)</h2>
-        </div>
-    </div>
     @if (Model.HasProperty("brief") && Model.HasValue("brief"))
     {
         @Umbraco.Field("brief")
     }
     <div class="row">
 
-        <div class="col-md-9">
+        <div class="col-md-12">
             @if (!((ICustomer)CurrentCustomer).WishList().IsEmpty)
             {
                 <h2 class="hk_shop">@StoreFormsResource.LabelWishList</h2>
                 @Html.Action("WishListForm", "StoreWishList", new { area = "Merchello" })
             }
+            <h2 class="hk_shop">Account</h2>
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong>company name</strong>
+                        <br />
+                        @if (Members.IsLoggedIn())
+                        {
+                            @umbracomember.GetPropertyValue("company")
+                        }
+                        @*   @Html.Action("Invoices", "Account", new { area = "ETCConnector" })*@
+                    </div>
+                    <div class="col-md-2">
+                        <strong>first name</strong>
+                        <br />@string.Format("{0}", customer.FirstName)
+                    </div>
+                    @*<div class="col-md-2">
+                        <strong>zipcode</strong>
+                        <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                    </div>*@
+                    <div class="col-md-2">
+                        <strong>phone</strong>
+                        <br />
+                        @if (Members.IsLoggedIn())
+                        {
+                            @umbracomember.GetPropertyValue("phoneHome")
+                        }
+                    </div>
+                    <div class="col-md-2">
+                        <input class="btn btn-hk-custom" type="button" value="edit" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2">
+                        <strong>last name</strong>
+                        <br />@string.Format("{0}", customer.LastName)
+                    </div>
+                    <div class="col-md-2">
+                        <strong>email adress</strong>
+                        <br />
+                        @if (Members.IsLoggedIn())
+                        {
+                           <a href="mailto:@umbracomember.Name" >@umbracomember.Name</a>
+                        }
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2">
 
-            @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+                @*    <div class="row">
+                     <div class="col-md-2">
+                         <strong>company name</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>last name</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>country</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>postalcode</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>phone</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <input class="btn" type="button" value="edit" />
+                     </div>
+                 </div>
+
+            </div> *@
+
+                @* <div class="col-md-6">
+                <h2 class="hk_shop">@StoreFormsResource.LabelAddresses</h2>
+                @Html.Action("CustomerBillingAddress", "CustomerMembership", new { area = "FastTrack" })
+
+                @Html.Action("CustomerShippingAddress", "CustomerMembership", new { area = "FastTrack" })
+            </div>*@
+</div>
+
+            <div class="row" style="margin:20px 0px 0px 0px">
+                <div class="col-md-12">
+                    @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-12">
+                @* Maatwerk HKLiving Invoices *@
+                <h2 class="hk_shop">Weborder</h2>
+                @*Maatwerk HKLiving Invoices*@
+                @*Call to ETCConnector Account Controller*@
+                @Html.Action("Invoices", "Account", new { area = "ETCConnector" })
+            </div>
+            <div class="col-md-12">
+                <h2 class="hk_shop">orders</h2>
+                @*Maatwerk HKLiving Invoices*@
+                @*Call to ETCConnector Account Controller*@
+                @Html.Action("Orders", "Account", new { area = "ETCConnector" })
+            </div>
         </div>
-
-        <div class="col-md-3">
-            <h2 class="hk_shop">@StoreFormsResource.LabelAddresses</h2>
-            @Html.Action("CustomerBillingAddress", "CustomerMembership", new { area = "FastTrack" })
-
-            @Html.Action("CustomerShippingAddress", "CustomerMembership", new { area = "FastTrack" })
         </div>
-    </div>
-
-    <div class="row">
-        @* Maatwerk HKLiving Invoices *@
-        <h3>invoices</h3>
-        @*Maatwerk HKLiving Invoices*@
-        @*Call to ETCConnector Account Controller*@
-        @Html.Action("Invoices", "Account", new { area = "ETCConnector" })
-        <h3>orders</h3>
-        @*Maatwerk HKLiving Invoices*@
-        @*Call to ETCConnector Account Controller*@
-        @Html.Action("Orders", "Account", new { area = "ETCConnector" })
-    </div>
-    </div>

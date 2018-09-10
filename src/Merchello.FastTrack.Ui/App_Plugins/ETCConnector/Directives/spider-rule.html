@@ -26,6 +26,7 @@
 						ng-options="spec.Id as spec.Name for spec in Specs">
 					<!--<option ng-selected="{{spec.Id == SpiderSpec.Rule.SpecID}}" ng-repeat="spec in Specs" value="{{spec.Id}}">{{spec.Name}}</option>-->
 				</select>
+
 				<div ng-if="SpiderSpec.Fixed">
 					{{SpiderSpec.Rule.RuleName}}
 				</div>

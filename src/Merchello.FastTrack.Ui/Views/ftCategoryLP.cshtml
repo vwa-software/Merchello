@@ -181,44 +181,49 @@
 
 <div class="container-fluid hk_collections hk_category" id="hk_cat_@currentPageId">
     <div class="row">
-        <div class="col-12 hk_categorie_media_LP hk_categorie_media_top">
-            @Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGridTop")
+        <div class="col-3 col-xl-3 col-md-3">
+            @RenderSearchForm(paging)
+            @Html.Partial("hkCategories")
         </div>
-        @* <div class="col-3 col-xl-3 col-md-3">
-        @RenderSearchForm(paging)
-        @Html.Partial("hkCategories")
-        </div> *@
-        @if (hideProducts.Count() > 0)
-        {
-            <div class="col-9 col-xl-9 col-md-9 col-sm-9 col-12 col-xl-12 col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        @RenderSortingDropDown(paging)
-                    </div>
-                    <div class="col-md-6 text-right">
-                        @RenderItemsDropDown(paging)
-                    </div>
+        <div class="col-9 col-xl-9 col-md-9 col-sm-9">
+            @*col-12 col-xl-12 col-md-12 col-sm-12*@
+            <div class="row">
+                <div class="col-12 hk_categorie_media_LP hk_categorie_media_top">
+                    @Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGridTop")
                 </div>
-                @Html.Partial("_ProductBoxList", products)
-                <div class="row col-12 pagination">
-                    <nav aria-label="Page navigation" class="hk_pagination">
-                        <ul class="pagination">
-                            @RenderPaging(paging, paging.CurrentPage)
-                        </ul>
-                    </nav>
-                </div>
+                </div></div>
+                @if (hideProducts.Count() > 0)
+                {
+                    <div class="col-9 col-xl-9 col-md-9 col-sm-9">
+                        @*col-12 col-xl-12 col-md-12 col-sm-12*@
+                        <div class="row">
+                            <div class="col-md-6">
+                                @RenderSortingDropDown(paging)
+                            </div>
+                            <div class="col-md-6 text-right">
+                                @RenderItemsDropDown(paging)
+                            </div>
+                        </div>
+                        @Html.Partial("_ProductBoxList", products)
+                        <div class="row col-12 pagination">
+                            <nav aria-label="Page navigation" class="hk_pagination">
+                                <ul class="pagination">
+                                    @RenderPaging(paging, paging.CurrentPage)
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                }
             </div>
-        }
-    </div>
-</div>
-<div class="col-12 hk_categorie_media">
-    @Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGrid")
-</div>
+        </div>
+        <div class="col-12 hk_categorie_media">
+            @Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGrid")
+        </div>
 
 
 
-@helper RenderPaging(Paging paging, long currentId)
-{
+        @helper RenderPaging(Paging paging, long currentId)
+        {
 /**/
 
 /**/
@@ -253,86 +258,86 @@ if (paging.EndPageToShow < paging.TotalPages)
 }
 
 
-@helper RenderSortingDropDown(ETC.B2B.WEB.Paging paging)
-{
+        @helper RenderSortingDropDown(ETC.B2B.WEB.Paging paging)
+        {
 
-    <div class="dropdown">
-        <button class="form-control form-sort" type="button" data-toggle="dropdown">
-            @{
-                // determine selected sortname
-                string sortname = string.Empty;
-                switch (paging.SortTerm.ToLower())
-                {
-                    case "priceasc":
-                        sortname = "Price ascending";
-                        break;
+        <div class="dropdown">
+            <button class="form-control form-sort" type="button" data-toggle="dropdown">
+                @{
+                    // determine selected sortname
+                    string sortname = string.Empty;
+                    switch (paging.SortTerm.ToLower())
+                    {
+                        case "priceasc":
+                            sortname = "Price ascending";
+                            break;
 
-                    case "pricedesc":
-                        sortname = "Price descanding";
-                        break;
-                    default:
-                        sortname = "sort products";
-                        break;
+                        case "pricedesc":
+                            sortname = "Price descanding";
+                            break;
+                        default:
+                            sortname = "sort products";
+                            break;
+                    }
                 }
-            }
-            @sortname
-            <i class="fa fa-caret-down"></i>
-        </button>
+                @sortname
+                <i class="fa fa-caret-down"></i>
+            </button>
 
-        <ul class="dropdown-menu">
-            <li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descanding</a></li>
-        </ul>
-    </div>
+            <ul class="dropdown-menu">
+                <li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descanding</a></li>
+            </ul>
+        </div>
 }
 
-@*btn btn-primary dropdown-toggle*@
-@helper RenderItemsDropDown(ETC.B2B.WEB.Paging paging)
-{
-    <div class="dropdown">
-        <button class="form-control form-sort" type="button" data-toggle="dropdown">
-            show @paging.ItemsPerPage results
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=40&SortTerm=@(paging.SortTerm)">show 40 results</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=80&SortTerm=@(paging.SortTerm)">show 80 results</a></li>
-            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
-        </ul>
-    </div>
+        @*btn btn-primary dropdown-toggle*@
+        @helper RenderItemsDropDown(ETC.B2B.WEB.Paging paging)
+        {
+        <div class="dropdown">
+            <button class="form-control form-sort" type="button" data-toggle="dropdown">
+                show @paging.ItemsPerPage results
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=40&SortTerm=@(paging.SortTerm)">show 40 results</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=80&SortTerm=@(paging.SortTerm)">show 80 results</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
+            </ul>
+        </div>
 }
 
-@helper  RenderSearchForm(ETC.B2B.WEB.Paging paging)
+        @helper  RenderSearchForm(ETC.B2B.WEB.Paging paging)
 {
-    <div class="hk_search">
+        <div class="hk_search">
 
-        <h3>@(Umbraco.GetDictionaryValue("Search", "Search"))</h3>
+            <h3>@(Umbraco.GetDictionaryValue("Search", "Search"))</h3>
 
-        <form action="@paging.SearchUrl" class="form-inline search" id="hk_search-input" method="get">
+            <form action="@paging.SearchUrl" class="form-inline search" id="hk_search-input" method="get">
 
-            <div class="form-group">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))" id="etc-search-term" value="@paging.SearchTerm" name="q" />
-                    <span class="input-group-addon">
-                        <button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
-                    </span>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))" id="etc-search-term" value="@paging.SearchTerm" name="q" />
+                        <span class="input-group-addon">
+                            <button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
+                        </span>
+                    </div>
                 </div>
-            </div>
 
 
-            @*<ul>
-                    <li>
-                        <input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
-                    </li>
-                    <li>
-                        <button class="btn btn-info btn-lg" type="submit" >
-                            <i class="glyphicon fa fa-search "></i>
-                        </button>
-                    </li>
-                </ul>*@
-        </form>
-    </div>
+                @*<ul>
+                        <li>
+                            <input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
+                        </li>
+                        <li>
+                            <button class="btn btn-info btn-lg" type="submit" >
+                                <i class="glyphicon fa fa-search "></i>
+                            </button>
+                        </li>
+                    </ul>*@
+            </form>
+        </div>
 }
