@@ -10,15 +10,16 @@
 
     using (Html.BeginUmbracoForm<StoreBasketController>("UpdateBasket", new { area = "FastTrack" }, new { data_muifrm = "basket" }))
     {
-
+    
         @Html.AntiForgeryToken()
     <table class="table mui-basket mui-default">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>article</th>
+                <th></th>
+                <th>amount</th>
+                <th>price</th>
+                <th>total</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@
         {
             var product = Model.Items[i].Product;
             var isProduct = product != null;
+            var hasdevider = "  |  ";
 
             <tr>
                 <td class="image">
@@ -37,20 +39,13 @@
                     {
                         // This is a property reference to a content type on the default starter kit
                         // and may need to change for site specific implementations.  Example!
-                        if (product.HasValue("image"))
+                        if (product.HasValue("ftProduct_Afbeelding"))
                         {
-                            var mediaId = product.GetPropertyValue<string>("image");
+                            var mediaId = product.GetPropertyValue<string>("ftProduct_Afbeelding");
                             var image = Umbraco.TypedMedia(mediaId);
 
-                            <a href="@product.Url"><img src="@image.GetCropUrl(width: 20)" alt="@product.Name" width="20"/></a>
+                            <a href="@product.Url"><img src="@image.GetCropUrl(75, 75)" alt="@product.Name" width="75"/></a>
                         }
-                        <a href="@product.Url">
-                            <span>@product.Name</span>
-                            @foreach (var choice in Model.Items[i].CustomerOptionChoices)
-                            {
-                                <span class="option-choice">@choice.Key - @choice.Value</span>
-                            }
-                        </a>
                     }
                     else
                     {
@@ -58,17 +53,24 @@
                         <span>@Model.Items[i].Name</span>
                     }
                 </td>
-                <td>@Model.Items[i].Amount.AsFormattedCurrency()</td>
                 <td>
-					  @if (isProduct)
+                    <a href="@product.Url">
+                        <span>EAN: @Html.Raw(product.GetPropertyValue<string>("ftProduct_EAN"))  @hasdevider @(product.GetPropertyValue<string>("ftProduct_Artikelnummer"))  @hasdevider @product.Name @hasdevider @Html.Raw(product.GetPropertyValue<string>("ftProduct_afmetingen"))</span>
+                        @foreach (var choice in Model.Items[i].CustomerOptionChoices)
+                        {
+                            <span class="option-choice">@choice.Key - @choice.Value</span>
+                        }
+                    </a></td>
+                <td>
+					@if (isProduct)
 					{
 						int step = 1;
 						if(product.GetPropertyValue<int>("ftProduct_PackingUnit") > 1)
 						{
 							step = product.GetPropertyValue<int>("ftProduct_PackingUnit");
 						}
-
-						@Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", min = step.ToString(), step = step.ToString(), data_muiaction = "updatequantity" })
+						
+						@Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", value = step.ToString(), min = step.ToString(), step = step.ToString(), data_muiaction = "updatequantity" })
                     }
                     else
                     {
@@ -76,24 +78,39 @@
                         @Html.HiddenFor(model => Model.Items[i].Quantity)
                     }
                 </td>
+                <td>@Model.Items[i].Amount.AsFormattedCurrency()</td>
                 <td data-muivalue="linetotal">@Model.Items[i].Total().AsFormattedCurrency()</td>
                 <td class="text-right">
-                    @if (Model.WishListEnabled && isProduct) // only products can be added to the wishlist
+                 @*  @if (Model.WishListEnabled && isProduct) // only products can be added to the wishlist
                     {
                         // the 'area' parameter in the route values should match the PluginController attribute alias
-                        @Html.ActionLink("Wish List +", "MoveItemToWishList", "StoreBasket", new { area = "Merchello", lineItemKey = Model.Items[i].Key, successRedirectId = currentPage.Id }, new { @class = "btn btn-info" })
-                    }
+                        @Html.ActionLink("Wish List +", "MoveItemToWishList", "StoreBasket", new { area = "Merchello", lineItemKey = Model.Items[i].Key, successRedirectId = currentPage.Id }, new { @class = "fa fa-trabtn btn-info" })
+                    }*@ 
 
-                    @Html.ActionLink("Remove", "RemoveBasketItem", "StoreBasket", new { area = "Merchello", lineItemKey = Model.Items[i].Key, redirectId = currentPage.Id }, new { @class = "btn btn-danger" })
+                    <i class="fa fa-times fa-delete"></i>@Html.ActionLink(" ", "RemoveBasketItem", "StoreBasket", new { area = "Merchello", lineItemKey = Model.Items[i].Key, redirectId = currentPage.Id }, new { @class = "btn-delete" })
                 </td>
             </tr>
 
 
         }
-        <tr>
-            <td colspan="3" class="text-right"><strong>Sub Total</strong></td>
-            <td colspan="2" data-muivalue="total"><strong>@Model.Total().AsFormattedCurrency()</strong></td>
+        <tr class="kh_shop_whitespace">
+            <td colspan="4">&nbsp;</td>
+            <td colspan="2">&nbsp;</td>
         </tr>
+            <tr class="kh_shop_total">
+                <td colspan="4" class="text-right">
+                    @* Henk // Dit willen we nog kunnen berekeken
+                total excl. VAT<br />
+                total VAT<br /> *@
+                    <strong>Sub Total</strong>
+                </td>
+                <td colspan="2" data-muivalue="total">
+                    @* Henk // Dit willen we nog kunnen berekeken
+                @Model.Total().AsFormattedCurrency()<br />
+                @Model.Total().AsFormattedCurrency()<br /> *@
+                    <strong>@Model.Total().AsFormattedCurrency()</strong>
+                </td>
+            </tr>
         <tr class="hide">
             <td colspan="3">&nbsp;</td>
             <td colspan="2"><input type="submit" id="update-cart" class="btn btn-default" name="update" value="Update" data-muibtn="update" /></td>

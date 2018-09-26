@@ -1,7 +1,11 @@
 ﻿namespace Merchello.FastTrack.Controllers
 {
-    using System.Web.Mvc;
-    using Merchello.FastTrack.Factories;
+	using System;
+	using System.Linq;
+	using System.Web.Mvc;
+	using Merchello.Core;
+	using Merchello.Core.Models;
+	using Merchello.FastTrack.Factories;
     using Merchello.FastTrack.Models;
     using Merchello.Web.Controllers;
     using Merchello.Web.Factories;
@@ -27,16 +31,62 @@
         {
         }
 
-        /// <summary>
-        /// Renders the Basket Summary.
-        /// </summary>
-        /// <param name="view">
-        /// The optional view.
-        /// </param>
-        /// <returns>
-        /// The <see cref="ActionResult"/>.
-        /// </returns>
-        [ChildActionOnly]
+		public override ActionResult InvoiceSummary(string view = "")
+		{
+
+			var viewData = new StoreViewData();
+
+			
+			// todo SaveBillingAddress van checkoutaddresscontroller beter implementeren
+
+			// if (!this.ModelState.IsValid) return this.CurrentUmbracoPage();
+
+			// billing address
+			FastTrackBillingAddressModel model = null;
+			var BillingAddressFactory = new FastTrackBillingAddressModelFactory();
+
+
+			// HKLiving, always use the default customer addres which comes from eTC.
+			if (!this.CurrentCustomer.IsAnonymous)
+			{
+				var defaultBilling = ((ICustomer)this.CurrentCustomer).DefaultCustomerAddress(AddressType.Billing);
+				if (defaultBilling != null) model = BillingAddressFactory.Create((ICustomer)CurrentCustomer, defaultBilling);
+			}
+
+			if (model == null)
+			{
+				Merchello.Core.Models.IAddress address = CheckoutManager.Customer.GetBillToAddress();
+				if (address != null && !string.IsNullOrEmpty(address.CountryCode))
+				{
+					model = BillingAddressFactory.Create(address);
+				}
+			}
+
+			// If the model is still null at this point, there was an error in eTC
+			if (model == null)
+			{
+				viewData.Messages = new string[] { "No adress found, please check your account settings." };
+				ViewBag.MerchelloViewData = viewData;
+				Logger.Warn(this.GetType(), "No adress found for user: " + ((ICustomer)this.CurrentCustomer).Email);
+			}
+			else
+			{
+				model.UseForShipping = true;
+				new Merchello.FastTrack.Controllers.CheckoutAddressController().SaveBillingAddress(model);
+			}
+
+			return base.InvoiceSummary(view);
+		}
+		/// <summary>
+		/// Renders the Basket Summary.
+		/// </summary>
+		/// <param name="view">
+		/// The optional view.
+		/// </param>
+		/// <returns>
+		/// The <see cref="ActionResult"/>.
+		/// </returns>
+		[ChildActionOnly]
         public override ActionResult BasketSummary(string view = "")
         {
             var model = CheckoutSummaryFactory.Create(Basket, CheckoutManager);

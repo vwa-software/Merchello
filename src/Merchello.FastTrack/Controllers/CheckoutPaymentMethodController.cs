@@ -34,7 +34,6 @@
 		[ChildActionOnly]
 		public override ActionResult ResolvePayment(string view = "")
 		{
-			var viewData = new StoreViewData();
 
 			var gatewayMethod = GatewayContext.Payment.GetPaymentGatewayMethods().FirstOrDefault();
 			if (gatewayMethod == null)
@@ -44,45 +43,7 @@
 			}
 
 			CheckoutManager.Payment.SavePaymentMethod(gatewayMethod.PaymentMethod);
-
-			// todo SaveBillingAddress van checkoutaddresscontroller beter implementeren
-
-			// if (!this.ModelState.IsValid) return this.CurrentUmbracoPage();
-
-			// billing address
-			FastTrackBillingAddressModel model = null;
-			var BillingAddressFactory = new FastTrackBillingAddressModelFactory();
-
-			// Determine if we already have an address saved in the checkout manager
-			var address = CheckoutManager.Customer.GetBillToAddress();
-			if (address != null && !string.IsNullOrEmpty(address.CountryCode))
-			{
-				model = BillingAddressFactory.Create(address);
-			}
-			else
-			{
-				// If not and the we have the configuration set to use the customer's default customer billing address
-				// This can only be done if the customer is logged in.  e.g. Not an anonymous customer
-				if (!this.CurrentCustomer.IsAnonymous)
-				{
-					var defaultBilling = ((ICustomer)this.CurrentCustomer).DefaultCustomerAddress(AddressType.Billing);
-					if (defaultBilling != null) model = BillingAddressFactory.Create((ICustomer)CurrentCustomer, defaultBilling);
-				}
-			}
-
-			// If the model is still null at this point, we need to generate a default model
-			// for the country drop down list
-			if (model == null) {
-				viewData.Messages = new string[] { "No adress found" };
-				ViewData["MerchelloViewData"] = ViewData;
-			}
-			else
-			{
-				model.UseForShipping = true;
-				new Merchello.FastTrack.Controllers.CheckoutAddressController().SaveBillingAddress(model);
-			}
-
-
+			
 			// Get the previously saved payment method
 			// Merchello's PaymentMethod should have been called PaymentMethodSettings but legacy from early version
 			var paymentMethod = this.CheckoutManager.Payment.GetPaymentMethod();

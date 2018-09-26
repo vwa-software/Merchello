@@ -28,7 +28,7 @@ namespace Merchello.FastTrack.Controllers.Membership
 			bool.TryParse(this.Request.QueryString["success"], out result);
 			PasswordResetModel model = new PasswordResetModel()
 			{
-				Email = this.Request.QueryString["email"],
+				Email = this.Request.QueryString["uid"],
 				Token = this.Request.QueryString["token"],
 				Success = result
 			};
@@ -104,7 +104,7 @@ namespace Merchello.FastTrack.Controllers.Membership
 		{
 			try
 			{
-				IMember byEmail = ApplicationContext.Current.Services.MemberService.GetByEmail(model.Email);
+				IMember byEmail = ApplicationContext.Current.Services.MemberService.GetByUsername(model.Email);
 				if (byEmail == null)
 				{
 					LogHelper.Warn<ResetPasswordController>(string.Format("VerifyResetData - Can't find member in the MemberService {0}", (object)model.Email));

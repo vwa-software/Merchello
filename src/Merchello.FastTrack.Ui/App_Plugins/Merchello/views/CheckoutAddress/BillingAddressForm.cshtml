@@ -6,6 +6,7 @@
 @using Umbraco.Web
 @using CheckoutAddressController = Merchello.Web.Store.Controllers.CheckoutAddressController
 
+
 <h3>Billing Address</h3>
 @using (Html.BeginUmbracoForm<CheckoutAddressController>("SaveBillingAddress", new { area = "Merchello" }, new { data_muistage = "BillingAddress" }))
 {

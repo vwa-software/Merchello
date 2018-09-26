@@ -33,6 +33,13 @@
         {
             try
             {
+
+				if (this.CurrentCustomer.IsAnonymous)
+				{
+					// redirect, Umbraco takes care of the rest.
+					return RedirectToCurrentUmbracoPage();
+				}
+
                 var paymentMethod = this.CheckoutManager.Payment.GetPaymentMethod();
 
                 // For cash payments we can only perform an authorize
@@ -42,9 +49,9 @@
 
                 // merge the models so we can be assured that any hidden values are passed on
                 model.ViewData = resultModel.ViewData;
-
-                // Send the notification
-                HandleNotificiation(model, attempt);
+							
+				// Send the notification
+				HandleNotificiation(model, attempt);
 
                 return this.HandlePaymentSuccess(model);
             }

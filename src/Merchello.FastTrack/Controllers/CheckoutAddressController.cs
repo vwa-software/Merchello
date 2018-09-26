@@ -1,6 +1,7 @@
 ﻿namespace Merchello.FastTrack.Controllers
 {
 	using System;
+	using System.Linq;
 	using System.Web.Mvc;
 
     using Merchello.Core;
@@ -8,7 +9,8 @@
     using Merchello.FastTrack.Factories;
     using Merchello.FastTrack.Models;
     using Merchello.Web.Controllers;
-    using Merchello.Web.Models.Ui;
+	using Merchello.Web.Factories;
+	using Merchello.Web.Models.Ui;
 
     using Umbraco.Core;
     using Umbraco.Web.Mvc;
@@ -85,7 +87,7 @@
 			// opt to swap the order of the address collection to alleviate the need for this check, but
 			// there are also cases, where items may not need to be shipped and the billing address is required
 			// to create the invoice.
-			if (model.UseForShipping && EnsureBillingAddressIsValidAsShippingAddress(model))
+			if (true && model.UseForShipping && EnsureBillingAddressIsValidAsShippingAddress(model))
 			{
 				// we use the billing address factory here since we know the model FastTrackBillingAddressModel
 				// and only want Merchello's IAddress
@@ -93,11 +95,15 @@
 
 				CheckoutManager.Customer.SaveShipToAddress(address2);
 
-				// In this implementation, we cannot save the customer shipping address to the customer as it may be a different model here
-				// However, it is possible but more work would be required to ensure the model mapping
+				CheckoutManager.Shipping.ClearShipmentRateQuotes();
 
-				// set the checkout stage
-				model.WorkflowMarker = GetNextCheckoutWorkflowMarker(CheckoutStage.Payment);
+				var factory = new CheckoutShipRateQuoteModelFactory<FastTrackShipRateQuoteModel>();
+				var quoteModel = factory.Create(Basket, address2);
+				if (quoteModel != null && quoteModel.ProviderQuotes.Count() > 0)
+				{
+					var accepted = quoteModel.ProviderQuotes.FirstOrDefault();
+					CheckoutManager.Shipping.SaveShipmentRateQuote(accepted);
+				}
 
 			}
 

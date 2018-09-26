@@ -123,6 +123,12 @@
 				return CurrentUmbracoPage();
 			}
 
+			if (logedIn)
+			{
+				if (model.RememberMe && Response.Cookies[FormsAuthentication.FormsCookieName] != null)
+					Response.Cookies[FormsAuthentication.FormsCookieName].Expires = DateTime.Now.AddMonths(2);
+			}
+
 			if (!logedIn)
 			{
 				var member = Members.GetByUsername(model.Username);
@@ -139,7 +145,7 @@
 						"Login was unsuccessful with the email address and password entered."
 					};
 
-					if (!member.GetPropertyValue<bool>("umbracoMemberApproved")) messages.Add("This account has not been approved.");
+					if (!member.GetPropertyValue<bool>("umbracoMemberApproved")) messages.Add(Umbraco.GetDictionaryValue("Account_disabled"));
 					if (member.GetPropertyValue<bool>("umbracoMemberLockedOut")) messages.Add("This account has been locked due to too many unsucessful login attempts.");
 
 					viewData.Messages = messages;
@@ -410,7 +416,7 @@
 			if (member == null)
 			{
 				viewData.Success = false;
-				viewData.Messages = new[] { "Unknown email address." };
+				viewData.Messages = new[] { "Unknown user name." };
 				ViewData["MerchelloViewData"] = viewData;
 				return CurrentUmbracoPage();
 			}
@@ -422,7 +428,7 @@
 			dateTime = dateTime.AddDays(60.0);
 
 			string resetTokenExpiryDate = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
-			string resetToken = "?token=" + sEncrypt + "&email=" + member.Email;
+			string resetToken = "?token=" + sEncrypt + "&uid=" + member.Username;
 			activationModel.ActivationLink = resetToken;
 			try
 			{
