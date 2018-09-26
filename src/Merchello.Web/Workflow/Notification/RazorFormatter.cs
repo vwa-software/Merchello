@@ -43,19 +43,43 @@
         /// </returns>
         public string Format(string viewPath)
         {
-            if (viewPath.StartsWith("~/views")) viewPath = viewPath.Replace("~/views", string.Empty);
-
+			//  if (viewPath.StartsWith("~/views")) viewPath = viewPath.Replace("~/views", string.Empty);
             var renderer = GetViewRenderer();
             return renderer.RenderView(viewPath, _model);
         }
 
-        /// <summary>
-        /// Gets an instance of the view renderer.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="ViewRenderer"/>.
-        /// </returns>
-        private ViewRenderer GetViewRenderer()
+		/// <summary>
+		/// Formats a subject
+		/// </summary>
+		/// <param name="viewPath"></param>
+		/// <returns></returns>
+		public string FormatSubject(string viewPath)
+		{
+			if (!viewPath.EndsWith(".cshtml"))
+			{
+				return viewPath;
+			}
+
+			viewPath = viewPath.ToLower();
+		
+			//if (viewPath.StartsWith("~/views")) viewPath = viewPath.Replace("~/views/", string.Empty);
+
+			if (!viewPath.StartsWith("~/views"))
+			{
+				viewPath = "~/views/merchello/notification/" + viewPath;
+			}
+			
+			var renderer = GetViewRenderer();
+			return renderer.RenderView(viewPath, _model);
+		}
+
+		/// <summary>
+		/// Gets an instance of the view renderer.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="ViewRenderer"/>.
+		/// </returns>
+		private ViewRenderer GetViewRenderer()
         {
             var controller = SurfaceControllerActivationHelper.CreateSurfaceController<RazorFormatterController>();
 

@@ -15,5 +15,12 @@
         /// A formatted string
         /// </returns>
         string Format(string value);
+
+		/// <summary>
+		/// Formats a subject
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		string FormatSubject(string value);
     }
 }

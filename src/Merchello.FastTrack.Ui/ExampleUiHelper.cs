@@ -143,9 +143,12 @@
             /// </returns>
             public static IPublishedContent GetCategoryPageForCollection(Guid collectionKey)
             {
-                var catalog = GetCatalog();
+                IPublishedContent catalog = GetCatalog();
 
-                return catalog.FirstChild(x => x.GetDataValueAsGuid("products") == collectionKey);
+				// @HS, search in descendants instead of firstchild
+				return catalog.Descendants().FirstOrDefault(x => x.GetDataValueAsGuid("products") == collectionKey);
+
+				//return catalog.FirstChild(x => x.GetDataValueAsGuid("products") == collectionKey);
             }
         }
 

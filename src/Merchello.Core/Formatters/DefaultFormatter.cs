@@ -18,5 +18,15 @@
         {
             return value;
         }
+
+		/// <summary>
+		/// Performs the formatting operation on the subject
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public string FormatSubject(string value)
+		{
+			return value;
+		}
     }
 }

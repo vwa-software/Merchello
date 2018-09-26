@@ -67,6 +67,17 @@
             return _patterns.Aggregate(value, (current, search) => current.Replace(search.Value.Pattern, search.Value.Replacement));
         }
 
+		/// <summary>
+		/// Formats a subject
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public string FormatSubject(string value)
+		{
+			value = ExplodeLineItemIterations(value);
+			return _patterns.Aggregate(value, (current, search) => current.Replace(search.Value.Pattern, search.Value.Replacement));
+		}
+
         /// <summary>
         /// Adds or updates a replaceable pattern to the formatter
         /// </summary>

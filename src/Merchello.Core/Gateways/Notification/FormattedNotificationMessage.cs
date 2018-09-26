@@ -1,184 +1,198 @@
 ﻿namespace Merchello.Core.Gateways.Notification
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Formatters;
-    using Models;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Linq;
+	using Formatters;
+	using Models;
 
-    using Umbraco.Core;
-    using Umbraco.Core.IO;
-    using Umbraco.Core.Logging;
+	using Umbraco.Core;
+	using Umbraco.Core.IO;
+	using Umbraco.Core.Logging;
 
-    /// <summary>
-    /// Defines the base notification
-    /// </summary>
-    internal class FormattedNotificationMessage : IFormattedNotificationMessage
-    {
-        /// <summary>
-        /// The notification message.
-        /// </summary>
-        private readonly INotificationMessage _notificationMessage;
+	/// <summary>
+	/// Defines the base notification
+	/// </summary>
+	internal class FormattedNotificationMessage : IFormattedNotificationMessage
+	{
+		/// <summary>
+		/// The notification message.
+		/// </summary>
+		private readonly INotificationMessage _notificationMessage;
 
-        /// <summary>
-        /// The formatter.
-        /// </summary>
-        private readonly IFormatter _formatter;
+		/// <summary>
+		/// The formatter.
+		/// </summary>
+		private readonly IFormatter _formatter;
 
-        /// <summary>
-        /// The recipients.
-        /// </summary>
-        private readonly List<string> _recipients = new List<string>();
+		/// <summary>
+		/// The recipients.
+		/// </summary>
+		private readonly List<string> _recipients = new List<string>();
 
-        /// <summary>
-        /// The formatted message.
-        /// </summary>
-        private Lazy<string> _formattedMessage;
+		/// <summary>
+		/// The formatted message.
+		/// </summary>
+		private Lazy<string> _formattedMessage;
+		private Lazy<string> _name;
+		private string _nameSet = null;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FormattedNotificationMessage"/> class.
+		/// </summary>
+		/// <param name="notificationMessage">
+		/// The notification message.
+		/// </param>
+		/// <param name="formatter">
+		/// The formatter.
+		/// </param>
+		public FormattedNotificationMessage(INotificationMessage notificationMessage, IFormatter formatter)
+		{
+			Mandate.ParameterNotNull(formatter, "formatter");
+			Mandate.ParameterNotNull(notificationMessage, "message");
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FormattedNotificationMessage"/> class.
-        /// </summary>
-        /// <param name="notificationMessage">
-        /// The notification message.
-        /// </param>
-        /// <param name="formatter">
-        /// The formatter.
-        /// </param>
-        public FormattedNotificationMessage(INotificationMessage notificationMessage, IFormatter formatter)
-        {
-            Mandate.ParameterNotNull(formatter, "formatter");
-            Mandate.ParameterNotNull(notificationMessage, "message");
+			_notificationMessage = notificationMessage;
+			_formatter = formatter;
 
-            _notificationMessage = notificationMessage;
-            _formatter = formatter;
+			Initialize();
+		}
 
-            Initialize();
-        }
+		/// <summary>
+		/// Gets the sender's From address
+		/// </summary>
+		public string From
+		{
+			get { return _notificationMessage.FromAddress; }
+		}
 
-        /// <summary>
-        /// Gets the sender's From address
-        /// </summary>
-        public string From 
-        {
-            get { return _notificationMessage.FromAddress; }
-        }
-
-        /// <summary>
-        /// Gets the optional ReplyTo address
-        /// </summary>
-        public string ReplyTo 
-        {
-            get { return _notificationMessage.ReplyTo; }
-        }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        public string Name { get; set; }
+		/// <summary>
+		/// Gets the optional ReplyTo address
+		/// </summary>
+		public string ReplyTo
+		{
+			get { return _notificationMessage.ReplyTo; }
+		}
 
 
-        /// <summary>
-        /// Gets a list of recipients for the notification.
-        /// </summary>
-        /// <remarks>
-        /// This could be email addresses, mailing addresses, mobile numbers
-        /// </remarks>
-        public IEnumerable<string> Recipients 
-        {
-            get { return _recipients; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the notification should also be sent to the customer
-        /// </summary>
-        public bool SendToCustomer 
-        {
-            get { return _notificationMessage.SendToCustomer; }
-        }
+		/// <summary>
+		/// Gets or sets the name.
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return string.IsNullOrEmpty(_name.Value) ? _nameSet : _name.Value;
+			}
+			set
+			{
+				_nameSet = value;
+			}
+		}
 
 
-        /// <summary>
-        /// Gets notification message body text
-        /// </summary>
-        public virtual string BodyText
-        {
-            get
-            {
-                return FormatStatus == FormatStatus.Ok
-                           ? _formattedMessage.Value
-                           : _formattedMessage.Value.Substring(0, _notificationMessage.MaxLength - 1);
-            }
-        }
+		/// <summary>
+		/// Gets a list of recipients for the notification.
+		/// </summary>
+		/// <remarks>
+		/// This could be email addresses, mailing addresses, mobile numbers
+		/// </remarks>
+		public IEnumerable<string> Recipients
+		{
+			get { return _recipients; }
+		}
 
-        /// <summary>
-        /// Gets status of the formatted message
-        /// </summary>
-        public virtual FormatStatus FormatStatus 
-        {
-            get
-            {
-                return _formattedMessage.Value.Length > _notificationMessage.MaxLength
-                           ? FormatStatus.Truncated
-                           : FormatStatus.Ok;
-            }
-        }
+		/// <summary>
+		/// Gets a value indicating whether the notification should also be sent to the customer
+		/// </summary>
+		public bool SendToCustomer
+		{
+			get { return _notificationMessage.SendToCustomer; }
+		}
 
-        /// <summary>
-        /// Gets the <see cref="INotificationMessage"/>
-        /// </summary>
-        internal INotificationMessage NotificationMessage
-        {
-            get { return _notificationMessage; }
-        }
 
-        /// <summary>
-        /// Adds a recipient to the send to list
-        /// </summary>
-        /// <param name="value">The recipient</param>
-        public void AddRecipient(string value)
-        {
-            if (!_recipients.Contains(value)) _recipients.Add(value);
-        }
+		/// <summary>
+		/// Gets notification message body text
+		/// </summary>
+		public virtual string BodyText
+		{
+			get
+			{
+				return FormatStatus == FormatStatus.Ok
+						   ? _formattedMessage.Value
+						   : _formattedMessage.Value.Substring(0, _notificationMessage.MaxLength - 1);
+			}
+		}
 
-        /// <summary>
-        /// Removes a recipient from the send to list
-        /// </summary>
-        /// <param name="value">
-        /// The value.
-        /// </param>
-        public void RemoveRecipient(string value)
-        {
-            if (!_recipients.Contains(value)) return;
-            _recipients.Remove(value);
-        }
+		/// <summary>
+		/// Gets status of the formatted message
+		/// </summary>
+		public virtual FormatStatus FormatStatus
+		{
+			get
+			{
+				return _formattedMessage.Value.Length > _notificationMessage.MaxLength
+						   ? FormatStatus.Truncated
+						   : FormatStatus.Ok;
+			}
+		}
 
-        /// <summary>
-        /// Gets the message.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        private string GetMessage()
-        {
-            if (string.IsNullOrEmpty(_notificationMessage.BodyText)) return string.Empty;
-            return _notificationMessage.BodyText;
-        }
+		/// <summary>
+		/// Gets the <see cref="INotificationMessage"/>
+		/// </summary>
+		internal INotificationMessage NotificationMessage
+		{
+			get { return _notificationMessage; }
+		}
 
-        /// <summary>
-        /// The initialize.
-        /// </summary>
-        private void Initialize()
-        {
-            _formattedMessage = new Lazy<string>(() => _formatter.Format(GetMessage()));
+		/// <summary>
+		/// Adds a recipient to the send to list
+		/// </summary>
+		/// <param name="value">The recipient</param>
+		public void AddRecipient(string value)
+		{
+			if (!_recipients.Contains(value)) _recipients.Add(value);
+		}
 
-            Name = _notificationMessage.Name;
+		/// <summary>
+		/// Removes a recipient from the send to list
+		/// </summary>
+		/// <param name="value">
+		/// The value.
+		/// </param>
+		public void RemoveRecipient(string value)
+		{
+			if (!_recipients.Contains(value)) return;
+			_recipients.Remove(value);
+		}
 
-            if (!_notificationMessage.Recipients.Any()) return;
+		/// <summary>
+		/// Gets the message.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="string"/>.
+		/// </returns>
+		private string GetMessage()
+		{
+			if (string.IsNullOrEmpty(_notificationMessage.BodyText)) return string.Empty;
+			return _notificationMessage.BodyText;
+		}
 
-            var tos = _notificationMessage.Recipients.Replace(',', ';');
-            _recipients.AddRange(tos.Split(';').Select(x => x.Trim()));
-        }
-    }
+		/// <summary>
+		/// The initialize.
+		/// </summary>
+		private void Initialize()
+		{
+
+			_formattedMessage = new Lazy<string>(() => _formatter.Format(GetMessage()));
+
+			_name = new Lazy<string>(() => _formatter.FormatSubject(_notificationMessage.Name));
+			_nameSet = _notificationMessage.Name;
+
+			if (!_notificationMessage.Recipients.Any()) return;
+
+			var tos = _notificationMessage.Recipients.Replace(',', ';');
+			_recipients.AddRange(tos.Split(';').Select(x => x.Trim()));
+		}
+	}
 }
