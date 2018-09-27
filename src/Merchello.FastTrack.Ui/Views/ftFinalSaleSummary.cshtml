@@ -5,13 +5,15 @@
 
 
 <div class="row">
-    <div class="col-sm-12 col-md-12" data-muitarget="checkoutaddresses">
-        @RenderBody()
-    </div>
+	
+	<a href="/shopping-cart/" class="btn btn-default">Back</a>
 
-    <div class="col-sm-12 col-md-12">
+	<div class="col-sm-12 col-md-12" data-muitarget="checkoutaddresses">
+		@RenderBody()
+	</div>
 
-        @Html.Action("InvoiceSummary", "CheckoutSummary", new { area = "FastTrack" })
-    </div>
-   
+	<div class="col-sm-12 col-md-12">
+		@Html.Action("InvoiceSummary", "CheckoutSummary", new { area = "FastTrack" })
+	</div>
+
 </div>

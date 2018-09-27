@@ -2,8 +2,24 @@
 @using Merchello.Web
 @using Merchello.Web.Search
 @using ETC.B2B.WEB
+@using Umbraco.Core.Logging
 
 @inherits Merchello.Web.Mvc.MerchelloViewPage<FtCategory>
+@functions{
+
+	private void AddCollectionsToQuery(Guid key, ref string rawQuery)
+	{
+		foreach (var child in Merchello.Collections.Product.GetChildCollections(key))
+		{
+			rawQuery += " " + child.Key.ToString();
+
+			if (child.Children().Count() > 0)
+			{
+				AddCollectionsToQuery(child.Key, ref rawQuery);
+			}
+		}
+	}
+}
 
 @{
 	Layout = "Master.cshtml";
@@ -25,101 +41,143 @@
 
 	// url to navigate to when searching
 	paging.SearchUrl = Model.Url;
+
 	// initialize merchello product searcher
-	var searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
-
-
-	// fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
-	var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
-
-	var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
-
-	string rawQuery = string.Empty;
-
-	if (string.IsNullOrEmpty(paging.SearchTerm))
-	{
-
-	}
-	else
-	{
-		// Searching with fuzzynis
-		// rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
-
-		// Searching without fuzzynis
-		rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
-	}
-
-	// only the available products
-	rawQuery += "+available:true";
-
-	// when searching, de not limit to collections
-	if (string.IsNullOrEmpty(paging.SearchTerm))
-	{
-		string collectionKey = ProductsProperty.DataValue == null ? string.Empty : ProductsProperty.DataValue.ToString();
-
-		if (!string.IsNullOrEmpty(collectionKey))
-		{
-			// in the selected collection
-			rawQuery += " +staticCollectionKeys:" + collectionKey;
-		}
-	}
-
-
-	/*
-	 For performance its best to Page and sort in lucern examine searcher.
-
-	 However, it's not fully possible to determine of an object is active or not (stock/avalablitity/sku's etc).
-	 When this is the case (products are counted but not visible), set underlying true to false
-	 */
+	Examine.Providers.BaseSearchProvider searcher = null;
 
 #if true
-
-	/*
-	Sort and page in Lucerne (best performance)
-	*/
-
 	// perform lucerne search
-	var searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-
-	total = searchResults.Count();
-
-	// calculate pager
-	paging.CalculatePages(total);
-
-	IOrderedEnumerable<SearchResult> ordererd = null;
-
-	// sorting
-	switch (paging.SortTerm.ToLower())
+	ISearchResults searchResults = null;
+	try
 	{
-		case "priceasc":
-			ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
+
+		searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
+
+
+		// fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
+		var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
+
+		var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+
+		//http://www.lucenetutorial.com/lucene-query-syntax.html
+		string rawQuery = string.Empty;
+
+		if (string.IsNullOrEmpty(paging.SearchTerm))
+		{
+		}
+		else
+		{
+			// Searching with fuzzynis
+			// rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
+
+			// Searching without fuzzynis
+			rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
+		}
+
+		// only the available products
+		rawQuery += "+available:true";
+
+		// when searching, de not limit to collections
+		if (string.IsNullOrEmpty(paging.SearchTerm))
+		{
+			if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
 			{
-				decimal price;
-				decimal.TryParse(a.Fields["price"], out price);
-				return price;
-			});
-			break;
-		case "pricedesc":
-			ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
-			{
-				decimal price;
-				decimal.TryParse(a.Fields["price"], out price);
-				return price;
-			});
-			break;
-		default:
-			ordererd = searchResults.OrderBy<SearchResult, float>(a => a.Score);
-			break;
+
+				// in the selected collection
+				rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
+				try
+				{
+					AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
+				}
+				catch (Exception)
+				{
+					// ignore, in some cases the datavalue is no valid guid string.
+				}
+
+				rawQuery += ")";
+			}
+		}
+
+		if (CurrentCustomer.IsAnonymous)
+		{
+			// exclude service items and strbr collections
+			rawQuery += " -staticCollectionKeys:ecfa2964-c513-4527-8453-1c8611fe2900 0f4d5320-4823-4c4a-85c3-993bb094b94a";
+		}
+
+		/*
+		 For performance its best to Page and sort in lucern examine searcher.
+
+		 However, it's not fully possible to determine of an object is active or not (stock/avalablitity/sku's etc).
+		 When this is the case (products are counted but not visible), set underlying true to false
+		 */
+
+
+		/*
+		Sort and page in Lucerne (best performance)
+		*/
+
+
+		if (searcher != null)
+		{
+
+		}
+		searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+		total = searchResults.Count();
+
+
+		// calculate pager
+		paging.CalculatePages(total);
+
+		IOrderedEnumerable<SearchResult> ordererd = null;
+
+		// sorting
+		switch (paging.SortTerm.ToLower())
+		{
+			case "priceasc":
+				ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
+				{
+					decimal price;
+					decimal.TryParse(a.Fields["price"], out price);
+					return price;
+				});
+				break;
+			case "pricedesc":
+				ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
+				{
+					decimal price;
+					decimal.TryParse(a.Fields["price"], out price);
+					return price;
+				});
+				break;
+			case "skuasc":
+				ordererd = searchResults.OrderBy<SearchResult, string>(a =>
+				{
+					return a.Fields["sku"].ToString();
+				});
+				break;
+			case "skudesc":
+				ordererd = searchResults.OrderByDescending<SearchResult, string>(a =>
+				{
+					return a.Fields["sku"].ToString();
+				});
+				break;
+			default:
+				ordererd = searchResults.OrderBy<SearchResult, float>(a => a.Score);
+				break;
+		}
+
+
+		// Check if products are active/available (stock/price etc)
+		products = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
+		{
+			return this.Merchello.TypedProductContent(new Guid(a.Fields["productKey"]));
+		}).Where(a => a != null).ToList();
+
 	}
-
-
-
-	// Check if products are active/available (stock/price etc)
-	products = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
+	catch (Exception ex)
 	{
-		return this.Merchello.TypedProductContent(new Guid(a.Fields["productKey"]));
+		LogHelper.Error(this.GetType(), "Error trying to use searcher", ex);
 	}
-	).Where(a => a != null).ToList();
 
 #else
 
@@ -181,17 +239,17 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 		<div class="col-12 hk_categorie_media hk_categorie_media_top">
 			@Html.GetGridHtml(Model, "collectionGridTop")
 		</div>
-		<div class="col-3 col-xl-3 col-md-3">
+		<div class="col-4 col-xl-3 col-md-3">
 			@*@Html.Partial("hkSearch")*@
 			@RenderSearchForm(paging)
 			@Html.Partial("hkCategories")
 		</div>
-		<div class="col-9 col-xl-9 col-md-9 col-sm-9">
+		<div class="col-8 col-xl-9 col-md-9">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-6 hk_sort">
 					@RenderSortingDropDown(paging)
 				</div>
-				<div class="col-md-6 text-right">
+				<div class="col-md-6 text-right hk_sort">
 					@RenderItemsDropDown(paging)
 				</div>
 			</div>
@@ -207,27 +265,45 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 	</div>
 </div>
 
-@{
-	//IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent>
-	if (Model.FeaturedProducts != null)
-	{
+<div class="col-12 hk_categorie_media">
+	@Html.GetGridHtml(Model, "collectionGrid")
+</div>
+
+<div class="col-12 hk_categorie_featured">
+
+	@{
+		// http://projecten.vwa.nu:888/redmine/issues/5329
+		// Featured products..
+		// Products are rendered in partial view _productboxlist
+		// @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
+		// Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
 
 
-		IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
+		// List of featured Products
+		// Filter op null values (product may be disabled, this results in a null value)
 
-		if (featuredProducts != null && featuredProducts.Count() > 0)
+
+
+		if (Model.FeaturedProducts != null)
 		{
-		<div class="col-12 hk_categorie_media">
-			<h2 class="hk_category_name">Featured Products</h2>
-			@Html.Partial("_ProductBoxList", featuredProducts)
-		</div>
+
+			IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
+
+			if (featuredProducts != null && featuredProducts.Count() > 0)
+			{
+				<div class="col-12 hk_categorie_media">
+
+					<div class="hk_category_name_list hk_highlighted">
+						<h1 class="hk_category_name"><span>@Umbraco.Field("featuredCategoryName")</span></h1>
+						<h2 class="hk_category_name">highlighted</h2>
+					</div>
+					@Html.Partial("_ProductBoxList", featuredProducts)
+				</div>
 
 			}
 		}
 	}
 
-<div class="col-12 hk_categorie_media">
-	@Html.GetGridHtml(Model, "collectionGrid")
 </div>
 
 
@@ -285,6 +361,12 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 						case "pricedesc":
 							sortname = "Price descanding";
 							break;
+						case "skuasc":
+							sortname = "Productcode ascending";
+							break;
+						case "skudesc":
+							sortname = "Productcode descanding";
+							break;
 						default:
 							sortname = "sort products";
 							break;
@@ -298,6 +380,8 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 				<li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descanding</a></li>
+				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skuasc">Productcode ascending</a></li>
+				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skudesc">Productcode descanding</a></li>
 			</ul>
 		</div>
 }
@@ -312,9 +396,7 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 			</button>
 			<ul class="dropdown-menu">
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=40&SortTerm=@(paging.SortTerm)">show 40 results</a></li>
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=80&SortTerm=@(paging.SortTerm)">show 80 results</a></li>
 				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
 			</ul>
 		</div>
@@ -350,4 +432,82 @@ products = products.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).
 					</ul>*@
 			</form>
 		</div>
+}
+@section Scripts {
+
+	<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+
+	@*	<script>
+			$('.hk_media_display_list').each(function (i, e) {
+				var id = 'adaptive';
+				$(e).attr('id', id + i);
+				var selector = '#' + id + i;
+				$(selector).lightSlider({
+					autoWidth: false,
+					loop: true,
+					keyPress: true
+				});
+			});
+
+		</script>
+
+		<script type="text/javascript">
+			$('.parent_list li').bind("click", function(){
+
+				$(this).find('i').toggleClass('fa-plus fa-minus')
+					.closest('panel').siblings('panel')
+					.find('i')
+					.removeClass('fa-minus').addClass('fa-plus');
+			});
+		</script>*@
+	<script type="text/javascript">
+		$(function () {
+			$('.hk_media_display_list').each(function (i, e) {
+				var id = 'adaptive';
+				$(e).attr('id', id + i);
+				var selector = '#' + id + i;
+				$(selector).lightSlider({
+					autoWidth: false,
+					loop: true,
+					keyPress: true
+				});
+			});
+
+			$('.parent_list a.collapsable').click(function () {
+				$(this).siblings('ul').toggle('toggle');
+				$(this).next().toggleClass('fa-plus fa-minus');
+				return false;
+			});
+		});
+	</script>
+
+
+}
+
+@section Breadcrumbs {
+
+	@{
+
+		<div class="hk_breadcrumb">
+			<div class="">
+				<div class="row">
+					<div class="col-xl-12">
+						<ol class="breadcrumb">
+							<li><a href="/">Home</a></li>
+							<li><a href="/collections/" class="">Collections</a></li>
+							<li>
+								<a href="@Model.Url" class="hk_link_@Model.Name">@Model.Name </a>
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+	}
+
+
 }

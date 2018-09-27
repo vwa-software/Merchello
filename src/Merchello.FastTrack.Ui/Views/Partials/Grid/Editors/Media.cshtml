@@ -9,14 +9,14 @@
         url += "&height=" + Model.editor.config.size.height;
 
         if(Model.value.focalPoint != null){
-            url += "&center=" + Model.value.focalPoint.top +"," + Model.value.focalPoint.left;
+            url += "&center=" + Model.value.focalPoint.top.ToString(System.Globalization.CultureInfo.InvariantCulture) + "," + Model.value.focalPoint.left.ToString(System.Globalization.CultureInfo.InvariantCulture);
             url += "&mode=crop";
         }
     }
 
     var altText = Model.value.altText ?? Model.value.caption ?? string.Empty;
     
-    <img src="@url" alt="@altText">
+    <img src="@Html.Raw(url)" alt="@altText">
     
     if (Model.value.caption != null)
     {

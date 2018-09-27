@@ -1,22 +1,31 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 
-@*
-    This snippet lists the items from a Multinode tree picker, using the pickers default settings.
-    Content Values stored as xml.
 
-    To get it working with any site's data structure, set the selection equal to the property which has the
-    multinode treepicker (so: replace "PropertyWithPicker" with the alias of your property).
-*@
 
-@{ var selection = CurrentPage.PropertyWithPicker.Split(','); }
 
-<ul>
-    @foreach (var id in selection)
-    {
-        var item = Umbraco.Content(id);
-        <li>
-            <a href="@item.Url">@item.Name</a>
-        </li>
+
+
+@*@inherits Umbraco.Web.Macros.PartialViewMacroPage
+    @inherits Merchello.Web.Mvc.MerchelloTemplatePage
+
+    @using Merchello.Core
+    @using Merchello.Core.Models
+    @using Merchello.FastTrack.Ui
+    @using Merchello.Web
+    @{
+        var storeRoot = ExampleUiHelper.Content.GetStoreRoot();
+        var catalogRoot = storeRoot.FirstChild(x => x.DocumentTypeAlias == "ftProduct" && x.IsVisible());
     }
-</ul>
+
+    @foreach (var package in Model.GetPropertyValue<IEnumerable<IPublishedContent>>("featuredProducts"))
+    {
+        @package.Id
+    }
+
+
+
+        @{ Model.GetPropertyValue<IEnumberable<IProductContent>>("productsMultiPicker")
+
+*@ }
+

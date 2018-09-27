@@ -5,88 +5,117 @@
 @using Umbraco.Core.Models
 @using Umbraco.Web
 
-<div class="container-fluid">
-    <h3>Sales Receipt</h3>
-    <h4>Invoice @Model.InvoiceNumber <span class="text-right">@Model.InvoiceDate.ToShortDateString()</span></h4>
-    <div class="row">
-        <div class="col-md-6 basket-summary">
+@{
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Billing Address</h4>
-                </div>
-                <div class="panel-body">
-                    @Html.Partial("_Address", Model.BillingAddress)
+	var shipping = Model.ShippingAddress;
+	string remarks = string.Empty;
+
+	try
+	{
+		if (shipping != null && !string.IsNullOrEmpty(shipping.Address2))
+		{
+			remarks = shipping.Address2;
+			remarks = remarks.Replace(Environment.NewLine, "<br />");
+		}
+	}
+	catch (Exception)
+	{
+		// ignore		
+	}
+}
+
+<div class="container-fluid hk_order hk_checkout hk_shop_forms">
+            <div class="row">
+                <div class="col-md-12">
+                  @*  <h2 class="hk_shop">Sales Receipt</h2*@
+                    <h3 style="text-transform:initial;line-height: 20px;">Thank you for your order at HKliving.<br />
+                    Your weborder number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span></h3>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 basket-summary">
 
+                    <div class="panel panel-default">
+                        <div class="">
+                            <h2 class="hk_shop">Billing Address</h2>
+                        </div>
+                        <div class="panel-body">
+                            @Html.Partial("_Address", Model.BillingAddress)
+                        </div>
+                    </div>
+
+                </div>
+                @if (!string.IsNullOrEmpty(remarks))
+                {
+                    <div class="col-md-6 basket-summary">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h2 class="hk_shop">Remarks (Shipping Address)</h2>
+                            </div>
+                            <div class="panel-body">
+                             @(remarks)
+    @* @Html.Partial("_Address", Model.ShippingAddress)*@
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        @if (Model.HasShippableItems())
-        {
-            <div class="col-md-6 basket-summary">
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4>Shipping Address</h4>
+                        <h2 class="hk_shop">articles</h2>
                     </div>
                     <div class="panel-body">
-                        @Html.Partial("_Address", Model.ShippingAddress)
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Items</h4>
-                </div>
-                <div class="panel-body">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th colspan="2">Name</th>
-                            <th>Unit Price</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </tr>
-                        </thead>
-                        @foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
-                        {
+                        <table class="table mui-basket mui-default">
+                            <thead>
+                                <tr>
+                                    <th>article</th>
+                                    <th></th>
+                                    <th class="th_right">article price</th>
+                                    <th class="th_right">amount</th>
+                                    <th class="th_right">price</th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.LineItemType == LineItemType.Product && item.Product.HasValue("ftProduct_Afbeelding"))
+                                        {
+                                            var mediaId = item.Product.GetPropertyValue<string>("ftProduct_Afbeelding");
+                                            var image = Umbraco.TypedMedia(mediaId);
+                                            <img src="@image.GetCropUrl(75, 75)" alt="@item.Product.Name" />
+                                        }
+                                    </td>
+                                    <td>@item.Name</td>
+                                    <td class="text-right">@item.Amount.AsFormattedCurrency(Model.CurrencyCode)</td>
+                                    <td class="text-right">@item.Quantity</td>
+                                    <td class="text-right">@item.Total().AsFormattedCurrency(Model.CurrencyCode)</td>
+                                </tr>
+                            }
                             <tr>
-                                <td>
-                                    @if (item.LineItemType == LineItemType.Product && item.Product !=null && item.Product.HasValue("image"))
+                                <td colspan="4" class="text-right"><strong>sub total:</strong></td>
+                                <td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency(Model.CurrencyCode)</strong></td>
+                            </tr>
+                            @foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product))
+                            {
+                                <tr>
+                                    <td>
+                                        @switch (item.LineItemType)
                                     {
-                                        var mediaId = item.Product.GetPropertyValue<string>("image");
-                                        var image = Umbraco.TypedMedia(mediaId);
-                                        <img src="@image.GetCropUrl(50, 50)" alt="@item.Product.Name"/>
+                                        case LineItemType.Shipping:
+                                            @("Shipping:")
+                                            break;
+                                        case LineItemType.Discount:
+                                            @("Discount:")
+                                            break;
+                                        case LineItemType.Tax:
+                                            @("Tax:")
+                                            break;
                                     }
                                 </td>
-                                <td>@item.Name</td>
-                                <td class="text-right">@item.Amount.AsFormattedCurrency(Model.CurrencyCode)</td>
-                                <td class="text-center">@item.Quantity</td>
-                                <td class="text-right">@item.Total().AsFormattedCurrency(Model.CurrencyCode)</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td colspan="4" class="text-right"><strong>Sub Total:</strong></td>
-                            <td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency(Model.CurrencyCode)</strong></td>
-                        </tr>
-                        @foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product))
-                        {
-                            <tr>
-                                <td>@switch (item.LineItemType)
-                                {
-                                    case LineItemType.Shipping:
-                                        @("Shipping:")
-                                        break;
-                                    case LineItemType.Discount:
-                                        @("Discount:")
-                                        break;
-                                    case LineItemType.Tax:
-                                        @("Tax:")
-                                        break;
-                                }</td>
                                 <td>@(item.LineItemType != LineItemType.Discount ? item.Name : item.Sku)</td>
                                 <td colspan="3" class="text-right">
                                     @if (item.LineItemType == LineItemType.Discount)
@@ -99,19 +128,19 @@
                                     }
                                 </td>
                             </tr>
-                        }
-                        <tfoot>
-                        <tr>
-                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                            <td class="text-right"><strong>@Model.Total.AsFormattedCurrency(Model.CurrencyCode)</strong></td>
-                        </tr>
-                        </tfoot>
-                    </table>
+                            }
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                    <td class="text-right"><strong>@Model.Total.AsFormattedCurrency(Model.CurrencyCode)</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
+
+
             </div>
-
-
         </div>
-    </div>
 
-</div>
+    </div>

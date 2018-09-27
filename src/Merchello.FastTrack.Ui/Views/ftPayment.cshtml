@@ -1,6 +1,17 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @{
-	Layout = "ftFinalSaleSummary.cshtml";
+	Layout = "ftCheckout.cshtml";
 }
 
-@Html.Action("ResolvePayment", "CheckoutPaymentMethod", new { area = "FastTrack" })
+
+<div class="row">
+	
+	<div class="col-sm-12 col-md-12">
+		<a href="/shopping-cart/" class="btn btn-default">Back</a>
+	</div>
+
+	<div class="col-sm-12 col-md-12">
+		@Html.Action("InvoiceSummary", "CheckoutSummary", new { area = "FastTrack" })
+	</div>
+
+</div>

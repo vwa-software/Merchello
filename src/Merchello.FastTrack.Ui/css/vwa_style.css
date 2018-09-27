@@ -119,11 +119,13 @@ p {height:inherit!important
 
 
 .hk_content .row img {
-   max-width: 100%;
+  /* */max-width: 100%;
    max-height: 100%;
 }
 
-
+.lowercase {
+    text-transform:initial;
+}
 
 /* /Regular */
 
@@ -438,7 +440,8 @@ body.Contact .umbraco-forms-field label{
 
     /* Data Consent */
     .umbraco-forms-page h4 {
-    margin:27px 0px 0px 12px
+    margin:27px 0px 0px 12px;
+    margin:20px 0px 20px 12px!important;
 }
 
 .form-control p a {
@@ -448,6 +451,18 @@ body.Contact .umbraco-forms-field label{
 .form-control p a:focus {
     opacity:1;
 }
+
+/* Vertical Forms */
+
+.hk_form_vertical .col,
+.hk_form_vertical .col-sm-12 {
+    padding: 0px;
+}
+
+.umbraco-forms-navigation .col-sm-offset-2 {
+    padding: 0px;}
+
+/* Vertical Forms */
 
 /* /Forms */
 
@@ -478,7 +493,28 @@ body.Contact .umbraco-forms-field label{
 
 /* Contact Page */
 
+#hk_Contact .grid-section h1 {
+    font-size:17px;
+    font-weight: 500;
+}
 
+#hk_Contact .grid-section h1 span{
+    text-transform:lowercase;
+}
+
+
+
+
+#hk_Contact h4,
+.umbraco-forms-page h4 {
+    font-size: 1.35rem;
+
+}
+
+.umbraco-forms-page label { 
+    color:#444;
+
+}
 
 .hk_content > .grid-section {
     padding-left:0px;
@@ -494,6 +530,11 @@ body.Contact .umbraco-forms-field label{
 .hk_content .row.clearfix > .grid-section:first-child {
     border-right:1px solid #ebebeb;
 }
+.hk_content .row.clearfix > .grid-section:last-child {
+    border-left: 20px solid white;
+}
+
+    
 
 .hk_content .row.clearfix > .grid-section {
     padding:40px 0px 0px 0px;
@@ -518,10 +559,14 @@ body.Contact .umbraco-forms-field label{
     display:inline-block!important;
 }
 
-.hk_content .row.clearfix > .grid-section:last-child > .column {
-   margin-left:12%;
+.hk_content .row.clearfix > .grid-section:last-child > .column,
+.row.hk_account_forms > .col-md-6:last-child {
+  /* margin-left:10%;
+     max-width: 90%!important;*/
 }
 
+.hk_Contact .btn.btn-primary {
+margin:0px 0px 0px 10px;}
 
 /* Contact Page */
 
@@ -555,17 +600,20 @@ body.Contact .umbraco-forms-field label{
         .hotspot.wrapper {
         width:100%;
 		display: inline-table;
-        /* max-height: 620px; 
-        overflow: hidden;*/
 		}
 		.imp-wrap {
-			max-width:100%!important;/**/
+			max-width:100%!important;
 			max-height:100%!important;
 		}
+
 		.imp-wrap>img{
-		/*display: none!important; */
 		}
+        
 		.imp-shape.imp-shape-spot {
+		/*max-width: 21px;
+		max-height: 21px;*/
+		}
+		.imp-shape.imp-shape-spot img{
 		max-width: 21px;
 		max-height: 21px;
 		}
@@ -576,19 +624,71 @@ body.Contact .umbraco-forms-field label{
 		}
 
 		.imp-tooltip {
+        background:#fff!important;
        	border-radius: 0px!important;
-		padding: 20px;
-		margin:-44px 0px 0px 30px;
+		padding: 10px 12px 10px 12px!important;
+		margin:0px 0px -44px 30px;
 		-webkit-box-shadow: 0px 0px 50px 0px rgba(0,0,0,0.28);
 		-moz-box-shadow: 0px 0px 50px 0px rgba(0,0,0,0.28);
 		box-shadow: 0px 0px 50px 0px rgba(0,0,0,0.28);
-		z-index:998!important;
-		position:absolute!important;
-		} 
+		z-index:1000!important;
+		position:absolute!important;/**/
+        width:180px!important;
+		}
+
+
+        .imp-tooltip *{
+            color:#444!important;
+            font-size:12px;
+            line-height:18px;
+        }
+
+            .imp-tooltip :hover {
+                display:inherit!important;
+            }
 
 		.imp-tooltip .hs-arrow{
-		display:none;
+            display:none;
 		}
+
+
+        div.imp-tooltip.imp-tooltip-visible > div.squares-container > .squares-element  {
+            width: 100%;}
+
+        .squares-element {
+            padding-top: 5px!important;
+            padding-bottom: 5px!important;
+            padding-left: 5px!important;
+            padding-right: 5px!important;
+        }
+
+        .squares-element .squares-button {
+            background:#fff;
+            border:1px solid #929292;
+            font-size:0.8em!important;
+            font-weight: 800;
+            padding: 3px 10px 2px 10px!important;
+            padding: 2px 30px 3px 30px!important;
+            color:#444!important;
+            display: block!important;
+            height: inherit!important;
+            line-height: inherit!important;
+            background-color: inherit!important;
+            border-radius: 20px!important;
+            width:100%!important;
+            text-transform:uppercase!important;
+        }
+        .squares-element .squares-button:focus,
+        .squares-element .squares-button:hover {
+            background-color: rgba(0,0,0,0.1)!important;
+            border-color: inherit!important;
+        }
+
+        .squares-element .squares-button:focus, .squares-element .squares-button.focus {
+            -webkit-box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.5)!important;
+            box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.5)!important;
+            color:inherit!important;
+        }
 
 		/* /Hotspots */
 
@@ -701,11 +801,53 @@ body.Contact .umbraco-forms-field label{
     text-align:left;
 }
 
+.grid-section .video-wrapper iframe {
+width:100%;
+}
+
 /* /Content Page */
 
 /* Contact */
 
-/* Contact */
+.umbraco-forms-submitmessage {
+
+}
+
+/* /Contact */
+
+/* News */
+
+.hk_news_page {
+    width:100%;
+}
+
+.hk_news_page .container {
+    margin:0px -12px 0px -12px;
+	padding:4px;
+}
+
+.hk_news_page .container .row{
+    margin:0px 0px 40px 0px;
+}
+.hk_news_page .container .row .col-md-9 {
+    padding:0px 40px 0px 20px;
+}
+
+.hk_news_page h1,
+.hk_news_page h2 {
+    margin-top: 0px;
+    /*font-family: "Muli", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-bottom: 20px;
+    color: #444;
+    font-weight: 600;
+    text-transform: uppercase;*/
+}
+
+.hk_news_page .umb-grid .grid-section .container .row img {
+    margin-top: 0px!important;
+}
+
+/* /News */
 
 /* Forms */
 
@@ -739,11 +881,22 @@ select,
     .form-control.form-sort {
         display: block;
         width: auto;
+        width: 160px;
         padding:0px 40px 10px 40px;
+        padding:0px 40px 10px 0px;
+        padding: 0px 0px 10px 0px;
+        text-align: left;
         border-bottom:1px solid rgba(0,0,0,0.15);
         color: rgba(68,68,68,0.65);
         cursor:pointer;
     }
+
+    .form-control.form-sort i.fa.fa-caret-down {
+    float: right;
+    font-size: 16px;
+    }
+
+
     .form-control.form-sort i{
         color:#444;
     }
@@ -796,7 +949,8 @@ button:hover,
 }
 
 .umbraco-forms-submitmessage {
-    margin: 27px 0px 0px 0px;
+    margin: 0px 0px 0px 50px;
+     font-size: 1em;
 }
 
 
@@ -1120,7 +1274,8 @@ body.Home .bol_bg_none .vwa_btn_blue_editor a {
 }
 
 .grid-section h4 {
-    margin-bottom:5px!important;
+    /*margin-bottom:5px!important;*/
+    margin-bottom:5px;
 }
 
 .grid-section blockquote {
@@ -1167,6 +1322,17 @@ div.container-fluid p {
 
     .umb-grid .grid-section .container .row .slider img {
         margin-top: 0px;
+    }
+
+    .hk_content .umb-grid .grid-section .container,
+	.umb-grid .grid-section > .container {
+        /*width: 100%;*/
+    	margin: 0px -12px 0px -12px;
+    }
+
+    .hk_content .umb-grid .grid-section .container .col-md-12{
+        /*width: 100%;*/
+    	margin: 0px 12px 0px 12px;
     }
 
     .umb-grid .grid-section .container {

@@ -1,23 +1,40 @@
 ﻿@using ContentModels=Umbraco.Web.PublishedContentModels;@using Umbraco.Core
 @inherits Umbraco.Web.Mvc.UmbracoTemplatePage
-@{Layout = null;// Get basic design settings from the homepage
+@{   Layout = null; // Get basic design settings from the homepage
+
     ContentModels.HomePagina HomePagina = Model.Content.Site() as ContentModels.HomePagina;
-}@{int randomNumber = 0; if (true) { randomNumber = new Random().Next(); }}<!DOCTYPE html>
+}
+@{  
+
+    var metaDescription = Umbraco.Field("descriptionMain") + " " + Umbraco.Field("metaDescription") + " " + RenderSection("ProductDescription", false);
+    metaDescription = library.StripHtml(metaDescription).Trim();
+    //string mmeta = Regex.Replace(metaDescription, @"<(.|\n)*?>", string.Empty);
+    
+           // Regex tagRemove = new Regex(@"<[^>]*(>|$)");
+            // metaDescripton = tagRemove;
+    }
+@{
+int randomNumber = 0; 
+if (true) { randomNumber = new Random().Next(); 
+}}
+<!DOCTYPE html>
 <html lang="nl-nl">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="@Umbraco.Field("descriptionMain")@Umbraco.Field("metaDescription")">
+    <meta name="description" content="@metaDescription">
     <meta name="keywords" content="@Umbraco.Field("metaKeywords")">
     <meta name="author" content="">
+    <meta name="date" content="@System.DateTime.UtcNow.ToLongTimeString()">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>@CurrentPage.Id - @(Request.Url.Host) - @Umbraco.Field("titleMain")@Umbraco.Field("pageTitle")</title>
+    <title>@Umbraco.Field("titleMain") @Umbraco.Field("pageTitle") @RenderSection("ProductTitle", false)</title>
 <!-- jQuery
 <!-- Bootstrap core CSS -->
     <link href="~/Css/bootstrap.css?@randomNumber" rel="stylesheet">
+	<link href="~/Css/jquery-eu-cookie-law-popup.css?@randomNumber" rel="stylesheet">
     <link href="~/Styles/css/bootstrap-theme.css?@randomNumber" rel="stylesheet">
 <link rel="stylesheet" href="~/App_Plugins/Merchello/client/css/merchello.ui.min.css" />
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -29,6 +46,7 @@
     <link rel="stylesheet" type="text/css"  href="~/Css/vwa_hk.css?@randomNumber"> @* *@
     <link rel="stylesheet" type="text/css"  href="~/Css/vwa_style.css?@randomNumber">
     <link rel="stylesheet" type="text/css"  href="~/Css/vwa_nav.css?@randomNumber"> 
+    @*<link rel="stylesheet" type="text/css"  href="~/Css/slider-menu.css?@randomNumber">*@
     <link rel="stylesheet" type="text/css" href="~/Css/vwa_catalog.css?@randomNumber"> 
     <link rel="stylesheet" type="text/css" href="~/Css/vwa_account.css?@randomNumber"> 
     <link rel="stylesheet" type="text/css" href="~/Css/editor.css?@randomNumber"> 
@@ -44,14 +62,16 @@
 <link href="https://fonts.googleapis.com/css?family=Muli:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
 <script src="/scripts/ie-emulation-modes-warning.js"></script>
-
+@* Render script in the view *@
+@RenderSection("StyleSheets",false)
+	
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-xxxxxxx-1', 'auto');ga('set', 'forceSSL', true);ga('send', 'pageview');
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-22141079-1', 'auto');ga('set', 'forceSSL', true);ga('send', 'pageview');
 </script><!-- Font Awesome CSS-->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
@@ -87,9 +107,9 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
-   
+    
 </head>
-<body class="@CurrentPage.Name" style="background:/*#ebebeb;*/">
+<body class="@CurrentPage.Name @Html.Partial("Cookies")">
 	<header class="header header-absolute">
 		<!-- Navbar-->
 		@Html.Partial("MainNavigation")
@@ -103,13 +123,12 @@
 						<i class="fas fa-times-circle"></i>
 					</svg>
 				</div>
-				<form action="#" class="search-area-form">
+				<form action="/collections/@Umbraco.TypedContent(1119).Name.Replace(" " ,"-" )/" method="GET" class="search-area-form">
 					<div class="form-group position-relative">
-						<input type="search" name="search" id="search" placeholder="I'm looking for
-?" class="search-area-input">
+						<input type="text" name="q" id="q" placeholder="I'm looking for?" class="search-area-input">
 						<button type="submit" class="search-area-button">
 							<svg class="svg-icon">
-								<use xlink:href="#search-1"> </use>
+								<use xlink:href="#q-1"> </use>
 							</svg>
 						</button>
 					</div>
@@ -133,6 +152,9 @@
 		else { }
 	}
 	<div class="container_wrapper hk_content hk_@CurrentPage.Name" id="hk_@CurrentPage.Name">
+
+	
+	
 		@{
 			if (CurrentPage.Id == 3885) { }
 			else
@@ -142,15 +164,7 @@
 						<div class="col-md-12 column">
 							<div class="hk_category_name_list hk_highlighted">
 								<h1 class="hk_category_name"><span>@CurrentPage.Name</span></h1>
-								@if (CurrentPage.HasValue("onlyFeaturedCategory"))
-								{
-									<h2 class="hk_category_name">Featured</h2>
-								}
-								else
-								{
-
-								}
-
+							    @Html.Partial("hkFeaturedLbl")
 							</div>
 						</div>
 					</div>
@@ -158,7 +172,7 @@
 		}
 		<div class="container">
 			<div class="row">
-				@Html.Partial("Breadcrumb")
+				@RenderSection("Breadcrumbs", false) 
 				@RenderBody()
 			</div>
 		</div>
@@ -182,6 +196,7 @@
 *@
 
 		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
+        <script src="~/Scripts/jquery-eu-cookie-law-popup.js?cdv=1765341850" type="text/javascript"></script>
 
 		<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 		<script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
@@ -211,6 +226,16 @@
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.min.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.settings.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/fasttrack.js"></script>
+	
+	@*<script src="~/Scripts/slider-menu.js?@randomNumber"></script>
+	
+	<script>
+    ( function( $ ) {
+      $( function() {
+        $( '.navbar-nav' ).sliderMenu();
+      });
+    })( jQuery );
+    </script>*@
 
 	@RenderSection("Scripts", false)
 

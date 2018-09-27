@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-
-    using Core;
+	using System.Web;
+	using Core;
     using Core.Models;
     using Core.Persistence.Querying;
     using Core.Services;
@@ -1817,7 +1817,9 @@
         /// </returns>
         private IProductContent GetProductContentBySlug(string slug)
         {
-            var display = GetBySlug(slug);
+			slug = HttpUtility.UrlDecode(slug);
+
+			var display = GetBySlug(slug);
             return display == null ? null :
                 display.AsProductContent(_productContentFactory.Value);
         }

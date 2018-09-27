@@ -7,8 +7,8 @@
 @using Umbraco.Core.Models
 @using Umbraco.Web
 
-<div class="container-fluid">
-    <h3>Order Summary</h3>
+<div class="container-fluid hk_order_summary">
+@**    <h3>Order Summary</h3>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -55,32 +55,35 @@
 
         </div>
     </div>
+*@
 
-    <div class="row">
-        <div class="col-md-6 basket-summary">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Billing Address @RenderEdit(Model, "billing")</h4>
+    <div class="hk_account_forms hk_shipping ">
+        <div class="row">
+            <div class="col-12 col-md-6 basket-summary">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="hk_shop">Billing Address @RenderEdit(Model, "billing")</h2>
+                    </div>
+                    <div class="panel-body">
+                        @Html.Partial("_Address", Model.BillingAddress)
+                    </div>
                 </div>
-                <div class="panel-body">
-                    @Html.Partial("_Address", Model.BillingAddress)
-                </div>
+
             </div>
-
-        </div>
-        <div class="col-md-6 basket-summary">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Shipping Address @RenderEdit(Model, "shipping")</h4>
-                </div>
-                <div class="panel-body">
-                    @Html.Partial("_Address", Model.ShippingAddress)
+            <div class="col-12 col-md-6 basket-summary">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="hk_shop">Shipping Address @RenderEdit(Model, "shipping")</h2>
+                    </div>
+                    <div class="panel-body">
+                        @Html.Partial("_Address", Model.ShippingAddress)
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 @helper RenderEdit(FastTrackCheckoutSummaryModel model, string buttonFor)
 {

@@ -7,7 +7,60 @@ Date: 2018-07-24
 Type: VWA Style CSS
 */
 
+
+
+@media (max-width: 1199.98px) {
+    .row.hk_megamenu_dropdown {
+    margin: 50px;
+    max-width: 100%;
+    }
+}
+
+
+@media (min-width: 991.99px) {
+    .navbar-expand-lg .navbar-nav .dropdown-menu {
+        position: absolute;
+        margin-top: -10px!important;
+       }
+    
+    .navbar-expand-lg .navbar-nav .position-static .dropdown-menu {
+        position: absolute;
+        margin-top: 0px!important;
+       }
+
+	.navbar-brand.navbar-cart {
+		display:none;
+	}
+	
+
+    .mt-lg-0, .my-lg-0 {
+    margin-top: -15px !important;
+    }
+}
+
 @media (max-width: 991.98px) {
+	
+	
+	/* Search */
+
+	.search-area {
+		display: block!important;
+	}
+
+	.search-area-form .form-group.position-relative {
+		width:70%;}
+
+	.nav-item.navbar-icon-link {
+		width:100%;
+	}
+	
+	.search-area .fa-times-circle:before{
+		padding:10px 20px 10px 20px;
+    	margin: 0px -35px 0px 0px;
+	}
+	
+	/* /Search */
+
     
 .hk_collections .col-9 > .row {
     margin:40px 0px 0px 0px!important;
@@ -21,6 +74,37 @@ Type: VWA Style CSS
 .hk_collections .col-9 .row .col-6{
     margin:60px 0px 0px 0px;
 }
+
+
+/* Navigation */
+	
+	.navbar.fixed-top.fixed-top-null.bg-fixed-white, .navbar.fixed-top.bg-fixed-white {
+    opacity: 1;
+    /*z-index: 20000;*/
+	}
+
+	.navbar-brand.navbar-cart {
+    right: 15%;
+	}
+	
+    .navbar {
+        padding: 1.1rem 1rem 1.1rem 1rem;
+    }
+	
+	.navbar .nav-item {
+    padding: 5px 0px 5px 6px;
+	}
+    .navbar-collapse.collapse.in {
+    -webkit-box-shadow: -1px 14px 22px -5px rgba(0,0,0,0.15);
+    -moz-box-shadow: -1px 14px 22px -5px rgba(0,0,0,0.15);
+    box-shadow: -1px 14px 22px -5px rgba(0,0,0,0.15);
+    }
+
+    #navbarCollapse > ul > li.nav-item > a {
+        font-family: "Muli", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: 0;
+    }
+
     .navbar-expand-lg.navbar-sticky .navbar-collapse {
         max-height: 80vh;
         overflow-y: auto;
@@ -32,49 +116,268 @@ Type: VWA Style CSS
     background: transparent;
     padding-left: 0;
     }
+	
+	.navbar-nav .nav-link,
+	.navbar-dark .navbar-nav .nav-link {
+	color: #444444;
+	font-weight:700;
+	font-size: .8rem!important;
+	border-bottom:1px solid #fff;
+	}
+	
+	.navbar-nav .nav-link:focus,
+	.navbar-dark .navbar-nav .nav-link:focus, 
+	.navbar-nav .nav-link:hover,
+	.navbar-dark .navbar-nav .nav-link:hover {
+    background:inherit!important;
+	font-weight:700;
+	border-bottom:1px solid #e6e6e6;
+	font-size: .8rem!important;
+	}
+
+    
+    /* SubNavigation */
+	
+	#navbarCollapse > ul > li.dropdown.nav-item > a {
+    font-family: "Muli", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0rem 0rem 0rem 0rem;
+	}
+
+    .row.hk_megamenu_dropdown {
+    margin:inherit;
+    min-height:inherit;
+    }
+
+    .dropdown-menu.smallmenu {
+        display:block;    
+        margin-top: 0px!important;
+    }
+	
+	.hk_megamenu_dropdown .col-lg-9 {
+		padding-left:0px;
+	}
+	
+	.hk_megamenu_dropdown .col-lg-9 .row {
+		padding-left:0px!important;
+		padding-right:0px!important;
+	}
+	
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:first-child {
+		padding-left:0px!important;
+	}
+	
+	.row.hk_megamenu_dropdown h2, .row.hk_megamenu_dropdown .megamenu-list-link.lvl3:first-child {
+    font-size: 10px!important;
+	}
+	.row.hk_megamenu_dropdown .megamenu-list-link.lvl3:first-child {
+	margin-bottom: 13px;
+	}
+	a.megamenu-list-link.lvl3 {
+    display: inherit;
+	}
+
+	/* MegaNav exeptions */
+	.row.hk_megamenu_dropdown .row.hk_wrapper_mm_dropdown {
+		width: inherit;
+		float: none;
+		margin: 0px 0px 0px 0px;
+
+	}
+
+	.hk_Collections .row.hk_megamenu_dropdown .row.hk_wrapper_mm_dropdown {
+		width: inherit;
+		float: none;
+		margin: 0px 0px 0px 0px;
+	}
+	/* /MegaNav exeptions */
+
+
+    /* /SubNavigation */
+
+/* /Navigation */
+	
+	/* Collections */
+	
+	.hk_collections.hk_category .hk_sort {
+	width: 50%!important;}
+	
+	/* /Collections */
+	
+	/* Account */
+	
+	div#wrapper-acc {
+    padding: 0px 10px;
+    margin: 10px 0px;
+	}
+	
+	/* /Account */
+
+	/* Content */
+
+	.hk_content .row.clearfix > .grid-section:last-child {
+	    border-left: 0px solid white;
+	}
+
+	/* /Content */
+
 
 }
 
 @media (max-width: 768px) {
+	
+	/* Navigation */
+	
+	.navbar-brand.navbar-cart {
+    right: 17.5%;
+	}
+	
+	/* /Navigation */
+
+	
+	#hk_Contact .row.clearfix .grid-section .column img {
+		width: 100%!important;
+		height: auto!important;
+	}
+	
+	.hk_Login form .row {
+      height: 60px;}
+
+	.hk_content .row.clearfix > .grid-section {
+		padding:0px 0px 0px 0px;
+		-webkit-box-flex: 0!important;
+		-ms-flex: 0 0 100%!important;
+		flex: 0 0 100%!important;
+		max-width: 100%!important;
+		width:100%!important;
+		position:relative!important;
+		float:none!important;
+		display:block!important;
+	}
+	.hk_content.hk_Login > .container > .row .col-md-6:first-child,
+	.hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6:first-child,
+	.hk_content .row.clearfix > .grid-section:first-child {
+		margin-bottom:75px;
+		border-right:0px solid #ebebeb;
+	}
+	.hk_content.hk_Login > .container > .row .col-md-6,
+	.hk_content .row.clearfix > .grid-section > .column {
+		-webkit-box-flex: 0!important;
+		-ms-flex: 0 0 100%!important;
+		flex: 0 0 100%!important;
+		max-width: 100%!important;
+		width:100%;
+		position:relative!important;
+		float:left!important;
+		display:inline-block!important;
+	}
+	
+	.hk_content.hk_Login > .container > .row .col-md-6:last-child {
+	padding:0px;
+	}
+
+	.hk_content .row.clearfix > .grid-section:last-child > .column {
+	   margin-left:0%;
+	}
+	
+	/* Account */
+	.hk_checkout .col-md-12 .row {
+    margin: 0px 0px 0px 0px;
+	}
+    .hk_checkout .col-md-12 .col-md-2 {
+        padding-left:0px!important;
+    }
+	
+    .hk_checkout .col-md-12 .col-md-2 strong {
+        padding-top:10px!important;
+    }
+	
+	/* /Account */
 
 
-#hk_Contact .row.clearfix .grid-section .column img {
-    width: 100%!important;
-    height: auto!important;
+	/* Accordion - account */
+
+	.row.invoiceitem.head div {
+		border-left: 0px!important;
+	}
+
+	.row.invoice.head,
+	.row.invoiceitem.head {
+		display: none;
+	}
+
+	.row.invoice.acc div,
+	.row.invoiceitem div {
+    padding: .25rem 0rem .25rem 0rem!important;}
+
+
+	.row.invoice.acc div:before{
+	min-width: 120px;
+    display: inline-block;
 }
-    
-.hk_content .row.clearfix > .grid-section {
-    padding:0px 0px 0px 0px;
-    -webkit-box-flex: 0!important;
-    -ms-flex: 0 0 100%!important;
-    flex: 0 0 100%!important;
-    max-width: 100%!important;
-    width:100%!important;
-    position:relative!important;
-    float:none!important;
-    display:block!important;
-}
-.hk_content.hk_Login > .container > .row .col-md-6:first-child,
-.hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6:first-child,
-.hk_content .row.clearfix > .grid-section:first-child {
-    margin-bottom:75px;
-    border-right:0px solid #ebebeb;
-}
-.hk_content.hk_Login > .container > .row .col-md-6,
-.hk_content .row.clearfix > .grid-section > .column {
-    -webkit-box-flex: 0!important;
-    -ms-flex: 0 0 100%!important;
-    flex: 0 0 100%!important;
-    max-width: 100%!important;
-    width:100%;
-    position:relative!important;
-    float:left!important;
-    display:inline-block!important;
+	.row.invoiceitem div:before {
+	min-width: 120px;
+    display: inline-block;
 }
 
-.hk_content .row.clearfix > .grid-section:last-child > .column {
-   margin-left:0%;
-}
+
+	.row.invoice.acc div.invoicenr:before {
+	content: "invoice:";
+	font-weight: 700;
+	}
+	.row.invoice.acc div.invoicedate:before {
+	content: "invoice date:";
+	font-weight: 700;
+	}
+	.row.invoice.acc div.invoicetotal:before {
+	content: "total:";
+	font-weight: 700;
+	}
+
+	.row.invoiceitem div {
+    font-size: 10px;
+    padding: 1px 0px 1px 0px!important;
+	}
+
+	.row.invoiceitem div.invoice:before {
+	content: "article number:";
+	font-weight: 400;
+	}
+	.row.invoiceitem div.idescription:before {
+	content: "name:";
+	font-weight: 400;
+	}
+	.row.invoiceitem div.iamount:before {
+	content: "amount:";
+	font-weight: 400;
+	}
+	.row.invoiceitem div.iprice:before {
+	content: "price:";
+	font-weight: 400;
+	}
+
+
+	.row.invoice.acc div.ordernr:before {
+	content: "order number:";
+	font-weight: 700;
+	}
+	.row.invoice.acc div.orderdate:before {
+	content: "order date:";
+	font-weight: 700;
+	}
+	.row.invoice.acc div.deliverydate:before {
+	content: "delivery date:";
+	font-weight: 700;
+	}
+	.row.invoice.acc div.ordertotal:before {
+	content: "total:";
+	font-weight: 700;
+	}
+
+
+
+	/* /Accordion - account */
+	
+	/* Footer */
 
     .footer .container .row .col-md-4 {
         width: 50%;
@@ -85,10 +388,56 @@ Type: VWA Style CSS
         float: left!important;
         margin:0px;
     }
+	
+	/* /Footer */
 }
 
 
+@media (max-width: 600px) {
+	.row.hk_megamenu_dropdown .row.p-3 .col-lg-3 {
+		min-width: 50%;
+	}
+	
+	.row.hk_megamenu_dropdown .row.p-3 .col-lg-3 {
+    border-right: 0px solid #ebebeb;
+	}
+	
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(3), 
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(5),
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(7), 
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(9),
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(11), 
+	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(13) {
+    padding-left: 0px!important;
+}
+}
+
 @media (max-width: 440px) {
+	
+	/* Collections */
+	
+	.hk_collections.hk_category .col-8 {
+		margin-top:20px;
+	}
+	.hk_collections.hk_category .hk_sort {
+	width: 100%!important;
+		margin-bottom:20px;
+	}
+	.hk_category .col-md-6.text-right .form-control.form-sort {
+	float:left!important;
+	}
+	
+	.product-box-list .row .col-6  {
+	width:100%!important;
+     max-width: 100%!important;
+     min-width: 100%!important;
+	}
+	
+	.hk_product-box {
+    border-right: 0px solid #e9e9e9;
+	}
+	
+	/* /Collections */
 	/*.navbar.fixed-top.fixed-top-null.bg-fixed-white:hover, .navbar.fixed-top.fixed-top-null.bg-fixed-white:focus,.bg-hover-white:hover {
 		background: transparent !important;
 		box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1);

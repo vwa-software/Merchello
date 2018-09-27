@@ -8,106 +8,103 @@
 @inherits Merchello.Web.Mvc.MerchelloTemplatePage
 
 @{
-	var storeRoot = ExampleUiHelper.Content.GetStoreRoot();
-	var catalogRoot = storeRoot.FirstChild(x => x.DocumentTypeAlias == "ftCatalog" && x.IsVisible());
-	var basketPage = ExampleUiHelper.Content.GetBasket();
-	var accountPage = ExampleUiHelper.Content.GetAccount();
-	var currentPageId = UmbracoContext.Current.PageId;
-}
+    Layout = null;
 
+    var storeRoot = ExampleUiHelper.Content.GetStoreRoot();
+    var catalogRoot = storeRoot.FirstChild(x => x.DocumentTypeAlias == "ftCatalog" && x.IsVisible());
+    var basketPage = ExampleUiHelper.Content.GetBasket();
+    var accountPage = ExampleUiHelper.Content.GetAccount();
+    var currentPageId = UmbracoContext.Current.PageId;
+    
+    var accountLink = CurrentCustomer.IsAnonymous ? "/login/" : accountPage.Url;
 
-@*
-	@using Umbraco.Web;*@
-@{
-	Layout = null;
+    var selectionshop = Umbraco.TypedContent(1098).Children()
+                            .Where(x => x.IsVisible());
 
-	var selectionshop = Umbraco.TypedContent(1098).Children()
-							.Where(x => x.IsVisible());
-
-	var selection = Umbraco.TypedContent(3885).Children()
-			 .Where(x => x.IsVisible());
-
+    var selection = Umbraco.TypedContent(3885).Children()
+             .Where(x => x.IsVisible());
+    
 
 }
 <nav class="navbar navbar-expand-lg bg-transparent navbar-sticky navbar-dark bg-hover-white bg-fixed-white navbar-hover-light navbar-fixed-light">
-	<div class="container">
-		<!-- Navbar Header  --><a href="/" class="navbar-brand"><img src="/Media/HK_logo_black.png" border="0" /></a>
-		<a class="navbar-brand navbar-cart navbar-toggler-right collapsed" href="@basketPage.Url"><span class="fas fa-shopping-cart" aria-hidden="true"></span> (<span data-muilabel="basketcount">@CurrentCustomer.Basket().TotalQuantityCount</span>)</a>
-		<button type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><i class="fa fa-bars"></i></button>
-		<!-- Navbar Collapse -->
-		<div id="navbarCollapse" class="collapse navbar-collapse">
-			<ul class="navbar-nav mx-auto" id="hk_mainmenu">
+			<div class="container">
+				<!-- Navbar Header  --><a href="/" class="navbar-brand"><img src="/Media/HK_logo_black.png" border="0" /></a>
+		        <a class="navbar-brand navbar-cart navbar-toggler-right collapsed" href="@basketPage.Url"><span class="fas fa-shopping-cart" aria-hidden="true"></span> (<span data-muilabel="basketcount">@CurrentCustomer.Basket().TotalQuantityCount</span>)</a>
+                <button type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler-right"><i class="fa fa-bars"></i></button>
+				<!-- Navbar Collapse -->
+				<div id="navbarCollapse" class="collapse navbar-collapse">
+                            <ul class="navbar-nav mx-auto" id="hk_mainmenu">  
+                                                              
+                                <!-- Megamenu-->
+                                @Html.Partial("MegaMenu", Umbraco.TypedContent(1099))
+                        
+                                @foreach (var item in selectionshop)
+                                {
+                                    <li class="nav-item hk_@item.UrlName">
+                                        <a class="nav-link @(item.IsAncestorOrSelf(Model.Content) ? "nav-link--active" : null)" href="@item.Url">@item.Name</a>
+                                    </li>
+                                }
+                        
+                                @foreach (var item in selection)
+                                {
+                                    <li class="nav-item hk_@item.UrlName">
+                                        <a class="nav-link @(item.IsAncestorOrSelf(Model.Content) ? "nav-link--active" : null)" href="@item.Url">@item.Name</a>
+                                    </li>
+                                }
+                                @Html.Partial("MegaMenu", Umbraco.TypedContent(3889))
+                                @Html.Partial("MegaMenu", Umbraco.TypedContent(3886))
+                                <li @(IsActive(accountPage.Id, !CurrentCustomer.IsAnonymous)) class ="nav-item" @(IsActive(basketPage.Id))>
+                                    <a class="nav-link 11" href="@accountLink">
+                                            <span class="fas fa-user" style="color:#444;"></span>
+                                            @if (CurrentCustomer.IsAnonymous)
+                                            {
+                                                <span>Login</span>
+                                            }
+                                            else
+                                            {
+												//http://projecten.vwa.nu:888/redmine/issues/5361
+												// Keep user on same page if posible, check if currentpage is protected
+												var redirectId = Umbraco.IsProtected(this.CurrentPage.Path) ? 3885 : this.CurrentPage.Id;
+												<span class="dropdown-toggle"></span>
+												<ul class="dropdown-menu smallmenu">
+													<li class="nav-link 12">@Html.ActionLink("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = redirectId }, null)</li>
+												</ul>
+                                            }
+                                    </a>
+                                </li>
+								@*Do not show basket when anonumous*@
+								@if (!this.CurrentCustomer.IsAnonymous)
+								{
+                                <li class="nav-item" @(IsActive(basketPage.Id))>
+                                    <a class="nav-link" href="@basketPage.Url"><span class="fas fa-shopping-cart" aria-hidden="true"></span> (<span data-muilabel="basketcount">@CurrentCustomer.Basket().TotalQuantityCount</span>)</a>
+                                </li>
+								}
 
-				<!-- Megamenu-->
-				@Html.Partial("MegaMenu", Umbraco.TypedContent(1099))
-
-				@foreach (var item in selectionshop)
-				{
-					<li class="nav-item hk_@item.UrlName">
-						<a class="nav-link @(item.IsAncestorOrSelf(Model.Content) ? "nav-link--active" : null)" href="@item.Url">@item.Name</a>
-					</li>
-				}
-
-				@foreach (var item in selection)
-				{
-					<li class="nav-item hk_@item.UrlName">
-						<a class="nav-link @(item.IsAncestorOrSelf(Model.Content) ? "nav-link--active" : null)" href="@item.Url">@item.Name</a>
-					</li>
-				}
-				@Html.Partial("MegaMenu", Umbraco.TypedContent(3889))
-				@Html.Partial("MegaMenu", Umbraco.TypedContent(3886))
-				<li @(IsActive(accountPage.Id, !CurrentCustomer.IsAnonymous)) class="nav-item" @(IsActive(basketPage.Id))>
-					<a class="nav-link 11" href="@accountPage.Url">
-						<span class="fas fa-user" style="color:#444;"></span>
-						@if (CurrentCustomer.IsAnonymous)
-						{
-							<span>Login</span>
-						}
-						else
-						{
-							//http://projecten.vwa.nu:888/redmine/issues/5361
-							// Keep user on same page if posible, check if currentpage is protected
-							var redirectId = Umbraco.IsProtected(this.CurrentPage.Path) ? 3885 : this.CurrentPage.Id;
-							<span class="dropdown-toggle"></span>
-							<ul class="dropdown-menu smallmenu">
-								<li class="nav-link 12">@Html.ActionLink("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = redirectId }, null)</li>
-							</ul>
-						}
-					</a>
-				</li>
-				@*Do not show basket when anonumous*@
-				@if (!this.CurrentCustomer.IsAnonymous)
-				{
-					<li class="nav-item" @(IsActive(basketPage.Id))>
-						<a class="nav-link" href="@basketPage.Url"><span class="fas fa-shopping-cart" aria-hidden="true"></span> (<span data-muilabel="basketcount">@CurrentCustomer.Basket().TotalQuantityCount</span>)</a>
-					</li>
-				}
-
-			</ul>
-			<div class="right-col d-flex align-items-center justify-content-between justify-content-lg-end my-3 my-lg-0">
-				<!-- Search Button-->
-				<div data-toggle="search" class="nav-item navbar-icon-link">
-					<i class="fas fa-search"></i>
+                            </ul>
+					<div class="right-col d-flex align-items-center justify-content-between justify-content-lg-end my-3 my-lg-0">
+						<!-- Search Button-->
+						<div data-toggle="search" class="nav-item navbar-icon-link">
+							<i class="fas fa-search"></i>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-</nav>
+		</nav>
 
-<!--/.nav-collapse -->
+    <!--/.nav-collapse -->
 
 
-@functions
+    @functions
 {
-	private IHtmlString IsActive(int contentId, bool isDropdown = false)
-	{
-		var css = isDropdown ? "dropdown nav-item" : string.Empty;
-		if (Model.Content.Id == contentId)
-		{
-			css += " active";
-		}
-		css = css.Trim();
+        private IHtmlString IsActive(int contentId, bool isDropdown = false)
+        {
+            var css = isDropdown ? "dropdown nav-item" : string.Empty;
+            if (Model.Content.Id == contentId)
+            {
+                css += " active";
+            }
+            css = css.Trim();
 
-		return !css.IsNullOrWhiteSpace() ? MvcHtmlString.Create(string.Format(" class=\"{0}\"", css)) : MvcHtmlString.Empty;
-	}
-}
+            return !css.IsNullOrWhiteSpace() ? MvcHtmlString.Create(string.Format(" class=\"{0}\"", css)) : MvcHtmlString.Empty;
+        }
+    }

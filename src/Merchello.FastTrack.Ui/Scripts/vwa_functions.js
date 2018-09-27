@@ -144,6 +144,7 @@ $(function () {
     $('.search-area-wrapper .close-btn').on('click', function () {
         $('.search-area-wrapper').hide();
     });
+    //$(window).scroll(function(){$('.search-area-wrapper').fadeOut();});
 
     // ------------------------------------------------------- //
     //   Ekko Lightbox
@@ -262,139 +263,6 @@ $(function () {
         offset: 80
     });
 
-
-    // ------------------------------------------------------- //
-    // Google Maps
-    // ------------------------------------------------------ //
-    if ($('#map').length > 0) {
-
-
-        function initMap() {
-
-            var location = new google.maps.LatLng(50.0875726, 14.4189987);
-
-            var mapCanvas = document.getElementById('map');
-            var mapOptions = {
-                center: location,
-                zoom: 16,
-                panControl: false,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            var map = new google.maps.Map(mapCanvas, mapOptions);
-
-            var markerImage = 'img/marker.png';
-
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                icon: markerImage
-            });
-
-            var contentString = '<div class="info-window">' +
-                '<h3>Info Window Content</h3>' +
-                '<div class="info-content">' +
-                '<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>' +
-                '</div>' +
-                '</div>';
-
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString,
-                maxWidth: 400
-            });
-
-            marker.addListener('click', function () {
-                infowindow.open(map, marker);
-            });
-
-            var styles = [{
-                "featureType": "landscape",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "lightness": 0
-                }, {
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "poi",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "lightness": 51
-                }, {
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "road.highway",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "visibility": "simplified"
-                }]
-            }, {
-                "featureType": "road.arterial",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "lightness": 10
-                }, {
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "road.local",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "lightness": 40
-                }, {
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "transit",
-                "stylers": [{
-                    "saturation": -100
-                }, {
-                    "visibility": "simplified"
-                }]
-            }, {
-                "featureType": "administrative.province",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "water",
-                "elementType": "labels",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "lightness": -25
-                }, {
-                    "saturation": -100
-                }]
-            }, {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [{
-                    "hue": "#ffff00"
-                }, {
-                    "lightness": -15
-                }, {
-                    "saturation": -97
-                }]
-            }];
-
-            map.set('styles', styles);
-
-
-        }
-
-        google.maps.event.addDomListener(window, 'load', initMap);
-
-
-    }
-
-});
-
 // ------------------------------------------------------ //
 // For demo purposes, can be deleted
 // ------------------------------------------------------ //
@@ -436,20 +304,115 @@ $(".imp-wrap").ready(function(){
 // Hotspot fade image
 
 // Hotspot pulse
-
+/*
 $(window).load(function(){
       
 (function pulse(back) {
-    $('.imp-shape.imp-shape-spot img').animate(
-        {
-            
-            //'height': (back) ? '16px' : '36px',
-            //'width': (back) ? '16px' : '36px',
-            opacity: (back) ? 0.4 : 1
-        }, 1000, function(){pulse(!back)});
-})(false);
+    $('.imp-shape-spot img').animate(
+        { opacity: (back) ? 0.4 : 1 }, 1000, function ()
+        { pulse(!back) });
+        })(false);
+
+    });
+*/
+// /Hotspot pulse
+
+
+// Onclick & hover
+
+    $(window).load(function () {
+        
+        if ( $(window).width() > 991.99) { 
+    
+            $('.nav-item.dropdown a').click(function () {
+                if ($(this).next('.dropdown-menu.hk_Collections').is(':visible')) {
+                    //window.location.replace("/collections/all/");
+                    window.location = $(this).attr('href');
+                }
+                else if ($(this).next('.dropdown-menu.hk_HKliving').is(':visible')) {
+                    window.location.replace("/hkliving/about/");
+                }
+                else if ($(this).next('.dropdown-menu.hk_Contact').is(':visible')) {
+                    window.location = $(this).attr('href');
+                }
+            });
+        }
+
+});
+
+// /Onclick & hover
+
+// Accordion Account
+
+   
+$(document).ready(function () {
+
+    //ACCORDION BUTTON ACTION (ON CLICK DO THE FOLLOWING)
+    $('.accordionButton').click(function () {
+
+        //REMOVE THE ON CLASS FROM ALL BUTTONS
+        $('.accordionButton').removeClass('on');
+        //$('i').removeClass('fa-sort-down');
+
+        //NO MATTER WHAT WE CLOSE ALL OPEN SLIDES
+        $('.accordionContent').slideUp('normal');
+
+        //IF THE NEXT SLIDE WASN'T OPEN THEN OPEN IT
+        if ($(this).next().is(':hidden') == true) {
+
+            //ADD THE ON CLASS TO THE BUTTON
+            $(this).addClass('on');
+
+            //OPEN THE SLIDE
+            $(this).next().slideDown('normal');
+        }
 
     });
 
-// /Hotspot pulse
+
+    /*** REMOVE IF MOUSEOVER IS NOT REQUIRED ***/
+
+    //ADDS THE .OVER CLASS FROM THE STYLESHEET ON MOUSEOVER 
+    $('.accordionButton').mouseover(function () {
+        $(this).addClass('over');
+
+        //ON MOUSEOUT REMOVE THE OVER CLASS
+    }).mouseout(function () {
+        $(this).removeClass('over');
+    });
+
+    /*** END REMOVE IF MOUSEOVER IS NOT REQUIRED ***/
+
+
+    /********************************************************************************************************************
+    CLOSES ALL S ON PAGE LOAD
+    ********************************************************************************************************************/
+    $('.accordionContent').hide();
+
+// /Accordion Account
+
+
+/********************************************************************************************************************
+    Prevent scrolling if mobile menu is loaded
+*******************************************************************************************************************
+
+$('.navbar-toggler').click(function(e) {
+e.preventDefault();
+$('body').css('overflow', 'hidden');
+});
+
+$('.navbar-toggler').click(function(e) {
+e.preventDefault();
+$('body').css('overflow', 'auto');
+});
+*/
+
+
+/********************************************************************************************************************
+    Prevent scrolling if mobile menu is loaded
+********************************************************************************************************************/
+
+});
+
+});
 

@@ -1,62 +1,198 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @using Umbraco.Web
 
-@{ 
-    // 1099 is the categorie content node
-    var AllCategories = Umbraco.TypedContent(1099).Children.Where(x => x.IsVisible());
-    var featured = AllCategories.Where(x => x.GetPropertyValue<bool>("onlyFeaturedCategory", true));
-    var categories = AllCategories.Where(x => !x.GetPropertyValue<bool>("onlyFeaturedCategory", true) || x.GetPropertyValue<bool>("alsoDefaultCategory", true));
-    var livingCategorie = AllCategories.Where(x => x.GetPropertyValue<bool>("onlyFeaturedCategory", true));
+@{
+	// 1099 is the categorie content node
+
+	////  @foreach (var item in Model.Content.Descendants().Where(x = x.TemplateId > 0))
+	var Collections = Umbraco.TypedContent(1099);
+	var AllCategories = Collections.Descendants().Where(x => x.IsVisible());
+	var featured = AllCategories.Where(x => x.GetPropertyValue<bool>("onlyFeaturedCategory", true));
+	var categories = AllCategories.Where(x => !x.GetPropertyValue<bool>("onlyFeaturedCategory", true) || x.GetPropertyValue<bool>("alsoDefaultCategory", true));
 }
 
-<div>
-    @if (categories.Count() > 0)
-    {
-        <h3><a href="/">Categories</a></h3>
-        
-        <ul class="hk_categories_list">
-            @foreach (var item in categories )
-            {
-                @RenderLink(item)
-            }
-        </ul>
-    }
+
+@*<div>
+
+	// NIels: Deze is aangepast doordat de indeling anders werd (Living, Dining etc.).
+
+		@if (categories.Count() > 0)
+		{
+			<h3><a href="/">Categories</a></h3>
+
+			<ul class="hk_categories_list">
+				@foreach (var item in categories)
+				{
+					@RenderLink(item)
+				}
+			</ul>
+		}
+	</div>*@
+<style>
+	.Collections #hk_search-input input {
+		max-width: 160px !important;
+	}
+
+	.Collections #hk_search-input {
+		margin: 0;
+		width: 160px;
+	}
+</style>
+<div class="hk_featured_cat hk_landingspage_cat">
+	<ul class="hk_categories_list parent_list">
+		<li><a class="cat-link " href="/collections/all-products/">All products</a></li>
+	</ul>
+
 </div>
-<div class="hk_featured_cat">
-  
-    @if (featured.Count() > 0)
-    {
-        <h3><a href="/">Featured Categories</a></h3>
-        <ul class="hk_categories_list parent_list">
-            @foreach (var item in featured)
-            {
-                @RenderLink(item)
-            }
-        </ul>
-    }
-</div>
+
+@{
+	var serviceItem = Umbraco.TypedContent(1099).Children()
+						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("Service") && Umbraco.MemberHasAccess(x.Path));
+
+	if (serviceItem != null)
+	{
+		<div class="hk_service-items">
+			<style>
+				.list_icon i,
+				.list_icon li {
+					position: relative;
+					display: inline-block;
+					float: left;
+				}
+
+				.list_icon li {
+					width: 100% !important;
+					/*z-index:2000;*/
+				}
+
+				.list_icon i {
+					font-size: 11px;
+					opacity: 0.6;
+					line-height: 53px;
+					display: inline-block;
+					z-index: 999;
+					position: relative;
+					padding: 0px 0px 0px 10px;
+					margin: 0px 0px 0px -30px;
+				}
+				/**/
+			</style>
+			<ul class="hk_categories_list parent_list list_icon">
+				@RenderLink(serviceItem)
+				@*<i class="fas fa-wrench"></i>*@
+			</ul>
+		</div>
+		}
+	}
+
+	<div class="hk_featured_cat hk_landingspage_cat">
+		@{ var living = Umbraco.TypedContent(5636).Children()
+										  .Where(x => x.IsVisible()); }
+		<h3 style="width: 100%; display: block;margin: 30px 0px 20px 0px;position: relative;float: left;"><a href="/collections/living/">Living</a></h3>
+		<ul class="hk_categories_list parent_list">
+			@foreach (var item in living)
+			{
+				@*<li>
+					<a href="@item.Url">@item.Name</a>
+					</li>*@
+				@RenderLink(item)
+			}
+		</ul>
+	</div>
+	<div class="hk_featured_cat hk_landingspage_cat">
+		@{ var dining = Umbraco.TypedContent(5637).Children()
+												   .Where(x => x.IsVisible()); }
+		<h3><a href="/collections/dining/">Dining</a></h3>
+		<ul class="hk_categories_list parent_list">
+			@foreach (var item in dining)
+			{
+				@RenderLink(item)
+			}
+		</ul>
+	</div>
+	<div class="hk_featured_cat hk_landingspage_cat">
+		@{ var bathroom = Umbraco.TypedContent(5638).Children()
+															 .Where(x => x.IsVisible()); }
+		<h3><a href="/collections/bathroom/">Bathroom</a></h3>
+		<ul class="hk_categories_list parent_list">
+			@foreach (var item in bathroom)
+			{
+				@RenderLink(item)
+			}
+		</ul>
+	</div>
+	<div class="hk_featured_cat hk_landingspage_cat">
+		@{ var lifestyle = Umbraco.TypedContent(5639).Children()
+															 .Where(x => x.IsVisible()); }
+		<h3><a href="/collections/lifestyle/">Lifestyle</a></h3>
+		<ul class="hk_categories_list parent_list">
+			@foreach (var item in lifestyle)
+			{
+				@RenderLink(item)
+			}
+		</ul>
+	</div>
+	<div class="hk_featured_cat">
+
+		@if (featured.Count() > 0)
+		{
+			<h3>Featured Categories</h3>
+			<ul class="hk_categories_list parent_list">
+				@foreach (var item in featured)
+				{
+					@RenderLink(item)
+				}
+			</ul>
+		}
+	</div>
 
 
-@helper RenderLink(IPublishedContent item, String className = "cat-link")
-{
 
-    var countChildren = item.Children("ftCategory").Where(x => x.IsVisible()).Count();
-    var active = item.IsAncestorOrSelf(Model.Content);
-    string toggle = countChildren > 0 ? "collapse" : "";
+	@*@helper RenderLink(IPublishedContent item, String className = "cat-link")
+		{
 
-<li>
+			var countChildren = item.Children("ftCategory").Where(x => x.IsVisible()).Count();
+			var active = item.IsAncestorOrSelf(Model.Content);
+			string toggle = countChildren > 0 ? "collapse" : "";
 
-    <a class="@className @(active ? "active" : "collapsed")" href="@item.Url" data-toggle="@toggle" data-target="#submenu-@item.Name.Replace( " ", "")">@item.Name</a>
-    
-            @if (countChildren > 0)
-            {
-                <i class="fa @(active ? "fa-minus" : "fa-plus") " style="opacity:0.25; font-size:9px; float:right; margin: -17px 0px 0px 0px; z-index:998;position: relative;"></i><ul class="hk_categories_list collapse@(active ? "show" : "") " id="submenu-@item.Name.Replace( " ", "")">
-                @foreach( var subitem in item.Children("ftCategory").Where(x => x.IsVisible())) {
-                    @RenderLink(subitem)
-                    
-                }
-            </ul>
-        }
-        
-    </li>
+		<li>
+
+			<a class="@className @(active ? "active" : "collapsed")" href="@item.Url" data-toggle="@toggle" data-target="#submenu-@item.Name.Replace( " ", "")">@item.Name</a>
+
+					@if (countChildren > 0)
+					{
+						<i class="fa @(active ? "fa-minus" : "fa-plus") " style="opacity:0.25; font-size:9px; float:right; margin: -17px 0px 0px 0px; z-index:998;position: relative;"></i>
+							<ul class="hk_categories_list collapse@(active ? " show" : "")" id="submenu-@item.Name.Replace( " ", "")">
+						@foreach( var subitem in item.Children("ftCategory").Where(x => x.IsVisible())) {
+							@RenderLink(subitem)
+
+						}
+					</ul>
+				}
+
+			</li>
+		}*@
+
+	@helper RenderLink(IPublishedContent item, String className = "cat-link")
+		{
+			var countChildren = item.Children("ftCategory").Where(x => x.IsVisible()).Count();
+			var active = item.IsAncestorOrSelf(Model.Content);
+			string toggle = countChildren > 0 ? "collapse" : "";
+			string collapsable = countChildren > 0 ? " collapsable" : "";
+			<li>
+				<a class="@className @(active ? "active" : "collapsed")@collapsable" href="@item.Url">@item.Name</a>
+				@if (countChildren > 0)
+				{
+					<i class="fa @(active ? "fa-minus" : "fa-plus") " style="opacity:0.25; font-size:9px; float:right; margin: -17px 0px 0px 0px; z-index:998;position: relative;"></i>
+					<ul class="hk_categories_list collapse@(active ? " show" : "")">
+						@foreach (var subitem in item.Children("ftCategory").Where(x => x.IsVisible()))
+						{
+							@RenderLink(subitem)
+
+						}
+					</ul>
+				}
+			</li>
 }
+
+
