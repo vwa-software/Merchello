@@ -286,9 +286,9 @@ namespace Merchello.Core.Services
                     repository.AddOrUpdate(product);
                     uow.Commit();
                 }
-
-                // Synchronize product variants
-                this.EnsureVariants(product);
+				
+				// Synchronize product variants
+				this.EnsureVariants(product);
             }
 
             // verify that all variants of this product still have attributes - or delete them
@@ -298,7 +298,10 @@ namespace Merchello.Core.Services
             if (product.ProductVariants.Any())
             _productVariantService.Save(product.ProductVariants, false);
 
-            if (raiseEvents) Saved.RaiseEvent(new SaveEventArgs<IProduct>(product), this);
+			// clear cache
+			MerchelloContext.Current.Cache.RuntimeCache.ClearAllCache();
+
+			if (raiseEvents) Saved.RaiseEvent(new SaveEventArgs<IProduct>(product), this);
 
         }
 

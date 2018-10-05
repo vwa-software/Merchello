@@ -61,7 +61,7 @@
 
             var variant = _merchello.Query.Product.GetProductVariantByKey(lineItem.ExtendedData.GetProductVariantKey());
 
-            if (variant == null) _noLongerExists.Add(lineItem);
+            if (variant == null || !variant.Available) _noLongerExists.Add(lineItem);
         }
     }
 }
