@@ -42,17 +42,51 @@
 
                 var paymentMethod = this.CheckoutManager.Payment.GetPaymentMethod();
 
+				if(paymentMethod == null)
+				{
+					Logger.Error(this.GetType(), "No paymentmethod found", new Exception("No paymentmethod found"));
+					
+					// return to cart
+					return RedirectToUmbracoPage(1103);
+				}
+
                 // For cash payments we can only perform an authorize
                 var attempt = this.CheckoutManager.Payment.AuthorizePayment(paymentMethod.Key);
 
-                var resultModel = this.CheckoutPaymentModelFactory.Create(CurrentCustomer, paymentMethod, attempt);
+				if(attempt == null || attempt.Invoice == null)
+				{
+					Logger.Error(this.GetType(), "No attempt possible", new Exception("No attempt possible"));
 
-                // merge the models so we can be assured that any hidden values are passed on
-                model.ViewData = resultModel.ViewData;
-							
-				// Send the notification
-				HandleNotificiation(model, attempt);
+					// return to cart
+					return RedirectToUmbracoPage(1103);
+				}
 
+				try
+				{
+					var resultModel = this.CheckoutPaymentModelFactory.Create(CurrentCustomer, paymentMethod, attempt);
+					// merge the models so we can be assured that any hidden values are passed on
+					model.ViewData = resultModel.ViewData;
+
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(this.GetType(), "No resultmodel could be created", ex);
+
+					// return to cart
+					return RedirectToUmbracoPage(1103);
+				}
+              
+              
+				try
+				{
+					// Send the notification
+					HandleNotificiation(model, attempt);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(this.GetType(), "Mail not send", ex);
+				}
+			
                 return this.HandlePaymentSuccess(model);
             }
             catch (Exception ex)
