@@ -110,13 +110,28 @@
 			{
 				logedIn =  Members.Login(model.Username, model.Password);
 			}
+			catch(System.FormatException)
+			{
+				// Calculated error, import does not import passwords, so the base-64 string is not recognized.
+				// Logger.Error<CustomerMembershipController>("Password for user " + model.Username + " could not be validated", ex);
+
+				var messages = new List<string>
+					{
+						"Your account does not have a valid password, please use the forgot password link."
+					};
+
+				viewData.Messages = messages;
+				ViewData["MerchelloViewData"] = viewData;
+				return CurrentUmbracoPage();
+			}
 			catch (Exception ex)
 			{
+
 				Logger.Error<CustomerMembershipController>("Password for user " + model.Username + " could not be validated", ex);
 
 				var messages = new List<string>
 					{
-						"Account does not have a valid password, please use the forgot password link."
+						"Your account does not have a valid password, please use the forgot password link."
 					};
 				viewData.Messages = messages;
 				ViewData["MerchelloViewData"] = viewData;
@@ -234,9 +249,18 @@
 		/// The <see cref="ActionResult"/>.
 		/// </returns>
 		[HttpGet]
-		public virtual ActionResult Logout(int redirectId)
+		public virtual ActionResult Logout(int redirectId, string path = "")
 		{
 			Members.Logout();
+
+			if (redirectId == 0 && !string.IsNullOrEmpty(path))
+				return new RedirectResult(path);
+
+			if (redirectId == 0)
+			{
+				return new RedirectResult("");
+			}
+			
 			return RedirectToUmbracoPage(redirectId);
 		}
 

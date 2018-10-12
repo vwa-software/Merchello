@@ -104,7 +104,18 @@ namespace Merchello.FastTrack.Controllers.Membership
 		{
 			try
 			{
-				IMember byEmail = ApplicationContext.Current.Services.MemberService.GetByUsername(model.Email);
+				IMember byEmail = null;
+
+				try
+				{
+					byEmail = ApplicationContext.Current.Services.MemberService.GetByUsername(model.Email);
+				}
+				catch (Exception)
+				{
+					LogHelper.Warn<ResetPasswordController>(string.Format("VerifyResetData - Can't find member in the MemberService {0}", (object)model.Email));
+					return (IMember)null;
+				}
+				
 				if (byEmail == null)
 				{
 					LogHelper.Warn<ResetPasswordController>(string.Format("VerifyResetData - Can't find member in the MemberService {0}", (object)model.Email));
