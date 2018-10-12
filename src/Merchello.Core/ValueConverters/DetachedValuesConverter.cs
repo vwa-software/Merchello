@@ -312,7 +312,7 @@
             // Fetch the property types prevalue
             var propPreValues = _dataTypeService.GetPreValuesCollectionByDataTypeId(propType.DataTypeDefinitionId);
 
-            var rawValue = JsonConvert.DeserializeObject(dcv.Value.Trim());
+            var rawValue = JsonConvert.DeserializeObject(dcv.Value == null ? "" : dcv.Value.Trim());
 
             //// Create a fake content property data object
             if (additionalData == null) additionalData = new Dictionary<string, object>();
