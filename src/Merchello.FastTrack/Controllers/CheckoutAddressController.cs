@@ -63,6 +63,7 @@
 			// Handle HandleBillingAdressSaveSuccess
 
 			// If the customer is logged in save the address to their default customer billing address for the next use
+			/*
 			if (!CurrentCustomer.IsAnonymous)
 			{
 				// In this implementation we are simply overwritting any previously saved addresses
@@ -80,6 +81,7 @@
 
 				((ICustomer)CurrentCustomer).SaveCustomerAddress(caddress);
 			}
+			*/
 
 			// NOTE: We need to do a special check here to assert that the country code is valid as it
 			// billing addresses by default can be associated any where in the world, whereas shiping
@@ -127,19 +129,19 @@
             // If the customer is logged in save the address to their default customer shipping address for the next use
             if (!CurrentCustomer.IsAnonymous)
             {
-                // In this implementation we are simply overwritting any previously saved addresses
-                // This could can be extended to allow customers to manage multiple addresses of a given
-                // type in other implementations.
-                var customer = (ICustomer)CurrentCustomer;
-                var existing = customer.DefaultCustomerAddress(AddressType.Shipping);
-                var caddress = ShippingAddressFactory.Create(model, (ICustomer)CurrentCustomer, "Shipping Address", AddressType.Shipping);
-                if (existing != null)
-                {
-                    caddress.CreateDate = existing.CreateDate;
-                    caddress.Key = existing.Key;
-                }
+                //// In this implementation we are simply overwritting any previously saved addresses
+                //// This could can be extended to allow customers to manage multiple addresses of a given
+                //// type in other implementations.
+                //var customer = (ICustomer)CurrentCustomer;
+                //var existing = customer.DefaultCustomerAddress(AddressType.Shipping);
+                //var caddress = ShippingAddressFactory.Create(model, (ICustomer)CurrentCustomer, "Shipping Address", AddressType.Shipping);
+                //if (existing != null)
+                //{
+                //    caddress.CreateDate = existing.CreateDate;
+                //    caddress.Key = existing.Key;
+                //}
 
-                ((ICustomer)CurrentCustomer).SaveCustomerAddress(caddress);
+                //((ICustomer)CurrentCustomer).SaveCustomerAddress(caddress);
             }
 
 			return null;

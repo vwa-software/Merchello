@@ -290,6 +290,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\vwa-plugins\ETC.B2B.PriceGroups\ETC.B2B.Pricegroup.csproj">
+      <Project>{ae46917c-de3a-4d74-86c0-9172a8e8cdcc}</Project>
+      <Name>ETC.B2B.Pricegroup</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\vwa-plugins\ETC.B2B.WEB\ETC.B2B.WEB.csproj">
       <Project>{c2015e2f-1ea0-4b90-a4d7-9ee39d061419}</Project>
       <Name>ETC.B2B.WEB</Name>

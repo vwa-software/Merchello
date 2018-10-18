@@ -50,7 +50,7 @@
 
 			if (paymentMethod == null)
 			{
-				return this.InvalidCheckoutStagePartial();
+				return this.InvalidCheckoutStagePartial("No payment Method found on ResolvePayment");
 			}
 
 			var att = GetGatewayMethodUiAttribute(paymentMethod);

@@ -35,7 +35,7 @@
         public override ActionResult PaymentForm(string view = "")
         {
             var paymentMethod = this.CheckoutManager.Payment.GetPaymentMethod();
-            if (paymentMethod == null) return this.InvalidCheckoutStagePartial();
+            if (paymentMethod == null) return this.InvalidCheckoutStagePartial("No paymentMethod found on BrainTree PaymentForm");
 
             var model = this.CheckoutPaymentModelFactory.Create(CurrentCustomer, paymentMethod);
 
