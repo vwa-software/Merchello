@@ -240,7 +240,7 @@
         public ActionResult ShippingAddressForm(string view = "")
         {
             var billingAddress = CheckoutManager.Customer.GetBillToAddress();
-            if (billingAddress == null) return InvalidCheckoutStagePartial();
+            if (billingAddress == null) return InvalidCheckoutStagePartial("No Billing Address Found");
 
             TShippingAddress model = null;
 

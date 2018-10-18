@@ -67,7 +67,7 @@
 
             if (paymentMethod == null)
             {
-                return this.InvalidCheckoutStagePartial();
+                return this.InvalidCheckoutStagePartial("No Payment Method Found on PaymentForm");
             }
 
             var att = GetGatewayMethodUiAttribute(paymentMethod);

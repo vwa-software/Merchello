@@ -109,7 +109,7 @@
         public override ActionResult PaymentForm(string view = "")
         {
             var paymentMethod = this.CheckoutManager.Payment.GetPaymentMethod();
-            if (paymentMethod == null) return this.InvalidCheckoutStagePartial();
+            if (paymentMethod == null) return this.InvalidCheckoutStagePartial("No Payment Method Found on PaymentForm");
 
             var model = this.CheckoutPaymentModelFactory.Create(CurrentCustomer, paymentMethod);
 

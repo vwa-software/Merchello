@@ -168,7 +168,7 @@
         {
             // Discounts must be applied to an invoice (not a basket) due to the various validation options/constraints
             // that can be applied to a discount (some of which cannot be determined with a simple basket).
-            if (!CheckoutManager.Payment.IsReadyToInvoice()) return InvalidCheckoutStagePartial();
+            if (!CheckoutManager.Payment.IsReadyToInvoice()) return InvalidCheckoutStagePartial("Not ready to invoice, no billing address found");
 
             var model = CheckoutDiscountModelModelFactory.Create();
 

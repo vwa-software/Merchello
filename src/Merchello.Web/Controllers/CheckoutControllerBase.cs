@@ -70,8 +70,13 @@
         /// <returns>
         /// The <see cref="ActionResult"/>.
         /// </returns>
-        protected virtual ActionResult InvalidCheckoutStagePartial()
+        protected virtual ActionResult InvalidCheckoutStagePartial(string message = "")
         {
+			if (!string.IsNullOrEmpty(message))
+			{
+				Logger.Warn(this.GetType(), message);
+			}
+			
             return PartialView("InvalidCheckoutStage");
         }
 

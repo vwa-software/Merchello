@@ -133,7 +133,7 @@
 
             if (paymentMethod == null)
             {
-                return this.InvalidCheckoutStagePartial();
+                return this.InvalidCheckoutStagePartial("No PaymentMethod found");
             }
 
             var att = GetGatewayMethodUiAttribute(paymentMethod);

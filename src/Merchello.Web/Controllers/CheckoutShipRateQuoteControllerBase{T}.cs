@@ -121,7 +121,7 @@
         public ActionResult ShipRateQuoteForm(string view = "")
         {
             var shippingAddress = CheckoutManager.Customer.GetShipToAddress();
-            if (shippingAddress == null) return InvalidCheckoutStagePartial();
+            if (shippingAddress == null) return InvalidCheckoutStagePartial("No shipping address found for the ShipRateQuoteForm");
 
             var model = CheckoutShipRateQuoteFactory.Create(Basket, shippingAddress);
 

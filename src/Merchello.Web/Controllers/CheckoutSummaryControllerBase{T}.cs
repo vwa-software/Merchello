@@ -107,7 +107,7 @@
         [ChildActionOnly]
         public virtual ActionResult InvoiceSummary(string view = "")
         {
-            if (!CheckoutManager.Payment.IsReadyToInvoice()) return InvalidCheckoutStagePartial();
+            if (!CheckoutManager.Payment.IsReadyToInvoice()) return InvalidCheckoutStagePartial("Not ready to invoice, no billing address found");
             var model = CheckoutSummaryFactory.Create(CheckoutManager);
             return view.IsNullOrWhiteSpace() ? this.PartialView(model) : this.PartialView(view, model);
         }
