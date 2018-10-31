@@ -96,9 +96,23 @@
 		/// The <see cref="ActionResult"/>.
 		/// </returns>
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		[OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
+		//[ValidateAntiForgeryToken]
 		public virtual ActionResult Login(LoginModel model)
 		{
+
+			// When the user is loged in in another browser window, the antiforgerytoken execption is raised
+			// to avoid this, the user is redirected to their account page.
+			if (User.Identity.IsAuthenticated)
+			{
+				return model.SuccessRedirectUrl.IsNullOrWhiteSpace() ?
+				Redirect("~/") : Redirect(model.SuccessRedirectUrl);
+			}
+
+			// this does the same as the ValidateAntiForgeryToken.
+			System.Web.Helpers.AntiForgery.Validate();
+
+
 			if (!ModelState.IsValid) return CurrentUmbracoPage();
 			var viewData = new StoreViewData { Success = false };
 
@@ -254,11 +268,11 @@
 			Members.Logout();
 
 			if (redirectId == 0 && !string.IsNullOrEmpty(path))
-				return new RedirectResult(path);
+				return Redirect(path);
 
 			if (redirectId == 0)
 			{
-				return new RedirectResult("");
+				return Redirect("/");
 			}
 			
 			return RedirectToUmbracoPage(redirectId);
@@ -298,8 +312,18 @@
 		/// The <see cref="ActionResult"/>.
 		/// </returns>
 		[ChildActionOnly]
-		public virtual ActionResult LoginForm(string view = "")
+		public virtual ActionResult LoginForm(string view = "", string redirectPath = "")
 		{
+			if (User.Identity.IsAuthenticated)
+			{
+				if (string.IsNullOrEmpty(redirectPath))
+				{
+					return new RedirectResult("/");
+
+				}
+				return new RedirectResult(redirectPath);
+			}
+
 			var model = new LoginModel { RememberMe = true };
 			return view.IsNullOrWhiteSpace() ? PartialView(model) : PartialView(view, model);
 		}
