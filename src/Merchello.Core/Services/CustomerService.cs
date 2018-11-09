@@ -36,7 +36,7 @@
         /// <summary>
         /// The valid sort fields.
         /// </summary>
-        private static readonly string[] ValidSortFields = { "firstname", "lastname", "loginname", "email", "lastactivitydate" };
+        private static readonly string[] ValidSortFields = { "firstname", "lastname", "loginname", "email", "lastactivitydate", "sortorder" };
 
         /// <summary>
         /// The anonymous customer service.
@@ -767,44 +767,64 @@
             }
         }
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entity">
-        /// The customer.
-        /// </param>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        public void RemoveFromCollection(ICustomer entity, IEntityCollection collection)
+		/// <summary>
+		/// The add customer to collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The sortOrder of this customer in the collection.
+		/// </param>
+		public void AddToCollection(Guid entityKey, Guid collectionKey, int? sortOrder)
+		{
+			using (var repository = RepositoryFactory.CreateCustomerRepository(UowProvider.GetUnitOfWork()))
+			{
+				repository.AddToCollection(entityKey, collectionKey, sortOrder);
+			}
+		}
+
+		/// <summary>
+		/// The remove customer from collection.
+		/// </summary>
+		/// <param name="entity">
+		/// The customer.
+		/// </param>
+		/// <param name="collection">
+		/// The collection.
+		/// </param>
+		public void RemoveFromCollection(ICustomer entity, IEntityCollection collection)
         {
             RemoveFromCollection(entity, collection.Key);
         }
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entity">
-        /// The customer.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        public void RemoveFromCollection(ICustomer entity, Guid collectionKey)
+		/// <summary>
+		/// The remove customer from collection.
+		/// </summary>
+		/// <param name="entity">
+		/// The customer.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		public void RemoveFromCollection(ICustomer entity, Guid collectionKey)
         {
             RemoveFromCollection(entity.Key, collectionKey);
         }
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entityKey">
-        /// The customer key.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        public void RemoveFromCollection(Guid entityKey, Guid collectionKey)
+		/// <summary>
+		/// The remove customer from collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The customer key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		public void RemoveFromCollection(Guid entityKey, Guid collectionKey)
         {
             using (var repository = RepositoryFactory.CreateCustomerRepository(UowProvider.GetUnitOfWork()))
             {

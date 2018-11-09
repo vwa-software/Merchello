@@ -54,18 +54,20 @@
         /// </returns>
         public IEnumerable<IEntityCollection> GetEntityCollectionsByProductKey(Guid productKey, bool isFilter = false)
         {
-            var sql =
-                this.GetBaseQuery(false)
-                    .Append("WHERE [merchEntityCollection].[pk] IN (")
-                    .Append("SELECT DISTINCT([entityCollectionKey])")
-                    .Append("FROM [merchProduct2EntityCollection]")
-                    .Append("WHERE [merchProduct2EntityCollection].[productKey] = @pkey", new { @pkey = productKey })
-                    .Append(")")
-                    .Append("AND [merchEntityCollection].[isFilter] = @isfilter", new { @isfilter = isFilter });
+            var sql = new Sql();
+			
+			sql.Select("*, B.SortOrder AS ListSortOrder")
+			   .From<EntityCollectionDto>(SqlSyntax).Append(" A").InnerJoin("[merchProduct2EntityCollection] B").On("A.[pk]=B.[entityCollectionKey]")
+                    .Where(" [B].[productKey] = @pkey", new { @pkey = productKey })                  
+                    .Where(" [A].[isFilter] = @isfilter", new { @isfilter = isFilter });
 
             var dtos = Database.Fetch<EntityCollectionDto>(sql);
 
-            return dtos.DistinctBy(x => x.Key).Select(x => Get(x.Key));
+			var factory = new EntityCollectionFactory();
+
+			// why the extra get??
+			//return dtos.DistinctBy(x => x.Key).Select(x => Get(x.Key));
+			return dtos.Select(x => factory.BuildEntity(x));
         }
 
         /// <summary>

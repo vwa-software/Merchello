@@ -44,6 +44,13 @@
         /// <summary>
         /// The product SKU 
         /// </summary>
-        Sku
+        Sku,
+
+		/// <summary>
+		/// The sort order in the collection
+		/// </summary>
+		SortOrder
+
+		
     }
 }

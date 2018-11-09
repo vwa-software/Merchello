@@ -84,12 +84,19 @@
         /// </summary>
         [DataMember(Name = "sortOrder")]
         public int SortOrder { get; set; }
-    }
+		
+		/// <summary>
+		/// Gets or sets the list sort order.
+		/// </summary>
+		[DataMember(Name = "listSortOrder")]
+		public int ListSortOrder { get; set; }
 
-    /// <summary>
-    /// Extension methods for <see cref="EntityCollectionDisplay"/>.
-    /// </summary>
-    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
+	}
+
+	/// <summary>
+	/// Extension methods for <see cref="EntityCollectionDisplay"/>.
+	/// </summary>
+	[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
     internal static class EntityCollectionDisplayExtensions
     {
         /// <summary>

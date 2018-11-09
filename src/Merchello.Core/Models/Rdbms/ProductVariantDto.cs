@@ -206,5 +206,11 @@
         [ResultColumn]
         public ProductVariantIndexDto ProductVariantIndexDto { get; set; }
 
-    }
+		/// <summary>
+		/// Gets or sets the product variant sortOrder (if available in collection)
+		/// </summary>
+		[ResultColumn]
+		public int sortOrder { get; set; }
+
+	}
 }

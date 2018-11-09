@@ -48,10 +48,15 @@
         /// </summary>
         private int _sortOrder;
 
-        /// <summary>
-        /// The <see cref="ExtendedDataCollection"/>.
-        /// </summary>
-        private ExtendedDataCollection _extendedData;
+		/// <summary>
+		/// The sort order of the entity in the collection
+		/// </summary>
+		private int _listSortOrder;
+
+		/// <summary>
+		/// The <see cref="ExtendedDataCollection"/>.
+		/// </summary>
+		private ExtendedDataCollection _extendedData;
 
         /// <summary>
         /// Gets a value indicating whether the collection is represented as a filter.
@@ -146,8 +151,24 @@
             }
         }
 
-        /// <inheritdoc/>
-        [DataMember]
+		/// <inheritdoc/>
+		[DataMember]
+		public int ListSortOrder
+		{
+			get
+			{
+				return _listSortOrder;
+			}
+
+			internal set
+			{
+				SetPropertyValueAndDetectChanges(value, ref _listSortOrder, _ps.Value.ListSortOrderSelector);
+			}
+		}
+
+
+		/// <inheritdoc/>
+		[DataMember]
         public Guid ProviderKey
         {
             get
@@ -236,10 +257,16 @@
             /// </summary>
             public readonly PropertyInfo SortOrderSelector = ExpressionHelper.GetPropertyInfo<EntityCollection, int>(x => x.SortOrder);
 
-            /// <summary>
-            /// The extended data changed selector.
-            /// </summary>
-            public readonly PropertyInfo ExtendedDataChangedSelector = ExpressionHelper.GetPropertyInfo<EntityCollection, ExtendedDataCollection>(x => x.ExtendedData);
+			/// <summary>
+			/// The lostsortorder selector.
+			/// </summary>
+			public readonly PropertyInfo ListSortOrderSelector = ExpressionHelper.GetPropertyInfo<EntityCollection, int>(x => x.ListSortOrder);
+
+			
+			/// <summary>
+			/// The extended data changed selector.
+			/// </summary>
+			public readonly PropertyInfo ExtendedDataChangedSelector = ExpressionHelper.GetPropertyInfo<EntityCollection, ExtendedDataCollection>(x => x.ExtendedData);
 
             /// <summary>
             /// The is filter selector.

@@ -147,7 +147,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(searchTerm);
-            sql.Where("invoiceDate BETWEEN @start AND @end", new { @start = startDate.GetDateForSqlStartOfDay(), @end = endDate.GetDateForSqlEndOfDay() });
+            sql.Where("A.invoiceDate BETWEEN @start AND @end", new { @start = startDate.GetDateForSqlStartOfDay(), @end = endDate.GetDateForSqlEndOfDay() });
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
@@ -240,16 +240,61 @@
             Database.Insert(dto);
         }
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entityKey">
-        /// The invoice key.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        public void RemoveFromCollection(Guid entityKey, Guid collectionKey)
+		/// <summary>
+		/// Adds a product to a static product collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The sort order
+		/// </param>
+		public void AddToCollection(Guid entityKey, Guid collectionKey, int? sortOrder = null)
+		{
+			//if (this.ExistsInCollection(entityKey, collectionKey)) return;
+
+			var sql = new Sql();
+			sql.Append("SELECT * FROM [merchInvoice2EntityCollection]")
+			.Append("WHERE [merchInvoice2EntityCollection].[invoiceKey] = @ikey AND [merchInvoice2EntityCollection].[entityCollectionKey] = @eckey",
+				new { @ikey = entityKey, @eckey = collectionKey });
+
+			Invoice2EntityCollectionDto dto = Database.FirstOrDefault<Invoice2EntityCollectionDto>(sql);
+					
+			if (dto == null)
+			{
+				dto = new Invoice2EntityCollectionDto()
+				{
+					InvoiceKey = entityKey,
+					EntityCollectionKey = collectionKey,
+					SortOrder = sortOrder ?? 0,
+					CreateDate = DateTime.Now,
+					UpdateDate = DateTime.Now
+				};
+				Database.Insert(dto);
+			}
+			else if (sortOrder.HasValue)
+			{
+				if (dto.SortOrder != sortOrder.Value)
+				{
+					dto.SortOrder = sortOrder.Value;
+					Database.Update<Invoice2EntityCollectionDto>("SET SortOrder=@0 WHERE InvoiceKey=@1 AND entityCollectionKey=@2", dto.SortOrder, dto.InvoiceKey, dto.EntityCollectionKey);
+				}
+			}
+		}
+
+		/// <summary>
+		/// The remove invoice from collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The invoice key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		public void RemoveFromCollection(Guid entityKey, Guid collectionKey)
         {
             Database.Execute(
                 "DELETE [merchInvoice2EntityCollection] WHERE [merchInvoice2EntityCollection].[invoiceKey] = @ikey AND [merchInvoice2EntityCollection].[entityCollectionKey] = @eckey",
@@ -298,48 +343,83 @@
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
-        /// <summary>
-        /// Gets a page of distinct entity keys from entities contained in multiple collections.
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection key.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="orderExpression">
-        /// The order expression.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{T}"/>.
-        /// </returns>
-        public Page<Guid> GetKeysThatExistInAllCollections(
+		/// <summary>
+		/// Gets a page of distinct entity keys from entities contained in multiple collections.
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection key.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="orderExpression">
+		/// The order expression.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <param name="sortCollectionGuid">
+		/// The orderCollectionKey
+		/// </param>
+		/// <param name="fnModifySql">
+		/// Delegate function, purpose is to modify the sql
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{T}"/>.
+		/// </returns>
+		public Page<Guid> GetKeysThatExistInAllCollections(
             Guid[] collectionKeys,
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+			SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Sql> fnModifySql = null)
         {
-            var sql = new Sql();
-            sql.Append("SELECT *")
-                .Append("FROM [merchInvoice]")
-                .Append("WHERE [merchInvoice].[pk] IN (")
-                .Append("SELECT DISTINCT([invoiceKey])")
-                .Append("FROM [merchInvoice2EntityCollection]")
-                .Append(
-                    "WHERE [merchInvoice2EntityCollection].[entityCollectionKey] IN (@eckeys)",
-                    new { @eckeys = collectionKeys })
-               .Append("GROUP BY invoiceKey")
-               .Append("HAVING COUNT(*) = @keyCount", new { @keyCount = collectionKeys.Count() })
-               .Append(")"); 
+			// todo ordercollectionGuid
+			var sql = new Sql();
 
-            return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
+			sql.Append("SELECT [A].*");
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(", [B].SortOrder AS SortOrder");
+			}
+			else
+			{
+				// can't sort on the collection's sortorder
+				if (orderExpression == "sortorder")
+				{
+					orderExpression = "invoiceNumber"; // default
+				}
+			}
+
+			sql.Append("FROM [merchInvoice] [A]");
+
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(" LEFT JOIN [merchInvoice2EntityCollection] B ON [A].[invoiceKey]=[B].[invoiceKey] AND [B].[entityCollectionKey] = @eck", new { @eck = sortCollectionGuid });
+			}
+
+			sql.Append("WHERE [A].[invoiceKey] IN (")
+			   .Append("SELECT [invoiceKey]")
+			   .Append("FROM [merchInvoice2EntityCollection]")
+			   .Append("WHERE [merchInvoice2EntityCollection].[entityCollectionKey] IN (@eckeys)", new { @eckeys = collectionKeys })
+			   .Append("GROUP BY invoiceKey")
+			   .Append("HAVING COUNT(*) = @keyCount", new { @keyCount = collectionKeys.Count() })
+			   .Append(")");
+
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(" AND[B].[entityCollectionKey] = @eck", new { @eck = sortCollectionGuid });
+			}
+
+			// Alter sequel, if there is a delegate function
+			fnModifySql?.Invoke(sql);
+
+			return  GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
         /// <summary>
@@ -375,7 +455,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(term);
-            sql.Append("AND [merchInvoice].[pk] IN (")
+            sql.Append("AND [A].[pk] IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -386,40 +466,50 @@
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
-        /// <summary>
-        /// Gets a page of distinct entity keys from entities contained in multiple collections.
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection key.
-        /// </param>
-        /// <param name="term">
-        /// The term.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="orderExpression">
-        /// The order expression.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{T}"/>.
-        /// </returns>
-        public Page<Guid> GetKeysThatExistInAllCollections(
+		/// <summary>
+		/// Gets a page of distinct entity keys from entities contained in multiple collections.
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection key.
+		/// </param>
+		/// <param name="term">
+		/// The term.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="orderExpression">
+		/// The order expression.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <param name="sortCollectionGuid">
+		/// The orderCollectionKey
+		/// </param>
+		/// <param name="fnModifySql">
+		/// Delegate function, purpose is to modify the sql
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{T}"/>.
+		/// </returns>
+		public Page<Guid> GetKeysThatExistInAllCollections(
             Guid[] collectionKeys,
             string term,
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Sql> fnModifySql = null)
         {
-            var sql = BuildInvoiceSearchSql(term);
-            sql.Append("AND [merchInvoice].[pk] IN (")
+
+			var sql = BuildInvoiceSearchSql(term, sortCollectionGuid);
+												
+            sql.Append("AND [A].[pk] IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -429,6 +519,7 @@
                 .Append("HAVING COUNT(*) = @keyCount", new { @keyCount = collectionKeys.Count() })
                 .Append(")");
 
+			fnModifySql?.Invoke(sql);
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
@@ -549,7 +640,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(term);
-            sql.Append("AND [merchInvoice].[pk] NOT IN (")
+            sql.Append("AND [A].[pk] NOT IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -593,7 +684,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(term);
-            sql.Append("AND [merchInvoice].[pk] NOT IN (")
+            sql.Append("AND [A].[pk] NOT IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -609,12 +700,33 @@
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Sql> fn = null)
         {
-            var sql = new Sql();
-            sql.Append("SELECT *")
-                .Append("FROM [merchInvoice]")
-                .Append("WHERE [merchInvoice].[pk] IN (")
+			var sql = new Sql();
+			sql.Append("SELECT [A].*");
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(", [B].SortOrder AS SortOrder");
+			}
+			else
+			{
+				// can't sort on the collection's sortorder
+				if (orderExpression == "sortorder")
+				{
+					orderExpression = "invoiceNumber"; // default
+				}
+			}
+
+			sql.Append("FROM [merchInvoice] [A]");
+
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(" LEFT JOIN [merchInvoice2EntityCollection] B ON [A].[invoiceKey]=[B].[invoiceKey] AND [B].[entityCollectionKey] = @eck", new { @eck = sortCollectionGuid });
+			}
+
+			sql.Append("WHERE [A].[pk] IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -622,7 +734,8 @@
                     new { @eckeys = collectionKeys })
                 .Append(")");
 
-            return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
+			fn?.Invoke(sql);
+			return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
         public Page<Guid> GetKeysThatExistInAnyCollections(
@@ -631,10 +744,34 @@
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
-        {
-            var sql = BuildInvoiceSearchSql(term);
-            sql.Append("AND [merchInvoice].[pk] IN (")
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Sql> fn = null)
+		{
+
+			var sql = new Sql();
+			sql.Append("SELECT [A].*");
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(", [B].SortOrder AS SortOrder");
+			}
+			else
+			{
+				// can't sort on the collection's sortorder
+				if (orderExpression == "sortorder")
+				{
+					orderExpression = "invoiceNumber"; // default
+				}
+			}
+
+			sql.Append("FROM [merchInvoice] [A]");
+
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(" LEFT JOIN [merchInvoice2EntityCollection] B ON [A].[invoiceKey]=[B].[invoiceKey] AND [B].[entityCollectionKey] = @eck", new { @eck = sortCollectionGuid });
+			}
+									
+            sql.Append("AND [A].[pk] IN (")
                 .Append("SELECT DISTINCT([invoiceKey])")
                 .Append("FROM [merchInvoice2EntityCollection]")
                 .Append(
@@ -642,6 +779,7 @@
                     new { @eckey = collectionKeys })
                 .Append(")");
 
+			fn?.Invoke(sql);
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
@@ -685,35 +823,43 @@
                        };
         }
 
-        /// <summary>
-        /// Gets invoices from collection.
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection key.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="orderExpression">
-        /// The order expression.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{IInvoice}"/>.
-        /// </returns>
-        public Page<IInvoice> GetEntitiesThatExistInAllCollections(
+		/// <summary>
+		/// Gets invoices from collection.
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection key.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="orderExpression">
+		/// The order expression.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <param name="sortCollectionGuid">
+		/// The order collection guid
+		/// </param>
+		/// <param name="fnModifySql">
+		/// Delegate function, purpose is to modify the sql
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{IInvoice}"/>.
+		/// </returns>
+		public Page<IInvoice> GetEntitiesThatExistInAllCollections(
             Guid[] collectionKeys,
             long page,
             long itemsPerPage,
-            string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            string orderExpression,			
+            SortDirection sortDirection = SortDirection.Descending, 
+			Guid sortCollectionGuid = new Guid(),
+			Action<Sql> fnModifySql = null)
         {
-            var p = this.GetKeysThatExistInAllCollections(collectionKeys, page, itemsPerPage, orderExpression, sortDirection);
+            var p = this.GetKeysThatExistInAllCollections(collectionKeys, page, itemsPerPage, orderExpression, sortDirection, sortCollectionGuid,fnModifySql);
 
             return new Page<IInvoice>()
             {
@@ -989,7 +1135,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(searchTerm);
-            sql.Append("AND [merchInvoice].[invoiceStatusKey] = @invsk", new { @invsk = invoiceStatusKey });
+            sql.Append("AND [A].[invoiceStatusKey] = @invsk", new { @invsk = invoiceStatusKey });
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
@@ -1077,7 +1223,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(searchTerm);
-            sql.Append("AND [merchInvoice].[invoiceStatusKey] != @invsk", new { @invsk = invoiceStatusKey });
+            sql.Append("AND [A].[invoiceStatusKey] != @invsk", new { @invsk = invoiceStatusKey });
             return GetPagedKeys(page, itemsPerPage, sql, orderExpression, sortDirection);
         }
 
@@ -1256,7 +1402,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(searchTerm);
-            sql.Append("AND ([merchInvoice].[pk] IN (");
+            sql.Append("AND ([A].[pk] IN (");
             sql.Append("SELECT DISTINCT(invoiceKey)");
             sql.Append("FROM [merchOrder]");
             sql.Append("WHERE [merchOrder].[orderStatusKey] = @osk", new { @osk = orderStatusKey });
@@ -1264,7 +1410,7 @@
 
             if (orderStatusKey.Equals(Core.Constants.OrderStatus.NotFulfilled))
             {
-                sql.Append("OR [merchInvoice].[pk] NOT IN (");
+                sql.Append("OR A.[merchInvoice].[pk] NOT IN (");
                 sql.Append("SELECT DISTINCT(invoiceKey)");
                 sql.Append("FROM [merchOrder]");
                 sql.Append(")");
@@ -1396,7 +1542,7 @@
             SortDirection sortDirection = SortDirection.Descending)
         {
             var sql = BuildInvoiceSearchSql(searchTerm);
-            sql.Append("AND [merchInvoice].[pk] NOT IN (");
+            sql.Append("AND [A].[pk] NOT IN (");
             sql.Append("SELECT DISTINCT(invoiceKey)");
             sql.Append("FROM [merchOrder]");
             sql.Append("WHERE [merchOrder].[orderStatusKey] != @osk", new { @osk = orderStatusKey });
@@ -1650,16 +1796,19 @@
 
         }
 
-        /// <summary>
-        /// Builds an invoice search query.
-        /// </summary>
-        /// <param name="searchTerm">
-        /// The search term.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Sql"/>.
-        /// </returns>
-        private Sql BuildInvoiceSearchSql(string searchTerm)
+		/// <summary>
+		/// Builds an invoice search query.
+		/// </summary>
+		/// <param name="searchTerm">
+		/// The search term.
+		/// </param>
+		/// <param name="sortCollectionGuid">
+		/// The orderCollectionKey
+		/// </param>
+		/// <returns>
+		/// The <see cref="Sql"/>.
+		/// </returns>
+		private Sql BuildInvoiceSearchSql(string searchTerm, Guid sortCollectionGuid = new Guid())
         {
             searchTerm = searchTerm.Replace(",", " ");
             var invidualTerms = searchTerm.Split(' ');
@@ -1683,12 +1832,22 @@
 
             var sql = new Sql();
 
-            sql.Select("*").From<InvoiceDto>(SqlSyntax);
+			sql.Select("[A].*");
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(", [B].SortOrder AS SortOrder");
+			}
+			sql.From<InvoiceDto>(SqlSyntax).Append(" A");
 
-            if (numbers.Any() && terms.Any())
+			if (sortCollectionGuid != Guid.Empty)
+			{
+				sql.Append(" LEFT JOIN [merchInvoice2EntityCollection] B ON [A].[invoiceKey]=[B].[invoiceKey] AND [B].[entityCollectionKey] = @eck", new { @eck = sortCollectionGuid });
+			}
+
+			if (numbers.Any() && terms.Any())
             {
                 sql.Where(
-                    "billToName LIKE @term OR billToEmail LIKE @email OR poNumber LIKE @ponumber OR billToAddress1 LIKE @adr1 OR billToLocality LIKE @loc OR invoiceNumber IN (@invNo) OR billToPostalCode IN (@postal)",
+                    "A.billToName LIKE @term OR A.billToEmail LIKE @email OR A.poNumber LIKE @ponumber OR A.billToAddress1 LIKE @adr1 OR A.billToLocality LIKE @loc OR A.invoiceNumber IN (@invNo) OR A.billToPostalCode IN (@postal)",
                     new
                         {
                             @term = string.Format("%{0}%", string.Join("% ", terms)).Trim(),
@@ -1711,7 +1870,7 @@
 					// postcode is a string and not indexed - so is doing a full table scan. If performance is an issue on large data sets,
 					//   consider removing postcode from lookup or enhancing with an index
 					sql.Where(
-						"invoiceNumber = @invNo OR invoiceNumber BETWEEN @invNo10 AND @invNo19 OR invoiceNumber BETWEEN @invNo100 AND @invNo199 OR invoiceNumber BETWEEN @invNo1000 AND @invNo1999 OR invoiceNumber BETWEEN @invNo10000 AND @invNo19999 OR invoiceNumber BETWEEN @invNo100000 AND @invNo199999 OR invoiceNumber BETWEEN @invNo1000000 AND @invNo1999999 OR billToPostalCode LIKE @postal ", 
+						"A.invoiceNumber = @invNo OR A.invoiceNumber BETWEEN @invNo10 AND @invNo19 OR A.invoiceNumber BETWEEN @invNo100 AND @invNo199 OR A.invoiceNumber BETWEEN @invNo1000 AND @invNo1999 OR A.invoiceNumber BETWEEN @invNo10000 AND @invNo19999 OR A.invoiceNumber BETWEEN @invNo100000 AND @invNo199999 OR A.invoiceNumber BETWEEN @invNo1000000 AND @invNo1999999 OR A.billToPostalCode LIKE @postal ", 
 						new {
 							@invNo = number,
 							@invNo10 = number * 10,
@@ -1731,13 +1890,13 @@
 				}
 				else
 				{
-					sql.Where("invoiceNumber IN (@invNo) OR billToPostalCode IN (@postal) ", new { @invNo = numbers.ToArray(), @postal = numbers.ToArray() });
+					sql.Where("A.invoiceNumber IN (@invNo) OR A.billToPostalCode IN (@postal) ", new { @invNo = numbers.ToArray(), @postal = numbers.ToArray() });
 				}
             }
             else
             {
                 sql.Where(
-                    "billToName LIKE @term OR billToEmail LIKE @term OR poNumber LIKE @term OR billToAddress1 LIKE @adr1 OR billToLocality LIKE @loc OR billToPostalCode IN (@postal)",
+					"A.billToName LIKE @term OR A.billToEmail LIKE @term OR A.poNumber LIKE @term OR A.billToAddress1 LIKE @adr1 OR A.billToLocality LIKE @loc OR A.billToPostalCode IN (@postal)",
                     new
                         {
                             @term = string.Format("%{0}%", string.Join("% ", terms)).Trim(),
@@ -1823,5 +1982,15 @@
 
             return collection;   
         }
-    }
+
+		public Page<IInvoice> GetEntitiesThatExistInAllCollections(Guid[] collectionKeys, long page, long itemsPerPage, string orderExpression, SortDirection sortDirection = SortDirection.Descending)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Page<Guid> GetKeysThatExistInAllCollections(Guid[] collectionKeys, long page, long itemsPerPage, string orderExpression, SortDirection sortDirection = SortDirection.Descending)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

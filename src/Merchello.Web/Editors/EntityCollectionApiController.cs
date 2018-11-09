@@ -519,16 +519,59 @@
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        /// <summary>
-        /// Adds entity associations with specified filters.
-        /// </summary>
-        /// <param name="model">
-        /// The model.
-        /// </param>
-        /// <returns>
-        /// The <see cref="HttpResponseMessage"/>.
-        /// </returns>
-        [HttpPost]
+
+		/// <summary>
+		/// Adds an entity to a collection.
+		/// </summary>
+		/// <param name="model">
+		/// The model.
+		/// </param>
+		/// <returns>
+		/// The <see cref="HttpResponseMessage"/>.
+		/// </returns>
+		[HttpPost]
+		public HttpResponseMessage PostSaveEntityToCollection(Entity2CollectionModel model)
+		{
+			var collection = _entityCollectionService.GetByKey(model.CollectionKey);
+			if (collection == null)
+			{
+				return Request.CreateResponse(HttpStatusCode.NotFound);
+			}
+
+			var provider = collection.ResolveProvider();
+			var entityType = provider.EntityCollection.EntityType;
+			switch (entityType)
+			{
+				case EntityType.Customer:
+					MerchelloContext.Services.CustomerService.AddToCollection(model.EntityKey, model.CollectionKey);
+					break;
+				case EntityType.Invoice:
+					MerchelloContext.Services.InvoiceService.AddToCollection(model.EntityKey, model.CollectionKey);
+					break;
+				case EntityType.Product:
+					MerchelloContext.Services.ProductService.AddToCollection(model.EntityKey, model.CollectionKey, model.SortOrder);
+					break;
+				default:
+					var invalid =
+						new InvalidOperationException("Merchello service could not be found for the entity type");
+					MultiLogHelper.Error<EntityCollectionApiController>("An attempt was made to add an entity to a collection", invalid);
+					return Request.CreateErrorResponse(HttpStatusCode.NotImplemented, invalid);
+			}
+
+			return Request.CreateResponse(HttpStatusCode.OK);
+		}
+
+
+		/// <summary>
+		/// Adds entity associations with specified filters.
+		/// </summary>
+		/// <param name="model">
+		/// The model.
+		/// </param>
+		/// <returns>
+		/// The <see cref="HttpResponseMessage"/>.
+		/// </returns>
+		[HttpPost]
         public HttpResponseMessage PostAssociateEntityWithFilters(Entity2FilterCollectionsModel model)
         {
             var collections = _entityCollectionService.GetAll(model.CollectionKeys).ToArray();

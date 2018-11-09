@@ -32,5 +32,10 @@
         /// A product variant is the culmination of a product with product option choices selected
         /// </remarks>
         ProductVariantCollection ProductVariants { get; set; }
-    }
+
+		/// <summary>
+		/// Gets or sets the sortorder, if available
+		/// </summary>
+		int SortOrder { get; set; }
+	}
 }

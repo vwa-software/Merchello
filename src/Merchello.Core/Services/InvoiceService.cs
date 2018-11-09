@@ -37,7 +37,7 @@
         /// <summary>
         /// The valid sort fields.
         /// </summary>
-        private static readonly string[] ValidSortFields = { "invoicenumber", "invoicedate", "billtoname", "billtoemail" };
+        private static readonly string[] ValidSortFields = { "invoicenumber", "invoicedate", "billtoname", "billtoemail", "sortorder" };
 
         /// <summary>
         /// The applied payment service.
@@ -840,16 +840,36 @@
             }
         }
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="invoice">
-        /// The invoice.
-        /// </param>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        public void RemoveFromCollection(IInvoice invoice, IEntityCollection collection)
+		/// <summary>
+		/// The add invoice to collection.
+		/// </summary>
+		/// <param name="invoiceKey">
+		/// The invoice key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The sortorder of this invoice in this collection
+		/// </param>
+		public void AddToCollection(Guid invoiceKey, Guid collectionKey, int? sortOrder)
+		{
+			using (var repository = RepositoryFactory.CreateInvoiceRepository(UowProvider.GetUnitOfWork()))
+			{
+				repository.AddToCollection(invoiceKey, collectionKey, sortOrder);
+			}
+		}
+
+		/// <summary>
+		/// The remove invoice from collection.
+		/// </summary>
+		/// <param name="invoice">
+		/// The invoice.
+		/// </param>
+		/// <param name="collection">
+		/// The collection.
+		/// </param>
+		public void RemoveFromCollection(IInvoice invoice, IEntityCollection collection)
         {
             this.RemoveFromCollection(invoice, collection.Key);
         }

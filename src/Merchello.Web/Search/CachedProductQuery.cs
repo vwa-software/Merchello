@@ -495,14 +495,16 @@
             IEnumerable<Guid> collectionKeys,
             long page,
             long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
+			string sortBy = "",
+            SortDirection sortDirection = SortDirection.Ascending,
+			Guid CollectionOrderGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, page, itemsPerPage, sortBy, sortDirection, CollectionOrderGuid, fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -536,14 +538,16 @@
             string searchTerm,
             long page,
             long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
-        {
+			string sortBy = "",
+            SortDirection sortDirection = SortDirection.Ascending,
+			Guid CollectionOrderGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
+		{
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, searchTerm, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, searchTerm, page, itemsPerPage, sortBy, sortDirection, CollectionOrderGuid,fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -555,14 +559,16 @@
             decimal max,
             long page,
             long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
-        {
+			string sortBy = "",
+            SortDirection sortDirection = SortDirection.Ascending,
+			Guid CollectionOrderGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
+		{
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, min, max, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAllCollections(keys, min, max, page, itemsPerPage, sortBy, sortDirection, fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -575,8 +581,10 @@
             decimal max,
             long page,
             long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
+			string sortBy = "",
+            SortDirection sortDirection = SortDirection.Ascending,
+			Guid CollectionOrderGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
@@ -730,13 +738,15 @@
             long page,
             long itemsPerPage,
             string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
+            SortDirection sortDirection = SortDirection.Ascending,
+			 Guid orderCollectionKey = new Guid(),
+			 Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, page, itemsPerPage, sortBy, sortDirection, orderCollectionKey, fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -771,13 +781,15 @@
             long page,
             long itemsPerPage,
             string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
-        {
+            SortDirection sortDirection = SortDirection.Ascending, 
+			Guid orderCollectionKey = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
+		{
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, searchTerm, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, searchTerm, page, itemsPerPage, sortBy, sortDirection, orderCollectionKey, fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -790,13 +802,15 @@
             long page,
             long itemsPerPage,
             string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
+            SortDirection sortDirection = SortDirection.Ascending,
+			Guid orderCollectionKey = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, min, max, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, min, max, page, itemsPerPage, sortBy, sortDirection, orderCollectionKey);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
@@ -809,28 +823,38 @@
             decimal max,
             long page,
             long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Ascending)
+            string sortBy = "",		
+			SortDirection sortDirection = SortDirection.Ascending, 
+			Guid orderCollectionKey = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var keys = collectionKeys as Guid[] ?? collectionKeys.ToArray();
 
             if (!keys.Any()) return PagedCollection<IProductContent>.Empty();
 
-            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, searchTerm, min, max, page, itemsPerPage, sortBy, sortDirection);
+            var pagedKeys = ((ProductService)Service).GetKeysThatExistInAnyCollections(keys, searchTerm, min, max, page, itemsPerPage, sortBy, sortDirection, orderCollectionKey, fn);
 
             return _cache.MapPagedCollection(pagedKeys, sortBy);
         }
 
-        /// <summary>
-        /// Gets a <see cref="ProductDisplay"/> by it's unique key
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        /// <returns>
-        /// The <see cref="ProductDisplay"/>.
-        /// </returns>
-        public override ProductDisplay GetByKey(Guid key)
+
+		public PagedCollection<IProductContent> TypedProductContentPages(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn, string sortBy = "")
+		{
+			var pagedKeys = fn(this);
+			return _cache.MapPagedCollection(pagedKeys, sortBy);
+		}
+
+
+		/// <summary>
+		/// Gets a <see cref="ProductDisplay"/> by it's unique key
+		/// </summary>
+		/// <param name="key">
+		/// The key.
+		/// </param>
+		/// <returns>
+		/// The <see cref="ProductDisplay"/>.
+		/// </returns>
+		public override ProductDisplay GetByKey(Guid key)
         {
             //// modify data is handled in GetDisplayObject!
             return GetDisplayObject(key);

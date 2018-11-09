@@ -62,6 +62,16 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<TResult> Execute();
-    }
+        PagedCollection<TResult> Execute(Action<Umbraco.Core.Persistence.Sql> fn = null);
+
+
+		/// <summary>
+		/// Performs the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection"/>.
+		/// </returns>
+		PagedCollection<TResult> Execute(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn);
+
+	}
 }

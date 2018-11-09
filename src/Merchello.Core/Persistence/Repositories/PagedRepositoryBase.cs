@@ -227,9 +227,19 @@
         {
             if (!string.IsNullOrEmpty(orderExpression))
             {
-                sql.Append(sortDirection == SortDirection.Ascending
-                    ? string.Format("ORDER BY {0} ASC", orderExpression)
-                    : string.Format("ORDER BY {0} DESC", orderExpression));
+				// bit tricky, the first orderExpression is the orignal one, always without desc,asc
+				// the later expressions can have asc,desc in them
+				// eg orderExpression = sortOrder, sku desc
+				string[] orderExpressions = orderExpression.Split(',');
+
+				sql.Append(sortDirection == SortDirection.Ascending
+					? string.Format("ORDER BY {0} ASC", orderExpressions[0])
+					: string.Format("ORDER BY {0} DESC", orderExpressions[0]));
+
+				for (int i = 1; i < orderExpressions.Length; i++)
+				{
+					sql.Append(", " + orderExpressions[i]);
+				}
             }
 
             return Database.Page<TDto>(page, itemsPerPage, sql);

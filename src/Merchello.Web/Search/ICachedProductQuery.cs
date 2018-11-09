@@ -61,28 +61,38 @@
         /// </returns>
         IEnumerable<IProductContent> TypedProductContentFromCollection(Guid collectionKey);
 
-        /// <summary>
-        /// Gets the typed <see cref="IProductContent"/> for a collection.
-        /// </summary>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="sortBy">
-        /// The sort by.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IEnumerable{IProductContent}"/>.
-        /// </returns>
-        IEnumerable<IProductContent> TypedProductContentFromCollection(Guid collectionKey, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+		/// <summary>
+		/// Gets the paged typed products, using the delegate function call 
+		/// </summary>
+		/// <param name="fn">Delegate function call, which must deliver the paged guids</param>
+		/// <param name="sortBy">The sort direction</param>
+		/// <returns></returns>
+		PagedCollection<IProductContent> TypedProductContentPages(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn, string sortBy = "");
+
+
+		
+		/// <summary>
+		/// Gets the typed <see cref="IProductContent"/> for a collection.
+		/// </summary>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="sortBy">
+		/// The sort by.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// The <see cref="IEnumerable{IProductContent}"/>.
+		/// </returns>
+		IEnumerable<IProductContent> TypedProductContentFromCollection(Guid collectionKey, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/>.
@@ -269,7 +279,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid CollectionOrderGuid = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/> that exists in every collection referenced.
@@ -295,7 +305,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, string searchTerm, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, string searchTerm, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid CollectionOrderGuid = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/> that exists in every collection referenced.
@@ -324,7 +334,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid CollectionOrderGuid = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/> that exists in every collection referenced.
@@ -356,7 +366,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, string searchTerm, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistInAllCollections(IEnumerable<Guid> collectionKeys, string searchTerm, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid CollectionOrderGuid = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
 
 
@@ -495,7 +505,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid OrderCollectionKey = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
 
         /// <summary>
@@ -522,7 +532,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, string searchTerm, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, string searchTerm, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid OrderCollectionKey = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/> that exists in any of the collections passed.
@@ -551,7 +561,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid OrderCollectionKey = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
         /// <summary>
         /// Gets a <see cref="PagedCollection{IProductContent}"/> that exists in any of the collections passed.
@@ -583,7 +593,7 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, string searchTerm, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending);
+        PagedCollection<IProductContent> TypedProductContentPageThatExistsInAnyCollections(IEnumerable<Guid> collectionKeys, string searchTerm, decimal min, decimal max, long page, long itemsPerPage, string sortBy = "", SortDirection sortDirection = SortDirection.Ascending, Guid CollectionOrderGuid = new Guid(), Action<Umbraco.Core.Persistence.Sql> fn = null);
 
 
 

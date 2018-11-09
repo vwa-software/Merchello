@@ -81,5 +81,11 @@
         [Column("createDate")]
         [Constraint(Default = "getdate()")]
         public DateTime CreateDate { get; set; }
+
+		/// <summary>
+		/// Gets or sets the ListSortOrder
+		/// </summary>
+		[ResultColumn]
+		public int ListSortOrder { get; set; }
     }
 }

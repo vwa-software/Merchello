@@ -41,7 +41,7 @@
         void AddToCollection(T entity, Guid collectionKey);
 
         /// <summary>
-        /// The add invoice to collection.
+        /// The add entity to collection.
         /// </summary>
         /// <param name="entityKey">
         /// The entity key.
@@ -51,66 +51,80 @@
         /// </param>
         void AddToCollection(Guid entityKey, Guid collectionKey);
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        void RemoveFromCollection(T entity, IEntityCollection collection);
+		/// <summary>
+		/// The add entity to collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// /// <param name="sortOrder">
+		/// The sortOrder of this entity in the collection
+		/// </param>
+		void AddToCollection(Guid entityKey, Guid collectionKey, int? sortOrder);
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entity">
-        /// The entity.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        void RemoveFromCollection(T entity, Guid collectionKey);
+		/// <summary>
+		/// The remove entity from collection.
+		/// </summary>
+		/// <param name="entity">
+		/// The entity.
+		/// </param>
+		/// <param name="collection">
+		/// The collection.
+		/// </param>
+		void RemoveFromCollection(T entity, IEntityCollection collection);
 
-        /// <summary>
-        /// The remove invoice from collection.
-        /// </summary>
-        /// <param name="entityKey">
-        /// The entity key.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        void RemoveFromCollection(Guid entityKey, Guid collectionKey);
+		/// <summary>
+		/// The remove entity from collection.
+		/// </summary>
+		/// <param name="entity">
+		/// The entity.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		void RemoveFromCollection(T entity, Guid collectionKey);
 
-        /// <summary>
-        /// Returns true if the invoice exists in the static collection.
-        /// </summary>
-        /// <param name="entityKey">
-        /// The entity key.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        bool ExistsInCollection(Guid entityKey, Guid collectionKey);
+		/// <summary>
+		/// The remove entity from collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		void RemoveFromCollection(Guid entityKey, Guid collectionKey);
 
-        /// <summary>
-        /// Returns true if the entity exists in the at least one of the static collections.
-        /// </summary>
-        /// <param name="entityKey">
-        /// The entity key.
-        /// </param>
-        /// <param name="collectionKeys">
-        /// The collection keys.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        bool ExistsInCollection(Guid entityKey, IEnumerable<Guid> collectionKeys);
+		/// <summary>
+		/// Returns true if the entity exists in the static collection.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <returns>
+		/// The <see cref="bool"/>.
+		/// </returns>
+		bool ExistsInCollection(Guid entityKey, Guid collectionKey);
+
+		/// <summary>
+		/// Returns true if the entity exists in the at least one of the static collections.
+		/// </summary>
+		/// <param name="entityKey">
+		/// The entity key.
+		/// </param>
+		/// <param name="collectionKeys">
+		/// The collection keys.
+		/// </param>
+		/// <returns>
+		/// The <see cref="bool"/>.
+		/// </returns>
+		bool ExistsInCollection(Guid entityKey, IEnumerable<Guid> collectionKeys);
 
         /// <summary>
         /// Gets an entity from a collection.

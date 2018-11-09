@@ -34,79 +34,86 @@
         }
 
 
-        /// <summary>
-        /// Gets the entity keys for distinct entities in multiple collections
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection key.
-        /// </param>
-        /// <param name="min">
-        /// The min.
-        /// </param>
-        /// <param name="max">
-        /// The max.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="orderExpression">
-        /// The order expression.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{T}"/>.
-        /// </returns>
-        internal Page<Guid> GetKeysThatExistInAllCollections(
+		/// <summary>
+		/// Gets the entity keys for distinct entities in multiple collections
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection key.
+		/// </param>
+		/// <param name="min">
+		/// The min.
+		/// </param>
+		/// <param name="max">
+		/// The max.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="orderExpression">
+		/// The order expression.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <param name="fnModifySql">
+		/// Delegate function, purpose is to modify the sql
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{T}"/>.
+		/// </returns>
+		internal Page<Guid> GetKeysThatExistInAllCollections(
             Guid[] collectionKeys,
             decimal min,
             decimal max,
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                return repository.GetKeysThatExistInAllCollections(collectionKeys, min, max, page, itemsPerPage, orderExpression, sortDirection);
+                return repository.GetKeysThatExistInAllCollections(collectionKeys, min, max, page, itemsPerPage, orderExpression, sortDirection, fnModifySql);
             }
         }
 
-        /// <summary>
-        /// Gets a paged list of distinct keys for entities in multiple collections.
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection keys.
-        /// </param>
-        /// <param name="term">
-        /// A filter term
-        /// </param>
-        /// <param name="min">
-        /// The min.
-        /// </param>
-        /// <param name="max">
-        /// The max.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="orderExpression">
-        /// The order expression.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{T}"/>.
-        /// </returns>
-        internal Page<Guid> GetKeysThatExistInAllCollections(
+		/// <summary>
+		/// Gets a paged list of distinct keys for entities in multiple collections.
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection keys.
+		/// </param>
+		/// <param name="term">
+		/// A filter term
+		/// </param>
+		/// <param name="min">
+		/// The min.
+		/// </param>
+		/// <param name="max">
+		/// The max.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="orderExpression">
+		/// The order expression.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// <param name="fnModifySql">
+		/// Delegate function, purpose is to modify the sql
+		/// </param>
+		/// The <see cref="Page{T}"/>.
+		/// </returns>
+		internal Page<Guid> GetKeysThatExistInAllCollections(
             Guid[] collectionKeys,
             string term,
             decimal min,
@@ -114,11 +121,12 @@
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                return repository.GetKeysThatExistInAllCollections(collectionKeys, term, min, max, page, itemsPerPage, orderExpression, sortDirection);
+                return repository.GetKeysThatExistInAllCollections(collectionKeys, term, min, max, page, itemsPerPage, orderExpression, sortDirection, fnModifySql);
             }   
         }
 
@@ -244,7 +252,9 @@
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Func<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
@@ -290,11 +300,13 @@
             long page,
             long itemsPerPage,
             string orderExpression,
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                return repository.GetKeysThatExistInAnyCollections(collectionKeys, term, min, max, page, itemsPerPage, orderExpression, sortDirection);
+                return repository.GetKeysThatExistInAnyCollections(collectionKeys, term, min, max, page, itemsPerPage, orderExpression, sortDirection, sortCollectionGuid, fnModifySql);
             }
         }
 

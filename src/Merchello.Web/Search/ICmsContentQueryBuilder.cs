@@ -66,14 +66,24 @@
         /// <returns>
         /// The <see cref="PagedCollection"/>.
         /// </returns>
-        PagedCollection<TResult> Execute();
-    }
+        PagedCollection<TResult> Execute(Action<Umbraco.Core.Persistence.Sql> fn = null);
+
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection"/>.
+		/// </returns>
+		PagedCollection<TResult> Execute(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn);
+		
+
+	}
 
 
-    /// <summary>
-    /// Defines a CmsContentQueryBuilder.
-    /// </summary>
-    public interface ICmsContentQueryBuilder
+	/// <summary>
+	/// Defines a CmsContentQueryBuilder.
+	/// </summary>
+	public interface ICmsContentQueryBuilder
     {
         /// <summary>
         /// Gets or sets the page.

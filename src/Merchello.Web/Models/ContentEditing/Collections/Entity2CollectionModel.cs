@@ -20,9 +20,18 @@
         /// </summary>
         [DataMember(Name = "collectionKey")]
         public Guid CollectionKey { get; set; }
+
+		/// <summary>
+		/// Gets or sets the sortorder.
+		/// </summary>
+		[DataMember(Name = "sortOrder")]
+		public int SortOrder { get; set; }
     }
 
-    public class Entity2FilterCollectionsModel
+	/// <summary>
+	/// The add entity to filter model.
+	/// </summary>
+	public class Entity2FilterCollectionsModel
     {
         /// <summary>
         /// Gets or sets the entity key.

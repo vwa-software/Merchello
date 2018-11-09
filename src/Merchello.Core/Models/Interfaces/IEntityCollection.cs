@@ -34,11 +34,19 @@
         /// Zero based sort order
         /// </remarks>
         int SortOrder { get; }
+		
+		/// <summary>
+		/// Gets the sort order of this entity in the collection.
+		/// </summary>
+		/// <remarks>
+		/// Zero based sort order
+		/// </remarks>
+		int ListSortOrder { get; }
 
-        /// <summary>
-        /// Gets or sets the collection provider key.
-        /// </summary>
-        [DataMember]
+		/// <summary>
+		/// Gets or sets the collection provider key.
+		/// </summary>
+		[DataMember]
         Guid ProviderKey { get; set; }
 
         /// <summary>

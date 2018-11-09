@@ -119,13 +119,29 @@
         /// </summary>
         public CollectionClusivity CollectionClusivity { get; set; }
 
-        /// <summary>
-        /// Executes the query.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="PagedCollection"/>.
-        /// </returns>
-        public PagedCollection<IProductContent> Execute()
+		/// <summary>
+		/// Order the products in the order of this collection guid
+		/// </summary>
+		public Guid OrderGuid { get; internal set; }
+
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection"/>.
+		/// </returns>
+		public PagedCollection<IProductContent> Execute(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn)
+		{
+			return _query.TypedProductContentPages(fn, SortBy);
+		}
+
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection"/>.
+		/// </returns>
+		public PagedCollection<IProductContent> Execute(Action<Umbraco.Core.Persistence.Sql> fn = null)
         {
             var hasCollections = CollectionKeys != null && CollectionKeys.Any();
 
@@ -171,13 +187,13 @@
                     if (!HasPriceRange)
                     {
                         return HasSearchTerm ?
-                            _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, SearchTerm, Page, ItemsPerPage, SortBy, SortDirection) :
-                            _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, Page, ItemsPerPage, SortBy, SortDirection);
+                            _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, SearchTerm, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn) :
+                            _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn);
                     }
 
-                    return HasSearchTerm ?
-                        _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, SearchTerm, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection) :
-                        _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection);
+					return HasSearchTerm ?
+                        _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, SearchTerm, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy,  SortDirection, this.OrderGuid, fn) :
+                        _query.TypedProductContentPageThatExistsInAnyCollections(CollectionKeys, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn);
 
                 case CollectionClusivity.ExistsInAllCollectionsAndFilters:
                 default:
@@ -185,13 +201,13 @@
                     if (!HasPriceRange)
                     {
                         return HasSearchTerm ?
-                            _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, SearchTerm, Page, ItemsPerPage, SortBy, SortDirection) :
-                            _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, Page, ItemsPerPage, SortBy, SortDirection);
+                            _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, SearchTerm, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn) :
+                            _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn);
                     }
 
                     return HasSearchTerm ?
-                        _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, SearchTerm, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection) :
-                        _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection);
+                        _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, SearchTerm, MinPrice, MaxPrice, Page, ItemsPerPage,SortBy, SortDirection, this.OrderGuid, fn) :
+                        _query.TypedProductContentPageThatExistInAllCollections(CollectionKeys, MinPrice, MaxPrice, Page, ItemsPerPage, SortBy, SortDirection, this.OrderGuid, fn);
             }
         }
 

@@ -86,5 +86,10 @@
                            : 0;
             }
         }
+
+		/// <summary>
+		/// Gets or sets the SortOrder
+		/// </summary>
+		public int SortOrder { get; set; }
     }
 }

@@ -186,22 +186,46 @@
             return builder;
         }
 
-        /// <summary>
-        /// Sets a value indicating whether the query should be inclusive or exclusive with respect to the collection constraints.
-        /// </summary>
-        /// <param name="builder">
-        /// The builder.
-        /// </param>
-        /// <param name="clusivity">
-        /// The clusivity.
-        /// </param>
-        /// <returns>
-        /// The <see cref="IProductContentQueryBuilder"/>.
-        /// </returns>
-        /// <remarks>
-        /// Only relevant in queries that are constrained by collections
-        /// </remarks>
-        public static IProductContentQueryBuilder Clusivity(this IProductContentQueryBuilder builder, CollectionClusivity clusivity)
+		/// <summary>
+		/// Sets the ordering of the query result.
+		/// </summary>
+		/// <param name="builder">
+		/// The builder.
+		/// </param>
+		/// <param name="collectionGuid">
+		/// The collection where the products to sort.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// The <see cref="IProductContentQueryBuilder"/>.
+		/// </returns>
+		public static IProductContentQueryBuilder OrderByCollection(this IProductContentQueryBuilder builder, Guid collectionGuid, SortDirection sortDirection = SortDirection.Ascending)
+		{
+			builder.SortBy = ProductSortField.SortOrder;
+			builder.OrderGuid = collectionGuid;
+			builder.SortDirection = sortDirection;
+			return builder;
+		}
+
+
+		/// <summary>
+		/// Sets a value indicating whether the query should be inclusive or exclusive with respect to the collection constraints.
+		/// </summary>
+		/// <param name="builder">
+		/// The builder.
+		/// </param>
+		/// <param name="clusivity">
+		/// The clusivity.
+		/// </param>
+		/// <returns>
+		/// The <see cref="IProductContentQueryBuilder"/>.
+		/// </returns>
+		/// <remarks>
+		/// Only relevant in queries that are constrained by collections
+		/// </remarks>
+		public static IProductContentQueryBuilder Clusivity(this IProductContentQueryBuilder builder, CollectionClusivity clusivity)
         {
             builder.CollectionClusivity = clusivity;
             return builder;

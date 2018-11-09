@@ -28,10 +28,18 @@
         [ForeignKey(typeof(EntityCollectionDto), Name = "FK_merchProduct2EntityCollection_merchEntityCollection", Column = "pk")]
         public Guid EntityCollectionKey { get; set; }
 
-        /// <summary>
-        /// Gets or sets the update date.
-        /// </summary>
-        [Column("updateDate")]
+
+		/// <summary>
+		/// Gets or sets the product sortorder in this collection.
+		/// </summary>
+		[Column("SortOrder")]
+		public int SortOrder { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets the update date.
+		/// </summary>
+		[Column("updateDate")]
         [Constraint(Default = "getdate()")]
         public DateTime UpdateDate { get; set; }
 

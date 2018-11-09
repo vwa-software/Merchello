@@ -477,6 +477,10 @@
             }
         }
 
+		/// <inheritdoc/>
+		[DataMember]
+		public int SortOrder { get; set; }
+
         #endregion
 
         /// <inheritdoc/>

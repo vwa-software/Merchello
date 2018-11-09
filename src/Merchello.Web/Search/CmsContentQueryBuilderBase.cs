@@ -157,21 +157,32 @@
         /// </summary>
         public abstract void Reset();
 
-        /// <summary>
-        /// Executes the query.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="PagedCollection{TResult}"/>.
-        /// </returns>
-        public abstract PagedCollection<TResult> Execute();
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection{TResult}"/>.
+		/// </returns>
+		public abstract PagedCollection<TResult> Execute(Action<Umbraco.Core.Persistence.Sql> fn = null);
 
-        /// <summary>
-        /// Builds the <see cref="ICmsContentQuery{TResult}"/>.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="ICmsContentQuery{TResult}"/>.
-        /// </returns>
-        protected abstract ICmsContentQuery<TResult> Build();
+
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PagedCollection{TResult}"/>.
+		/// </returns>
+		public abstract PagedCollection<TResult> Execute(Func<ICachedProductQuery, Umbraco.Core.Persistence.Page<Guid>> fn);
+
+
+
+		/// <summary>
+		/// Builds the <see cref="ICmsContentQuery{TResult}"/>.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="ICmsContentQuery{TResult}"/>.
+		/// </returns>
+		protected abstract ICmsContentQuery<TResult> Build();
 
         /// <summary>
         /// Adds the <see cref="IEntityProxy"/> key to the collections hash.

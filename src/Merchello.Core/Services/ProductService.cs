@@ -35,7 +35,7 @@ namespace Merchello.Core.Services
         /// <summary>
         /// The valid sort fields.
         /// </summary>
-        private static readonly string[] ValidSortFields = { "sku", "name", "price", "saleprice" };
+        private static readonly string[] ValidSortFields = { "sku", "name", "price", "saleprice", "sortorder" };
 
         /// <summary>
         /// The product variant service.
@@ -629,23 +629,40 @@ namespace Merchello.Core.Services
         {
             this.AddToCollection(product.Key, collectionKey);
         }
-
-        /// <summary>
-        /// The add product to collection.
-        /// </summary>
-        /// <param name="productKey">
-        /// The product key.
-        /// </param>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        public void AddToCollection(Guid productKey, Guid collectionKey)
+		
+		/// <summary>
+		/// The add product to collection.
+		/// </summary>
+		/// <param name="productKey">
+		/// The product key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		public void AddToCollection(Guid productKey, Guid collectionKey)
+		{
+			this.AddToCollection(productKey, collectionKey, null);
+		}
+		
+		/// <summary>
+		/// The add product to collection.
+		/// </summary>
+		/// <param name="productKey">
+		/// The product key.
+		/// </param>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="sortOrder">
+		/// The sortOrder of this product in the collection
+		/// </param>
+		public void AddToCollection(Guid productKey, Guid collectionKey, int? sortOrder = null)
         {
             if (AddingToCollection != null) AddingToCollection.Invoke(this, new EventArgs());
            
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                repository.AddToCollection(productKey, collectionKey);
+                repository.AddToCollection(productKey, collectionKey, sortOrder);
             }
 
 			if (AddedToCollection != null) AddedToCollection.Invoke(this, new EventArgs());
@@ -964,12 +981,14 @@ namespace Merchello.Core.Services
            long page,
            long itemsPerPage,
            string sortBy = "",
-           SortDirection sortDirection = SortDirection.Descending)
-                {
-                    using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
-                    {
-                        return repository.GetKeysThatExistInAnyCollections(collectionKeys.ToArray(), page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
-                    }
+           SortDirection sortDirection = SortDirection.Descending,
+		   Guid sortCollectionGuid = new Guid(),
+		   Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
+		{
+            using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
+            {
+                return repository.GetKeysThatExistInAnyCollections(collectionKeys.ToArray(), page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection, sortCollectionGuid, fnModifySql);
+            }
         }
 
         /// <summary>
@@ -1032,112 +1051,119 @@ namespace Merchello.Core.Services
             long page,
             long itemsPerPage,
             string sortBy = "",
-            SortDirection sortDirection = SortDirection.Descending)
+            SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                return repository.GetKeysThatExistInAllCollections(collectionKeys.ToArray(), page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
+                return repository.GetKeysThatExistInAllCollections(collectionKeys.ToArray(), page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection, sortCollectionGuid, fnModifySql);
             }
         }
 
-        /// <summary>
-        /// The get keys from collection.
-        /// </summary>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        /// <param name="searchTerm">
-        /// The search term.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="sortBy">
-        /// The sort by.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{Guid}"/>.
-        /// </returns>
-        internal Page<Guid> GetKeysFromCollection(
-            Guid collectionKey,
-            string searchTerm,
-            long page,
-            long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Descending)
-        {
-            using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
-            {
-                return repository.GetKeysFromCollection(collectionKey, searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
-            }
-        }
 
-        /// <summary>
-        /// The get keys from collection.
-        /// </summary>
-        /// <param name="collectionKeys">
-        /// The collection key.
-        /// </param>
-        /// <param name="searchTerm">
-        /// The search term.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="sortBy">
-        /// The sort by.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{Guid}"/>.
-        /// </returns>
-        internal Page<Guid> GetKeysThatExistInAllCollections(
-            IEnumerable<Guid> collectionKeys,
-            string searchTerm,
-            long page,
-            long itemsPerPage,
-            string sortBy = "",
-            SortDirection sortDirection = SortDirection.Descending)
-        {
-            using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
-            {
-                return repository.GetKeysThatExistInAllCollections(collectionKeys.ToArray(), searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
-            }
-        }
+		/// <summary>
+		/// The get keys from collection.
+		/// </summary>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="searchTerm">
+		/// The search term.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="sortBy">
+		/// The sort by.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{Guid}"/>.
+		/// </returns>
+		internal Page<Guid> GetKeysFromCollection(
+			Guid collectionKey,
+			string searchTerm,
+			long page,
+			long itemsPerPage,
+			string sortBy = "",
+			SortDirection sortDirection = SortDirection.Descending)
+		{
+			using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
+			{
+				return repository.GetKeysFromCollection(collectionKey, searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
+			}
+		}
 
-        /// <summary>
-        /// The get keys not in collection.
-        /// </summary>
-        /// <param name="collectionKey">
-        /// The collection key.
-        /// </param>
-        /// <param name="page">
-        /// The page.
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The items per page.
-        /// </param>
-        /// <param name="sortBy">
-        /// The sort by.
-        /// </param>
-        /// <param name="sortDirection">
-        /// The sort direction.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Page{Guid}"/>.
-        /// </returns>
-        internal Page<Guid> GetKeysNotInCollection(
+		/// <summary>
+		/// The get keys from collection.
+		/// </summary>
+		/// <param name="collectionKeys">
+		/// The collection key.
+		/// </param>
+		/// <param name="searchTerm">
+		/// The search term.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="sortBy">
+		/// The sort by.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{Guid}"/>.
+		/// </returns>
+		internal Page<Guid> GetKeysThatExistInAllCollections(
+			IEnumerable<Guid> collectionKeys,
+			string searchTerm,
+			long page,
+			long itemsPerPage,
+			string sortBy = "",
+			SortDirection sortDirection = SortDirection.Descending,
+			Guid sortCollectionGuid = new Guid(),
+			Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
+		{
+			using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
+			{
+				return repository.GetKeysThatExistInAllCollections(collectionKeys.ToArray(), searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection, sortCollectionGuid,fnModifySql);
+			}
+		}
+
+		
+
+		/// <summary>
+		/// The get keys not in collection.
+		/// </summary>
+		/// <param name="collectionKey">
+		/// The collection key.
+		/// </param>
+		/// <param name="page">
+		/// The page.
+		/// </param>
+		/// <param name="itemsPerPage">
+		/// The items per page.
+		/// </param>
+		/// <param name="sortBy">
+		/// The sort by.
+		/// </param>
+		/// <param name="sortDirection">
+		/// The sort direction.
+		/// </param>
+		/// <returns>
+		/// The <see cref="Page{Guid}"/>.
+		/// </returns>
+		internal Page<Guid> GetKeysNotInCollection(
             Guid collectionKey,
             long page,
             long itemsPerPage,
@@ -1267,11 +1293,13 @@ namespace Merchello.Core.Services
            long page,
            long itemsPerPage,
            string sortBy = "",
-           SortDirection sortDirection = SortDirection.Descending)
+           SortDirection sortDirection = SortDirection.Descending,
+			 Guid sortCollectionGuid = new Guid(),
+			 Action<Umbraco.Core.Persistence.Sql> fnModifySql = null)
         {
             using (var repository = RepositoryFactory.CreateProductRepository(UowProvider.GetUnitOfWork()))
             {
-                return repository.GetKeysThatExistInAnyCollections(collectionKeys.ToArray(), searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection);
+                return repository.GetKeysThatExistInAnyCollections(collectionKeys.ToArray(), searchTerm, page, itemsPerPage, this.ValidateSortByField(sortBy), sortDirection, sortCollectionGuid, fnModifySql);
             }
         }
 
@@ -1929,7 +1957,24 @@ namespace Merchello.Core.Services
         /// </returns>
         protected override string ValidateSortByField(string sortBy)
         {
-            return ValidSortFields.Contains(sortBy.ToLowerInvariant()) ? sortBy : "name";
+			string validSortBy = string.Empty;
+			foreach(var sort in sortBy.ToLowerInvariant().Split(','))
+			{
+				// check for desc,asc in the sort expression
+				string[] sortWithoudAscDesc = sort.Trim().Split(' ');
+
+				if (ValidSortFields.Contains(sortWithoudAscDesc[0].Trim())) {
+					validSortBy += sort + ",";
+				}
+			}
+			validSortBy = validSortBy.TrimEnd(',');
+
+			if (string.IsNullOrWhiteSpace(validSortBy))
+			{
+				return "name";
+			}
+
+			return validSortBy;
         }
 
         /// <summary>
