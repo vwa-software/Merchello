@@ -20,51 +20,49 @@ if (true) { randomNumber = new Random().Next();
 <!DOCTYPE html>
 <html lang="nl-nl">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="@metaDescription">
-    <meta name="keywords" content="@Umbraco.Field("metaKeywords")">
-    <meta name="author" content="">
-    <meta name="date" content="@System.DateTime.UtcNow.ToLongTimeString()">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>@Umbraco.Field("titleMain") @Umbraco.Field("pageTitle") @RenderSection("ProductTitle", false)</title>
-<!-- jQuery
-<!-- Bootstrap core CSS -->
-    <link href="~/Css/bootstrap.css?@randomNumber" rel="stylesheet">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="@metaDescription">
+	<meta name="keywords" content="@Umbraco.Field("metaKeywords")">
+	<meta name="author" content="">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<title>@Umbraco.Field("titleMain") @Umbraco.Field("pageTitle") @RenderSection("ProductTitle", false)</title>
+	<!-- jQuery
+	<!-- Bootstrap core CSS -->
+	<link href="~/Css/bootstrap.css?@randomNumber" rel="stylesheet">
 	<link href="~/Css/jquery-eu-cookie-law-popup.css?@randomNumber" rel="stylesheet">
-    <link href="~/Styles/css/bootstrap-theme.css?@randomNumber" rel="stylesheet">
-<link rel="stylesheet" href="~/App_Plugins/Merchello/client/css/merchello.ui.min.css" />
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-<!-- Custom styles for this template -->
-<!-- Google fonts - Playfair Display-->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700">
+	<link href="~/Styles/css/bootstrap-theme.css?@randomNumber" rel="stylesheet">
+	<link rel="stylesheet" href="~/App_Plugins/Merchello/client/css/merchello.ui.min.css" />
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<!-- Google fonts - Playfair Display-->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700">
 
-    <link rel="stylesheet" type="text/css"  href="~/Css/vwa_hk.css?@randomNumber"> @* *@
-    <link rel="stylesheet" type="text/css"  href="~/Css/vwa_style.css?@randomNumber">
-    <link rel="stylesheet" type="text/css"  href="~/Css/vwa_nav.css?@randomNumber"> 
-    @*<link rel="stylesheet" type="text/css"  href="~/Css/slider-menu.css?@randomNumber">*@
-    <link rel="stylesheet" type="text/css" href="~/Css/vwa_catalog.css?@randomNumber"> 
-    <link rel="stylesheet" type="text/css" href="~/Css/vwa_account.css?@randomNumber"> 
-    <link rel="stylesheet" type="text/css" href="~/Css/editor.css?@randomNumber"> 
-    <link rel="stylesheet" type="text/css"  href="~/Css/vwa_media.css?@randomNumber">
-    <link rel="stylesheet" type="text/css" href="~/Css/sliders/lightslider.css?@randomNumber">
-    <link rel="stylesheet" type="text/css" href="~/Css/sliders/lightgallery.css?@randomNumber">
-    @*<link rel="stylesheet" type="text/css" href="~/Css/slick.css?@randomNumber">
-    <link rel="stylesheet" type="text/css" href="~/Css/slick-theme.css?@randomNumber">*@
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_hk.css?@randomNumber"> @* *@
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_style.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_nav.css?@randomNumber">
+	@*<link rel="stylesheet" type="text/css"  href="~/Css/slider-menu.css?@randomNumber">*@
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_catalog.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_account.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/editor.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/vwa_media.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/sliders/lightslider.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/sliders/lightgallery.css?@randomNumber">
+	@*<link rel="stylesheet" type="text/css" href="~/Css/slick.css?@randomNumber">
+		<link rel="stylesheet" type="text/css" href="~/Css/slick-theme.css?@randomNumber">*@
 
-    <link rel="stylesheet" type="text/css" href="~/Css/lity/lity.min.css?@randomNumber">
+	<link rel="stylesheet" type="text/css" href="~/Css/lity/lity.min.css?@randomNumber">
 
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Muli:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Muli:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
+	@RenderSection("StyleSheets",false)
 <script src="/scripts/ie-emulation-modes-warning.js"></script>
-@* Render script in the view *@
-@RenderSection("StyleSheets",false)
-	
+
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -75,7 +73,7 @@ if (true) { randomNumber = new Random().Next();
 </script><!-- Font Awesome CSS-->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
-   
+
     <style>
         ul#hk_media_slider {
             list-style: none outside none;
@@ -103,13 +101,13 @@ if (true) { randomNumber = new Random().Next();
         }
     </style>
 
-    @* Temporary for forms  *@
+	@* Temporary for forms  *@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.1/jquery.validate.unobtrusive.min.js"></script>
-    
+
 </head>
-<body class="@CurrentPage.Name @Html.Partial("Cookies")">
+<body class="@CurrentPage.Name @Html.Partial("Cookies")"> 
 	<header class="header header-absolute">
 		<!-- Navbar-->
 		@Html.Partial("MainNavigation")
@@ -153,8 +151,8 @@ if (true) { randomNumber = new Random().Next();
 	}
 	<div class="container_wrapper hk_content hk_@CurrentPage.Name" id="hk_@CurrentPage.Name">
 
-	
-	
+
+
 		@{
 			if (CurrentPage.Id == 3885) { }
 			else
@@ -172,7 +170,7 @@ if (true) { randomNumber = new Random().Next();
 		}
 		<div class="container">
 			<div class="row">
-				@RenderSection("Breadcrumbs", false) 
+				@RenderSection("Breadcrumbs", false)
 				@RenderBody()
 			</div>
 		</div>
@@ -193,7 +191,7 @@ if (true) { randomNumber = new Random().Next();
 			@Henk : Dubbel script verwijderd
 
 		<script src="https://d19m59y37dris4.cloudfront.net/sell/1-1-0/vendor/jquery/jquery.min.js"></script>
-*@
+	*@
 
 		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.min.js"></script>
         <script src="~/Scripts/jquery-eu-cookie-law-popup.js?cdv=1765341850" type="text/javascript"></script>
@@ -217,27 +215,27 @@ if (true) { randomNumber = new Random().Next();
 		<!-- Slick slider -->
 		<!-- MUI dependencies
 		<script src="~/Scripts/jquery-1.10.2.min.js"></script> -->
-		@*
-			@Henk : Dubbel script verwijderd
-			<script src="~/Scripts/jquery.validate.min.js"></script>*@
+	@*
+		@Henk : Dubbel script verwijderd
+		<script src="~/Scripts/jquery.validate.min.js"></script>*@
 
-    
+
     <!-- new Merchello UI scripts // alway at the bottom!! -->
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.min.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/merchello.ui.settings.js"></script>
 	<script src="~/App_Plugins/Merchello/client/js/fasttrack.js"></script>
-	
+
 	@*<script src="~/Scripts/slider-menu.js?@randomNumber"></script>
-	
-	<script>
-    ( function( $ ) {
-      $( function() {
-        $( '.navbar-nav' ).sliderMenu();
-      });
-    })( jQuery );
-    </script>*@
+
+		<script>
+		( function( $ ) {
+		  $( function() {
+			$( '.navbar-nav' ).sliderMenu();
+		  });
+		})( jQuery );
+		</script>*@
 
 	@RenderSection("Scripts", false)
 
-</body>
+	</body>
 </html>

@@ -75,9 +75,9 @@
             </div>
 
             <div class="umb-table-row" ng-repeat="result in listViewResultSet.items" data-ng-class="{selected:result.selected}">
-                <div class="umb-table-cell not-fixed" data-ng-repeat="col in config.columns" ng-class="{'umb-table__name': col == config.columns[0]}">
-                    <span data-ng-bind-html="getColumnValue()(result, col)"></span>
-                </div>
+				<div class="umb-table-cell not-fixed" data-ng-repeat="col in config.columns" ng-class="{'umb-table__name': col == config.columns[0]}">
+					<span data-ng-bind-html="getColumnValue()(result, col)"></span>
+				</div>
             </div>
 
         </div>

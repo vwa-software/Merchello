@@ -6,11 +6,13 @@
 @using System.Web.Mvc.Html
 @using Umbraco.Core.Models
 @using Umbraco.Web
-@*
+
+@{
+
+	@*
 	MerchelloHelperViewPage<T> inherits from UmbracoViewPage<t> and exposes the MerchelloHelper as 'Merchello'
 	Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
 *@
-@{
 	string hostname = (HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority).TrimEnd("/");
 	string remarks = string.Empty;
 
@@ -28,6 +30,8 @@
 	{
 		// ignore		
 	}
+
+
 
 }
 <html>
@@ -400,7 +404,7 @@
 									</tr>
 									@{
                                         var cont = 1;
-                                        foreach (var item in Model.Invoice.Items)
+                                        foreach (var item in Model.Invoice.Items.Where(a=> a.LineItemType != LineItemType.Shipping))
                                         {
                                             string color = (cont % 2 == 0) ? rowBackgroun1 : rowBackgroun2;
                                             decimal totalItem = item.Price * item.Quantity;
@@ -457,10 +461,10 @@
 									</tr>
 								</tbody>
 							</table>
-                            <p style="color:#@grayColor">
-                            <strong>REMARKS (SHIPPING ADDRESS)</strong><br />
-                            @(remarks)
-                            </p>
+							<p style="color:#@grayColor">
+								<strong>REMARKS (SHIPPING ADDRESS)</strong><br />
+								@Html.Raw(remarks)
+							</p>
                             <p style="color:#@grayColor">&nbsp;</p>
                             <p style="color:#@grayColor">
 								We will process your order and ship your items soon, have an excellent day.<br /><br />

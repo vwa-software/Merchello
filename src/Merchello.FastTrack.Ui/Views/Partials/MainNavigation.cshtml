@@ -3,8 +3,6 @@
 @using Merchello.Core.Models
 @using Merchello.FastTrack.Ui
 @using Merchello.Web
-@inherits Umbraco.Web.Mvc.UmbracoViewPage<IPublishedContent>
-@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @inherits Merchello.Web.Mvc.MerchelloTemplatePage
 
 @{
@@ -14,7 +12,6 @@
     var catalogRoot = storeRoot.FirstChild(x => x.DocumentTypeAlias == "ftCatalog" && x.IsVisible());
     var basketPage = ExampleUiHelper.Content.GetBasket();
     var accountPage = ExampleUiHelper.Content.GetAccount();
-    var currentPageId = UmbracoContext.Current.PageId;
     
     var accountLink = CurrentCustomer.IsAnonymous ? "/login/" : accountPage.Url;
 
@@ -53,7 +50,9 @@
                                 }
                                 @Html.Partial("MegaMenu", Umbraco.TypedContent(3889))
                                 @Html.Partial("MegaMenu", Umbraco.TypedContent(3886))
+
                                 <li @(IsActive(accountPage.Id, !CurrentCustomer.IsAnonymous)) class ="nav-item" @(IsActive(basketPage.Id))>
+									
                                     <a class="nav-link 11" href="@accountLink">
                                             <span class="fas fa-user" style="color:#444;"></span>
                                             @if (CurrentCustomer.IsAnonymous)
@@ -64,10 +63,11 @@
                                             {
 												//http://projecten.vwa.nu:888/redmine/issues/5361
 												// Keep user on same page if posible, check if currentpage is protected
-												var redirectId = Umbraco.IsProtected(this.CurrentPage.Path) ? 3885 : this.CurrentPage.Id;
+												var redirectId = Umbraco.IsProtected(this.CurrentPage.Path) ? 3885 : 0;
+												
 												<span class="dropdown-toggle"></span>
 												<ul class="dropdown-menu smallmenu">
-													<li class="nav-link 12">@Html.ActionLink("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = redirectId }, null)</li>
+													<li class="nav-link 12">@Html.ActionLink("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = redirectId, path = this.Model.Content.Url }, null)</li>
 												</ul>
                                             }
                                     </a>

@@ -6,3 +6,28 @@
 <!-- Grid -->
 @Html.GetGridHtml(Model.Content, "grid")
 <!-- /Grid -->
+@section Breadcrumbs {
+
+    @{
+       
+            <div class="hk_breadcrumb">
+                <div class="">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">Home</a></li>
+                                    <li>
+                                        <a href="@CurrentPage.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Name </a>
+                                    </li>
+</ol>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+                                
+        
+    }
+
+
+}

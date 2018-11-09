@@ -1,23 +1,57 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<FtLogin>
+﻿@inherits Merchello.Web.Mvc.MerchelloViewPage<FtLogin>
+@using Merchello.Core.Models
+@using Merchello.Web
+@using Merchello.Web.Store.Localization
+@using Merchello.FastTrack.Ui
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
 	Layout = "Master.cshtml";
-    var mediaImagesList = Model.Content.GetPropertyValue<string>("loginAfbeelding").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+	var mediaImagesList = Model.GetPropertyValue<string>("loginAfbeelding").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
 	var mediaImagesCollection = Umbraco.TypedMedia(mediaImagesList).Where(x => x != null);
-				
+
+	if (!CurrentCustomer.IsAnonymous)
+	{
+		string redirect = ExampleUiHelper.Content.GetAccount().Url;
+		<script type="text/javascript">
+			document.location = '@redirect';
+		</script>
+	}
 }
+
 <div class="row hk_account_forms">
-    <div class="col-md-6">
-    	@if (Model.Content.HasValue("loginAfbeelding"))
-				{
-				foreach (var mediaImage in mediaImagesCollection)
-						{      
-							<img src="@mediaImage.Url.GetCropUrl(width:260, height:170)" /> 
-						}                                                               
-				}
-                @Html.Action("LoginForm", "CustomerMembership", new { area = "FastTrack" })
-    </div>
-    <div class="col-md-6">
-     
-    </div>
+	<div class="col-md-6">
+		@if (Model.HasValue("loginAfbeelding"))
+		{
+			foreach (var mediaImage in mediaImagesCollection)
+			{
+				<img src="@mediaImage.Url.GetCropUrl(width:260, height:170)" />
+			}
+		}
+		@Html.Action("LoginForm", "CustomerMembership", new { area = "FastTrack" })
+		<div class="hk_login_message" style="margin:20px 0px 0px 0px; display: table;">
+			<div style="padding:10px; max-width:250px; background:#EDEBEC; color:#838182;">
+				NOTIFICATION!<br /><br />
+				Welcome to our new website. <br /><br />When you login for the first time, <br />please reset your password using the <br />“forgot your password?” link.
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<h2 class="hk_shop" style="padding:0px 0px 0px 12px;">NO DEALER ACCOUNT YET?</h2>
+		@try
+		{
+			Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "fec8604c-96a5-4201-bc91-21e544d8c926", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "0" });
+		} catch (Exception ex) {
+			<div></div>
+		}</div>
 </div>
+@section Breadcrumbs {
+
+	@{
+
+
+		@Html.Partial("Breadcrumb")
+
+	}
+
+
+}

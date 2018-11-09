@@ -9,21 +9,23 @@
 		{
 			var mediaId = Model.GetPropertyValue<string>("ftProduct_Afbeelding");
 			var image = Umbraco.TypedMedia(mediaId);
-		<a href="@Model.Url" alt="@Model.Name"><img class="img-responsive" src="@image.GetCropUrl(240, 200)" alt="@Model.Name"></a>
+			<a href="@Model.Url" alt="@Model.Name"><img class="img-responsive" src="@image.GetCropUrl(240, 240)" alt="@Model.Name"></a>
 
-}
-else
-{
-	var noimage = "/Media/HK_logo_black.png";
-	<div class="hk_noimage"><a href="@Model.Url" alt="@Model.Name"><img src="@noimage.GetCropUrl(240, 200)" border="0"></a></div>
-}
+		}
+		else
+		{
+			var noimage = "/Media/HK_logo_black.png";
+			<div class="hk_noimage"><a href="@Model.Url" alt="@Model.Name"><img src="@noimage.GetCropUrl(240, 240)" border="0"></a></div>
+		}
 		<h2 class="hk_pr_Naam">@Model.GetPropertyValue("ftProduct_Naam")</h2>
 		<p class="hk_pr_Artikelnummer">@Model.GetPropertyValue("ftProduct_Artikelnummer")</p>
 		@*<p class="hk_pr_EAN">@Model.GetPropertyValue("ftProduct_EAN")</p>*@
 		<p class="hk_pr_afmetingen">@Model.GetPropertyValue("ftProduct_afmetingen")</p>
-		
-		
-
 	</div>
-    @Html.Action("AddProductToBasketForm", "StoreBasket", new { area = "Merchello", model = Model })
+
+	@if (!this.CurrentCustomer.IsAnonymous)
+	{
+		@Html.Action("AddProductToBasketForm", "StoreBasket", new { area = "Merchello", model = Model })
+	}
+
 </div>

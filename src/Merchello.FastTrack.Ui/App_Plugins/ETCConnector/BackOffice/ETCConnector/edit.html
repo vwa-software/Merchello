@@ -108,12 +108,13 @@
 								<umb-control-group label="Object selectie filter" ng-if="Data.ProcessorType != 'ETC.Connector.Services.DataBaseProcessor'" description="Het filter zorgt ervoor dat er objecten niet worden gespiderd">
 									<input id="txtExcludeSelector" type="text" name="txtExcludeSelector" ng-model="Data.ListExcludeSelector" class="umb-editor umb-textstring" />
 								</umb-control-group>
-
+							
 								<umb-control-group label="Processor Type" description="Type processor">
 									<select ng-model="Data.ProcessorType">
 										<option value="ETC.Connector.Services.DataBaseProcessor">Database Processor</option>
 										<option value="ETC.Connector.Services.SpiderProcessor">Webspider Processor</option>
 										<option value="ETC.Connector.Services.ETCServices.InvoiceProcessor">InvoiceProcessor</option>
+										<option value="ETC.Connector.Services.ETCServices.SalesOrderProcessor">SalesOrderProcessor</option>
 										<option value="ETC.Connector.Services.ETCServices.AccountProcessor">AccountProcessor</option>
 										<option value="ETC.Connector.Services.ETCServices.ItemImportProcessor">ItemImportProcessor</option>
 										<option value="ETC.Connector.Services.ETCServices.ItemImageProcessor">ItemImageProcessor</option>

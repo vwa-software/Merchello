@@ -1,26 +1,45 @@
 ﻿@inherits Merchello.Web.Mvc.MerchelloTemplatePage
 @using Merchello.FastTrack.Ui
 @using Merchello.Web
+@{
+	//http://projecten.vwa.nu:888/redmine/issues/5316
+	// last visited collections page (if any)
+	string url = "/collections";
+	if(Session["lastcollectionId"] != null)
+	{
+		try
+		{
+			url = Umbraco.TypedContent(Session["lastcollectionId"]).Url;
 
-@if (CurrentCustomer.Basket().Items.Any())
-{
-    <div class="hk_shop_forms">
-        @Html.Action("BasketForm", "StoreBasket", new { area = "Merchello" })
-    </div>
-    <div class="row">
-        <div class="col-lg-8 col-xs-6">
-            <a href="@ExampleUiHelper.Content.GetStoreRoot().Url" class="btn btn-primary">Continue Shopping</a>
-        </div>
-        <div class="col-lg-4 col-xs-6 text-right">
-            <a href="@ExampleUiHelper.Content.GetCheckout().Url" class="btn btn-primary">Checkout</a>
-        </div>
-    </div>
+		}
+		catch (Exception)
+		{
+
+		}
+	}	
+
 }
-else
-{
-    <div class="row">
-        <div class="col-lg-12">
-            <a href="@ExampleUiHelper.Content.GetStoreRoot().Url" style="font-size:0.9em;">There's nothing in your shopping cart, start shopping!</a>
-        </div>
-    </div>
-}
+	@if (CurrentCustomer.Basket().Items.Any())
+	{
+		<div class="hk_shop_forms">
+			@Html.Action("BasketForm", "StoreBasket", new { area = "Merchello" })
+		</div>
+		<div class="row">
+			<div class="col-lg-8 col-xs-6">
+				@*  <a href="@ExampleUiHelper.Content.GetStoreRoot().Url" class="btn btn-primary">Continue Shopping</a> *@
+				<a href="@url" class="btn btn-primary">Continue Shopping</a>
+			</div>
+			<div class="col-lg-4 col-xs-6 text-right">
+				<a href="@ExampleUiHelper.Content.GetCheckout().Url" class="btn btn-primary">Complete order</a>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-lg-12">
+                @*<a href="@ExampleUiHelper.Content.GetStoreRoot().Url" style="font-size:0.9em;">There's nothing in your shopping cart, start shopping!</a>*@
+				<a href="/collections/" style="font-size:0.9em;">There's nothing in your shopping cart, start shopping!</a>
+			</div>
+		</div>
+	}

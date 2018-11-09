@@ -404,6 +404,7 @@
     <Content Include="App_Plugins\Hotspots\BackOffice\Hotspots\edit.html" />
     <Content Include="App_Plugins\Hotspots\BackOffice\Hotspots\Hotspots.Hotspots.edit.controller.js" />
     <Content Include="App_Plugins\Hotspots\GridEditors\hotspotPicker.html" />
+    <Content Include="App_Plugins\LeBlender\editors\leblendereditor\dialogs\parameterconfig.controller.js" />
     <Content Include="App_Plugins\MerchelloProviders\assets\css\styles.css" />
     <Content Include="App_Plugins\MerchelloProviders\js\merchello.providers.controllers.js" />
     <Content Include="App_Plugins\MerchelloProviders\js\merchello.providers.directives.js" />
@@ -676,6 +677,7 @@
     <Content Include="bin\Microsoft.Owin.Security.OAuth.xml" />
     <Content Include="bin\Microsoft.Owin.Security.xml" />
     <Content Include="bin\Microsoft.Owin.xml" />
+    <Content Include="bin\Microsoft.Web.Administration.dll" />
     <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\MiniProfiler.dll" />
     <Content Include="bin\MiniProfiler.pdb" />
@@ -902,6 +904,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\Productie .pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.creditCardValidator.js" />
@@ -910,12 +913,15 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\underscore.min.js" />
+    <Content Include="Scripts\vwa_maps.js" />
     <Content Include="Styles\css\bootstrap-theme.css" />
     <Content Include="Styles\css\bootstrap-theme.min.css" />
     <Content Include="Styles\css\bootstrap.css" />
     <Content Include="Styles\css\bootstrap.min.css" />
     <Content Include="Styles\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\trees.config" />
     <Content Include="Config\ExamineSettings.config">
       <SubType>Designer</SubType>
@@ -958,9 +964,7 @@
     <Content Include="Styles\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Styles\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Views\ftBillingAddress.cshtml" />
-    <Content Include="Views\ftFinalSaleSummary.cshtml" />
     <Content Include="Views\ftPayment.cshtml" />
-    <Content Include="Views\ftPaymentMethod.cshtml" />
     <Content Include="Views\ftPreSaleSummary.cshtml" />
     <Content Include="Views\ftShippingAddress.cshtml" />
     <Content Include="Views\ftShipRateQuote.cshtml" />
@@ -980,6 +984,12 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\hkCategories.cshtml" />
+    <Content Include="Views\Partials\MainNavigation.cshtml" />
+    <Content Include="Views\Master.cshtml" />
+    <Content Include="Views\Dealers.cshtml" />
+    <Content Include="Views\Partials\Forms\Form.cshtml" />
+    <Content Include="Views\MacroPartials\InsertUmbracoFormWithTheme.cshtml" />
+    <Content Include="Views\Merchello\Notification\OrderConfirmation_subject.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1035,6 +1045,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Plugins\KassenConfigurator_example\" />
+    <Folder Include="App_Plugins\LeBlender\backoffice\GridEditorManager\" />
+    <Folder Include="App_Plugins\LeBlender\common\directive\" />
+    <Folder Include="App_Plugins\LeBlender\common\filter\" />
+    <Folder Include="App_Plugins\LeBlender\common\services\" />
+    <Folder Include="App_Plugins\LeBlender\editors\leblendereditor\assets\" />
+    <Folder Include="App_Plugins\LeBlender\editors\leblendereditor\views\" />
+    <Folder Include="App_Plugins\LeBlender\editors\textstring\" />
+    <Folder Include="App_Plugins\LeBlender\views_samples\" />
     <Folder Include="Views\Article\" />
   </ItemGroup>
   <PropertyGroup>

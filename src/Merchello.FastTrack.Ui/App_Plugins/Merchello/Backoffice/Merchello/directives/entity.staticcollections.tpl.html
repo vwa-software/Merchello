@@ -1,33 +1,62 @@
 <div class="control-group umb-control-group">
-    
-    <div class="umb-el-wrap">                  
-        <label class="control-label">
-            <localize key="merchelloCollections_collectionPickerTitle"/>
-            <small><localize key="merchelloCollections_collectionPickerInfo"/></small>
-        </label>
 
-        <div class="controls">
-            <div class="merchello-controls">
-                <ul class="unstyled list-icons">
-                    <li ng-repeat="collection in collections">
-                        <i class="icon icon-delete red hover-show" data-ng-click="remove(collection)"></i>
-                        <i class="icon icon-list hover-hide"></i>
-                        <a href="#" prevent-default>
-                            {{collection.name}}
-                        </a>
-                    </li>
-                </ul>
+	<div class="umb-el-wrap">
+		<label class="control-label">
+			<localize key="merchelloCollections_collectionPickerTitle" />
+			<small><localize key="merchelloCollections_collectionPickerInfo" /></small>
+		</label>
 
-                <ul class="unstyled list-icons">
-                    <li>
-                        <i class="icon icon-add blue"></i>
-                        <a href ng-click="openStaticEntityCollectionPicker()" prevent-default>
-                            <localize key="general_add"><localize key="general_add" /></localize>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+		<div class="controls">
+
+			<div class="merchello-controls">
+				<div class="row-fluid">
+					<div class="span10 col-xs-10">
+
+						<div class="umb-table">
+							<div class="umb-table-head">
+								<div class="umb-table-row">
+									<div class="umb-table-cell">
+
+									</div>
+									<div class="umb-table-cell">
+										Collection
+									</div>
+									<div class="umb-table-cell">
+										SortOrder (In collection)
+									</div>
+								</div>
+							</div>
+							<div class="umb-table-body">
+								<div class="umb-table-row" ng-repeat="collection in collections">
+									<div class="umb-table-cell">
+										<i class="icon icon-delete red" data-ng-click="remove(collection)"></i>
+									</div>
+									<div class="umb-table-cell">
+										{{collection.name}}
+									</div>
+									<div class="umb-table-cell">
+										<input type="text" class="form-control umb-editor sortOrder" data-ng-model="collection.listSortOrder" ng-change="collection.changed = true">
+									</div>
+								</div>
+								<div class="umb-table-row" ng-click="openStaticEntityCollectionPicker()">
+									<div class="umb-table-cell">
+										<i class="icon icon-add blue"></i>
+									</div>
+									<div class="umb-table-cell">
+										<localize key="general_add"><localize key="general_add" /></localize>
+									</div>
+								</div>
+							</div>
+
+							
+						</div>
+
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 </div>

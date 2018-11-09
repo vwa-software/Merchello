@@ -49,7 +49,7 @@
 							<td colspan="4" class="text-right"><strong>Sub Total:</strong></td>
 							<td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency()</strong></td>
 						</tr>
-						@foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product))
+						@foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product && x.LineItemType != LineItemType.Shipping))
 						{
 							<tr>
 								<td>
@@ -97,7 +97,7 @@
 
 	<div class="hk_account_forms hk_shipping ">
 		<div class="row">
-			<div class="col-12 basket-summary">
+			<div class="col-12 basket-summary col-sm-6">
 
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -109,16 +109,15 @@
 				</div>
 
 			</div>
-			@* <div class="col-12 col-md-6 basket-summary">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h2 class="hk_shop">Shipping Address @RenderEdit(Model, "shipping")</h2>
-						</div>
-						<div class="panel-body">
-							@Html.Partial("_Address", Model.ShippingAddress)
-						</div>
-					</div>
-				</div>*@
+			<div class="col-12 basket-summary col-sm-6" style="text-align: right; margin: 20px 0px 0px 0px;">
+
+
+				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/contact/subscribe-to-the-newsletter/" title="Terms of condition" class="btn btn-primary" target="_blank">subscribe to the newsletter</a></p>
+				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/terms-and-conditions/" title="Terms of condition" class="btn btn-primary" target="_blank">terms and conditions</a></p>
+				<p><a data-udi="umb://document/a49e82184e2643d1b87ccea10e5e9183" href="/privacy-statement/" title="Privacy statement" class="btn btn-primary" target="_blank">privacy statement</a></p>
+
+
+			</div>
 		</div>
 	</div>
 

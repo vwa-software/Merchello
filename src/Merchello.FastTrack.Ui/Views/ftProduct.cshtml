@@ -49,9 +49,19 @@
 	var image4 = Umbraco.TypedMedia(mediaId4);
 
 	// Retail price
-	var justRprice = Model.GetPropertyValue<string>("ftProduct_RetailPrice");
-	var Rprice = "Retail price: " + Model.GetPropertyValue<decimal>("ftProduct_RetailPrice").AsFormattedCurrency("eur");
-	var noRprice = "";
+	string Rprice = string.Empty;
+
+	// Alleen b2b klanten krijgen retail price te zien.
+	// http://projecten.vwa.nu:888/redmine/issues/5645
+	if (!this.CurrentCustomer.IsAnonymous)
+	{
+		if (Model.HasValue("ftProduct_RetailPrice") && Model.GetPropertyValue<decimal>("ftProduct_RetailPrice") > 0)
+		{
+			Rprice = "Retail price: " + Model.GetPropertyValue<decimal>("ftProduct_RetailPrice").AsFormattedCurrency("eur");
+		}
+	}
+
+
 }
 
 <div class="container-fluid container hk_collections hk_product ">
@@ -102,24 +112,16 @@
 					@*<p>@Html.Raw(Model.GetPropertyValue<string>("ftProduct_eenzinomschr"))</p>*@
 					<span class="hk_description">@Html.Raw(Model.GetPropertyValue<string>("ftProduct_DescriptionHtml"))</span>
 					<p>
-						<span>
-							@{ if (!String.IsNullOrEmpty(@justRprice))
-								{
-									@Rprice
-								}
-								else
-								{
-									@noRprice}
-							}
-						</span>
+						<span>@Rprice</span>
 					</p>
+
 					@Categories()
 
 					@{
-						<div style="display:none">@(Model.GetPropertyValue<DateTime>("ftProduct_ExpDelivery"))</div>
+						@*<div style="display:none">@(Model.GetPropertyValue<DateTime>("ftProduct_ExpDelivery"))</div>*@
 
 						// Determine out of stock message
-						if (Model.TotalInventoryCount <= 0)
+						if (Model.TotalInventoryCount <= 0 && !this.CurrentCustomer.IsAnonymous)
 						{
 							<ul>
 								<li>Out of stock</li>

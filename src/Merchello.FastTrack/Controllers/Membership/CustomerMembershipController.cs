@@ -314,16 +314,6 @@
 		[ChildActionOnly]
 		public virtual ActionResult LoginForm(string view = "", string redirectPath = "")
 		{
-			if (User.Identity.IsAuthenticated)
-			{
-				if (string.IsNullOrEmpty(redirectPath))
-				{
-					return new RedirectResult("/");
-
-				}
-				return new RedirectResult(redirectPath);
-			}
-
 			var model = new LoginModel { RememberMe = true };
 			return view.IsNullOrWhiteSpace() ? PartialView(model) : PartialView(view, model);
 		}
