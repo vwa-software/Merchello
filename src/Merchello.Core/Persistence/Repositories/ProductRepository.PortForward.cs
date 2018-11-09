@@ -316,6 +316,11 @@
 			//    .Append(")");
 			//}
 
+			if(collectionKey == Guid.Empty && orderExpression.Equals("sortorder", StringComparison.InvariantCultureIgnoreCase))
+			{
+				orderExpression = "name";
+			}
+
 			if (!string.IsNullOrEmpty(orderExpression))
 			{
 				sql.Append(direction == SortDirection.Ascending
