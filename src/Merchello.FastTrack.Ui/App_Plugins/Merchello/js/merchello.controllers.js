@@ -2107,11 +2107,13 @@ angular.module('merchello').controller('Merchello.Directives.EntityStaticCollect
     ['$scope', 'notificationsService', 'dialogService', 'entityCollectionHelper', 'entityCollectionResource', 'dialogDataFactory', 'entityCollectionDisplayBuilder',
     function($scope, notificationsService, dialogService, entityCollectionHelper, entityCollectionResource, dialogDataFactory, entityCollectionDisplayBuilder) {
 
-        $scope.collections = [];
-        $scope.remove = remove;
+		$scope.collections = [];
 
-        // exposed methods
+		// exposed methods
+        $scope.remove = remove;
+		$scope.save = save;
         $scope.openStaticEntityCollectionPicker = openStaticEntityCollectionPicker;
+		$scope.blur = blur;
 
         function init() {
             $scope.$watch('preValuesLoaded', function(pvl) {
@@ -2156,6 +2158,20 @@ angular.module('merchello').controller('Merchello.Directives.EntityStaticCollect
                 loadCollections();
             });
         }
+
+		// blur is raised in the directive
+		function blur(scope) {
+			if (scope.collection && scope.collection.changed) {
+				save(scope.collection);
+				scope.collection.changed = false;				
+			}
+		}
+
+		function save(collection) {
+			entityCollectionResource.saveEntityFromCollection($scope.entity.key, collection.key, collection.listSortOrder).then(function () {
+				loadCollections();
+			});
+		}
 
         // initialize the controller
         init();
@@ -8498,7 +8514,9 @@ angular.module('merchello').controller('Merchello.Backoffice.ProductFilterGroups
                    case 'price':
                        return !result.hasVariants() ?
                            $filter('currency')(result.price, $scope.currencySymbol) :
-                           $filter('currency')(result.variantsMinimumPrice(), $scope.currencySymbol) + ' - ' + $filter('currency')(result.variantsMaximumPrice(), $scope.currencySymbol);
+						   $filter('currency')(result.variantsMinimumPrice(), $scope.currencySymbol) + ' - ' + $filter('currency')(result.variantsMaximumPrice(), $scope.currencySymbol);
+				   case 'sortOrder':
+					   return result[col.name].toString();
                    default:
                        return result[col.name];
                }
@@ -8804,7 +8822,7 @@ angular.module('merchello').controller('Merchello.PropertyEditors.MerchelloMulti
         function init() {
 
 
-            if ($scope.model.value !== undefined && $scope.model.value !== '' && $scope.model.value.length > 0) {
+			if ($scope.model.value && $scope.model.value !== undefined && $scope.model.value !== '' && $scope.model.value.length > 0) {
                 $scope.keys = $scope.model.value;
             }
 

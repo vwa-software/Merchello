@@ -729,9 +729,10 @@ pre code {
     /*padding-right: 15px;
     padding-left: 15px;*/
     padding-right: 12px;
-    padding-left: 12px
+    padding-left: 0px
 }
 
+	
 .col {
     -ms-flex-preferred-size: 0;
     flex-basis: 0;
@@ -753,77 +754,88 @@ pre code {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 8.33333%;
     flex: 0 0 8.33333%;
-    max-width: 8.33333%
+    max-width: 8.33333%;
+    float: left;
 }
 
 .col-2 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 16.66667%;
     flex: 0 0 16.66667%;
-    max-width: 16.66667%
+    max-width: 16.66667%;
+    float: left;
 }
 
 .col-3 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 25%;
     flex: 0 0 25%;
-    max-width: 25%
+    max-width: 25%;
+    float: left;
 }
 
 .col-4 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 33.33333%;
     flex: 0 0 33.33333%;
-    max-width: 33.33333%
+    max-width: 33.33333%;
+    float: left;
 }
 
 .col-5 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 41.66667%;
     flex: 0 0 41.66667%;
-    max-width: 41.66667%
+    max-width: 41.66667%;
+    float: left;
 }
 
 .col-6 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 50%;
     flex: 0 0 50%;
-    max-width: 50%
+    max-width: 50%;
+    float: left;
 }
 
 .col-7 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 58.33333%;
     flex: 0 0 58.33333%;
-    max-width: 58.33333%
+    max-width: 58.33333%;
+    float: left;
 }
 
 .col-8 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 66.66667%;
     flex: 0 0 66.66667%;
-    max-width: 66.66667%
+    max-width: 66.66667%;
+    float: left;
 }
 
 .col-9 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 75%;
     flex: 0 0 75%;
-    max-width: 75%
+    max-width: 75%;
+    float: left;
 }
 
 .col-10 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 83.33333%;
     flex: 0 0 83.33333%;
-    max-width: 83.33333%
+    max-width: 83.33333%;
+    float: left;
 }
 
 .col-11 {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 91.66667%;
     flex: 0 0 91.66667%;
-    max-width: 91.66667%
+    max-width: 91.66667%;
+    float: left;
 }
 
 .col-12 {
@@ -1175,7 +1187,7 @@ pre code {
         -webkit-box-flex: 1;
         -ms-flex-positive: 1;
         flex-grow: 1;
-        max-width: 100%
+        max-width: 100%;
     }
     .col-md-auto {
         -webkit-box-flex: 0;
@@ -1188,19 +1200,22 @@ pre code {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 8.33333%;
         flex: 0 0 8.33333%;
-        max-width: 8.33333%
+        max-width: 8.33333%;
+        float: left;
     }
     .col-md-2 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 16.66667%;
         flex: 0 0 16.66667%;
-        max-width: 16.66667%
+        max-width: 16.66667%;
+        float: left;
     }
     .col-md-3 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 25%;
         flex: 0 0 25%;
-        max-width: 25%
+        max-width: 25%;
+        float: left;
     }
     .col-md-4 {
         -webkit-box-flex: 0;
@@ -1209,25 +1224,29 @@ pre code {
         max-width: 33.33333%
         /**-ms-flex: 0 0 30.79584%;
         flex: 0 0 30.79584%;
-        max-width: 30.79584%*/
+        max-width: 30.79584%*/;
+        float: left;
     }
     .col-md-5 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 41.66667%;
         flex: 0 0 41.66667%;
-        max-width: 41.66667%
+        max-width: 41.66667%;
+        float: left;
     }
     .col-md-6 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 50%;
         flex: 0 0 50%;
-        max-width: 50%
+        max-width: 50%;
+        float: left;
     }
     .col-md-7 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 58.33333%;
         flex: 0 0 58.33333%;
-        max-width: 58.33333%
+        max-width: 58.33333%;
+        float: left;
     }
     .col-md-8 {
         -webkit-box-flex: 0;
@@ -1236,7 +1255,8 @@ pre code {
         max-width: 66.66667%
         /*-ms-flex: 0 0 69.20415%;
         flex: 0 0 69.20415%;
-        max-width: 69.20415%*/
+        max-width: 69.20415%*/;
+        float: left;
 
         
     }
@@ -1244,19 +1264,22 @@ pre code {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 75%;
         flex: 0 0 75%;
-        max-width: 75%
+        max-width: 75%;
+        float: left;
     }
     .col-md-10 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 83.33333%;
         flex: 0 0 83.33333%;
-        max-width: 83.33333%
+        max-width: 83.33333%;
+        float: left;
     }
     .col-md-11 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 91.66667%;
         flex: 0 0 91.66667%;
-        max-width: 91.66667%
+        max-width: 91.66667%;
+        float: left;
     }
     .col-md-12 {
         -webkit-box-flex: 0;
@@ -1376,7 +1399,6 @@ pre code {
         margin-left: 91.66667%
     }
 }
-
 @media (min-width: 992px) {
     .col-lg {
         -ms-flex-preferred-size: 0;
@@ -4264,7 +4286,8 @@ input[type="button"].btn-block {
 }
 
 .fade:not(.show) {
-    opacity: 0
+	opacity: 0;
+	display: none;
 }
 
 .collapse:not(.show) {

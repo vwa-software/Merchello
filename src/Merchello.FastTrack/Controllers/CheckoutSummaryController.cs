@@ -33,14 +33,8 @@
 
 		public override ActionResult InvoiceSummary(string view = "")
 		{
-
 			var viewData = new StoreViewData();
-
-			
-			// todo SaveBillingAddress van checkoutaddresscontroller beter implementeren
-
-			// if (!this.ModelState.IsValid) return this.CurrentUmbracoPage();
-
+				
 			// billing address
 			FastTrackBillingAddressModel model = null;
 			var BillingAddressFactory = new FastTrackBillingAddressModelFactory();
@@ -49,7 +43,21 @@
 			// HKLiving, always use the default customer addres which comes from eTC.
 			if (!this.CurrentCustomer.IsAnonymous)
 			{
-				var defaultBilling = ((ICustomer)this.CurrentCustomer).DefaultCustomerAddress(AddressType.Billing);
+				ICustomerAddress defaultBilling = ((ICustomer)this.CurrentCustomer).DefaultCustomerAddress(AddressType.Billing);
+				
+				// check if default billing exists, fall back to first billing addres
+				if (defaultBilling == null)
+				{
+					defaultBilling = ((ICustomer)this.CurrentCustomer).Addresses.FirstOrDefault(a => a.AddressType == AddressType.Billing);
+				}
+
+				// still no addres, fall back to first address
+				if (defaultBilling == null)
+				{
+					defaultBilling = ((ICustomer)this.CurrentCustomer).Addresses.FirstOrDefault();
+				}
+
+				// Addres found, create the model.
 				if (defaultBilling != null) model = BillingAddressFactory.Create((ICustomer)CurrentCustomer, defaultBilling);
 			}
 
@@ -71,8 +79,33 @@
 			}
 			else
 			{
-				model.UseForShipping = true;
-				new Merchello.FastTrack.Controllers.CheckoutAddressController().SaveBillingAddress(model);
+				// save address to checkoutmanager		
+
+				// Ensure billing address type is billing
+				if (model.AddressType != AddressType.Billing) model.AddressType = AddressType.Billing;
+
+				var address = BillingAddressFactory.Create(model);
+
+				// Temporarily save the address in the checkout manager.
+				this.CheckoutManager.Customer.SaveBillToAddress(address);
+								
+				model.WorkflowMarker = GetNextCheckoutWorkflowMarker(CheckoutStage.Payment);
+
+				// we use the billing address factory here since we know the model FastTrackBillingAddressModel
+				// and only want Merchello's IAddress
+				var address2 = BillingAddressFactory.Create(model);
+
+				address2.AddressType = AddressType.Shipping;
+				CheckoutManager.Customer.SaveShipToAddress(address2);
+				CheckoutManager.Shipping.ClearShipmentRateQuotes();
+
+				var factory = new CheckoutShipRateQuoteModelFactory<FastTrackShipRateQuoteModel>();
+				var quoteModel = factory.Create(Basket, address2);
+				if (quoteModel != null && quoteModel.ProviderQuotes.Count() > 0)
+				{
+					var accepted = quoteModel.ProviderQuotes.FirstOrDefault();
+					CheckoutManager.Shipping.SaveShipmentRateQuote(accepted);
+				}
 			}
 
 			return base.InvoiceSummary(view);

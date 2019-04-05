@@ -34,7 +34,7 @@
 			if (adress != null)
 			{
 				adress.Address2 = model.Remarks;
-
+				
 				CheckoutManager.Customer.SaveShipToAddress(adress);
 				CheckoutManager.Shipping.ClearShipmentRateQuotes();
 

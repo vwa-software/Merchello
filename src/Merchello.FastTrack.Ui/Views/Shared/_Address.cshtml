@@ -5,18 +5,18 @@
     @if (!Model.Organization.IsNullOrWhiteSpace())
     {<span class="p-org">@Model.Organization</span>}
     <p class="p-adr h-adr">
-        <span class="p-street-address">@Model.Address1</span>
+        <span class="p-street-address">@Model.Address1 @Model.Address2</span>
         @if (!Model.Address2.IsNullOrWhiteSpace())
-        {<span class="p-extended-address">@Model.Address2</span>}
-        <span class="p-locality">@Model.Locality</span>
+        {<span class="p-extended-address"></span>}
+        
         @if (!Model.Region.IsNullOrWhiteSpace())
         {<span class="p-region">@Model.Region</span>}
         @if (!Model.PostalCode.IsNullOrWhiteSpace())
-        {<span class="p-postal-code">@Model.PostalCode</span>}
-        <span class="p-country-name">@Model.CountryCode</span>
+        {<span class="p-postal-code">@Model.PostalCode, @Model.Locality - @Model.CountryCode</span>}
+        <br />
+        @if (!Model.Email.IsNullOrWhiteSpace())
+        {<span class="label-contact">email: <span class="u-email"><a href="mailto:@Model.Email">@Model.Email</a></span></span>}
+        @if (!Model.Phone.IsNullOrWhiteSpace())
+        {<span class="label-contact">tel: <span class="p-tel">@Model.Phone</span></span>}
     </p>
-    @if (!Model.Email.IsNullOrWhiteSpace())
-    {<span class="label-contact">Email: <span class="u-email"><a href="mailto:@Model.Email">@Model.Email</a></span></span>}
-    @if (!Model.Phone.IsNullOrWhiteSpace())
-    {<span class="label-contact">Tel: <span class="p-tel">@Model.Phone</span></span>}
 </div>

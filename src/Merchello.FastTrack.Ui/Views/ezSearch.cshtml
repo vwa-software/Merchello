@@ -1,0 +1,17 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+	Layout = null;
+}
+<h2>@Umbraco.Field("pageName")</h2>
+@Umbraco.RenderMacro("ezSearch")
+@section Breadcrumbs {
+
+    @{
+       
+    
+				@Html.Partial("Breadcrumb")
+        
+    }
+
+
+}

@@ -1,0 +1,31 @@
+﻿@inherits Merchello.Web.Mvc.MerchelloHelperViewPage<Merchello.Core.Models.MonitorModels.IPaymentResultMonitorModel>
+@using Merchello.Core
+@using Merchello.Web
+@using Merchello.Core.Models
+@using Merchello.Web.Models.Ui
+@using System.Web.Mvc.Html
+@using Umbraco.Core.Models
+@using Umbraco.Web
+@{
+	@*
+		MerchelloHelperViewPage<T> inherits from UmbracoViewPage<t> and exposes the MerchelloHelper as 'Merchello'
+		Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
+	*@
+string name = "";
+string companyName = "";
+
+try
+{
+	name = Model.Invoice.Customer().Email;
+	var member = this.Members.GetByUsername(Model.Invoice.Customer().LoginName);
+
+	companyName = member.GetPropertyValue<string>("Company");
+	name = string.IsNullOrEmpty(companyName) ? name : companyName;
+
+}
+catch (Exception)
+{
+	// ignore
+}
+
+}Order Confirmation - @Model.Invoice.InvoiceNumberPrefix@Model.Invoice.InvoiceNumber - @name

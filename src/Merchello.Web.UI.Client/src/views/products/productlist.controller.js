@@ -160,7 +160,9 @@
                        return !result.hasVariants() ?
                            $filter('currency')(result.price, $scope.currencySymbol) :
                            $filter('currency')(result.variantsMinimumPrice(), $scope.currencySymbol) + ' - ' + $filter('currency')(result.variantsMaximumPrice(), $scope.currencySymbol);
-                   default:
+				   case 'sortOrder':
+					   return result[col.name].toString();
+				   default:
                        return result[col.name];
                }
             }

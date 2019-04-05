@@ -42,16 +42,33 @@
 	<ul class="hk_categories_list parent_list">
 		<li><a class="cat-link " href="/collections/all-products/">All products</a></li>
 	</ul>
+	
+		<ul class="hk_categories_list parent_list">
+			<li><a class="cat-link " href="/collections/pre-sale-additions/">Pre sale additions</a></li>
+		</ul>
+
+	@*@if (Members.IsLoggedIn())
+	{
+	
+		<ul class="hk_categories_list parent_list">
+			<li><a class="cat-link " href="/collections/pre-sale-additions/">Pre sale additions</a></li>
+		</ul>
+	
+	}*@
+	
+	<ul class="hk_categories_list parent_list">
+		<li><a class="cat-link " href="/collections/new-collection/">New collection</a></li>
+	</ul>
 
 </div>
 
 @{
-	var serviceItem = Umbraco.TypedContent(1099).Children()
-						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("Service") && Umbraco.MemberHasAccess(x.Path));
+	var arrivalsItem = Umbraco.TypedContent(1099).Children()
+						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("Fresh") && Umbraco.MemberHasAccess(x.Path));
 
-	if (serviceItem != null)
+	if (arrivalsItem != null)
 	{
-		<div class="hk_service-items">
+		<div class="hk_arrivals-items">
 			<style>
 				.list_icon i,
 				.list_icon li {
@@ -62,7 +79,85 @@
 
 				.list_icon li {
 					width: 100% !important;
-					/*z-index:2000;*/
+				}
+
+				.list_icon i {
+					font-size: 11px;
+					opacity: 0.6;
+					line-height: 53px;
+					display: inline-block;
+					z-index: 999;
+					position: relative;
+					padding: 0px 0px 0px 10px;
+					margin: 0px 0px 0px -30px;
+				}
+				/**/
+			</style>
+			<ul class="hk_categories_list parent_list list_icon">
+				@RenderLink(arrivalsItem)
+			</ul>
+		</div>
+		}
+	}
+
+
+
+@{
+	var nextItem = Umbraco.TypedContent(1099).Children()
+						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("NEXT") && Umbraco.MemberHasAccess(x.Path));
+
+	if (nextItem != null)
+	{
+		<div class="hk_next-items">
+			<style>
+				.list_icon i,
+				.list_icon li {
+					position: relative;
+					display: inline-block;
+					float: left;
+				}
+
+				.list_icon li {
+					width: 100% !important;
+				}
+
+				.list_icon i {
+					font-size: 11px;
+					opacity: 0.6;
+					line-height: 53px;
+					display: inline-block;
+					z-index: 999;
+					position: relative;
+					padding: 0px 0px 0px 10px;
+					margin: 0px 0px 0px -30px;
+				}
+				/**/
+			</style>
+			<ul class="hk_categories_list parent_list list_icon">
+				@RenderLink(nextItem)
+			</ul>
+		</div>
+		}
+	}
+
+
+@{
+	var serviceItem = Umbraco.TypedContent(1099).Children()
+						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("Service") && Umbraco.MemberHasAccess(x.Path));
+
+	if (serviceItem != null)
+	{
+		<div class="hk_service-items" style="min-height: 84px;">
+			<style>
+				.list_icon i,
+				.list_icon li {
+					position: relative;
+					display: inline-block;
+					float: left;
+				}
+
+				.list_icon li {
+					width: 100% !important;
 				}
 
 				.list_icon i {
@@ -79,59 +174,116 @@
 			</style>
 			<ul class="hk_categories_list parent_list list_icon">
 				@RenderLink(serviceItem)
-				@*<i class="fas fa-wrench"></i>*@
 			</ul>
 		</div>
 		}
 	}
 
-	<div class="hk_featured_cat hk_landingspage_cat">
-		@{ var living = Umbraco.TypedContent(5636).Children()
-										  .Where(x => x.IsVisible()); }
-		<h3 style="width: 100%; display: block;margin: 30px 0px 20px 0px;position: relative;float: left;"><a href="/collections/living/">Living</a></h3>
-		<ul class="hk_categories_list parent_list">
-			@foreach (var item in living)
-			{
-				@*<li>
-					<a href="@item.Url">@item.Name</a>
-					</li>*@
-				@RenderLink(item)
-			}
-		</ul>
-	</div>
-	<div class="hk_featured_cat hk_landingspage_cat">
-		@{ var dining = Umbraco.TypedContent(5637).Children()
-												   .Where(x => x.IsVisible()); }
-		<h3><a href="/collections/dining/">Dining</a></h3>
-		<ul class="hk_categories_list parent_list">
-			@foreach (var item in dining)
-			{
-				@RenderLink(item)
-			}
-		</ul>
-	</div>
-	<div class="hk_featured_cat hk_landingspage_cat">
-		@{ var bathroom = Umbraco.TypedContent(5638).Children()
-															 .Where(x => x.IsVisible()); }
-		<h3><a href="/collections/bathroom/">Bathroom</a></h3>
-		<ul class="hk_categories_list parent_list">
-			@foreach (var item in bathroom)
-			{
-				@RenderLink(item)
-			}
-		</ul>
-	</div>
-	<div class="hk_featured_cat hk_landingspage_cat">
-		@{ var lifestyle = Umbraco.TypedContent(5639).Children()
-															 .Where(x => x.IsVisible()); }
-		<h3><a href="/collections/lifestyle/">Lifestyle</a></h3>
-		<ul class="hk_categories_list parent_list">
-			@foreach (var item in lifestyle)
-			{
-				@RenderLink(item)
-			}
-		</ul>
-	</div>
+    @{
+        var furniturecontent = Umbraco.TypedContent(5636);
+        var furniture = furniturecontent == null ? null : Umbraco.TypedContent(5636).Children()
+                                                            .Where(x => x.IsVisible());
+        if (furniture != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/furniture/">Furniture</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in furniture)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
+    @{
+        var accessoriescontent = Umbraco.TypedContent(19026);
+        var accessories = accessoriescontent == null ? null : Umbraco.TypedContent(19026).Children()
+                                                            .Where(x => x.IsVisible());
+        if (accessories != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/accessories/">Accessories</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in accessories)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
+    @{
+        var lightingcontent = Umbraco.TypedContent(19037);
+        var lighting = lightingcontent == null ? null : Umbraco.TypedContent(19037).Children()
+                                                            .Where(x => x.IsVisible());
+        if (lighting != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/lighting/">Lighting</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in lighting)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
+    
+    
+    @{
+        var textilecontent = Umbraco.TypedContent(19041);
+        var textile = textilecontent == null ? null : Umbraco.TypedContent(19041).Children()
+                                                            .Where(x => x.IsVisible());
+        if (textile != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/textile/">Textile</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in textile)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
+    
+    @{
+        var diningcontent = Umbraco.TypedContent(5637);
+        var dining = diningcontent == null ? null : Umbraco.TypedContent(5637).Children()
+                                                            .Where(x => x.IsVisible());
+        if (dining != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/kitchen/">Kitchen</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in dining)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
+    @{
+        var lifestylecontent = Umbraco.TypedContent(5639);
+        var lifestyle = lifestylecontent == null ? null : Umbraco.TypedContent(5639).Children()
+                                                            .Where(x => x.IsVisible());
+        if (lifestyle != null)
+        {
+            <div class="hk_featured_cat hk_landingspage_cat">
+                <h3 class="h3living"><a href="/collections/lifestyle/">Lifestyle</a></h3>
+                <ul class="hk_categories_list parent_list">
+                    @foreach (var item in lifestyle)
+                {
+                        @RenderLink(item)
+                    }
+                </ul>
+            </div>
+        }
+    }
 	<div class="hk_featured_cat">
 
 		@if (featured.Count() > 0)

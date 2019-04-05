@@ -350,8 +350,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\ETCConnector\BackOffice\ETCConnector\edit.controller.js" />
     <Content Include="App_Plugins\ETCConnector\BackOffice\ETCConnector\edit.html" />
-    <Content Include="App_Plugins\ETCConnector\BackOffice\ETCConnector\ETCConnector.ETCConnector.edit.controller.js" />
+    <Content Include="App_Plugins\ETCConnector\BackOffice\ETCConnector\settings.controller.js" />
+    <Content Include="App_Plugins\ETCConnector\BackOffice\settings.html" />
     <Content Include="App_Plugins\ETCConnector\Css\spider.css" />
     <Content Include="App_Plugins\ETCConnector\Css\spider.svg" />
     <Content Include="App_Plugins\ETCConnector\Directives\database-rule.html" />
@@ -359,6 +361,7 @@
     <Content Include="App_Plugins\ETCConnector\install.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Plugins\ETCConnector\lang\en-us.xml" />
     <Content Include="App_Plugins\FastTrack\Install\images\despite.jpg" />
     <Content Include="App_Plugins\FastTrack\Install\images\dog-fleas.jpg" />
     <Content Include="App_Plugins\FastTrack\Install\images\element.jpg" />
@@ -404,6 +407,7 @@
     <Content Include="App_Plugins\Hotspots\BackOffice\Hotspots\edit.html" />
     <Content Include="App_Plugins\Hotspots\BackOffice\Hotspots\Hotspots.Hotspots.edit.controller.js" />
     <Content Include="App_Plugins\Hotspots\GridEditors\hotspotPicker.html" />
+    <Content Include="App_Plugins\LeBlender\editors\leblendereditor\dialogs\parameterconfig.controller.js" />
     <Content Include="App_Plugins\MerchelloProviders\assets\css\styles.css" />
     <Content Include="App_Plugins\MerchelloProviders\js\merchello.providers.controllers.js" />
     <Content Include="App_Plugins\MerchelloProviders\js\merchello.providers.directives.js" />
@@ -568,6 +572,14 @@
     <Content Include="App_Plugins\Merchello\Backoffice\Merchello\sharedoptions.html" />
     <Content Include="App_Plugins\Merchello\Backoffice\Merchello\shippingproviders.html" />
     <Content Include="App_Plugins\Merchello\Backoffice\Merchello\taxationproviders.html" />
+    <Content Include="App_Plugins\Merchello\client\css\merchello.ui.css" />
+    <Content Include="App_Plugins\Merchello\client\css\merchello.ui.min.css" />
+    <Content Include="App_Plugins\Merchello\client\img\logo-footer.png" />
+    <Content Include="App_Plugins\Merchello\client\js\fasttrack.js" />
+    <Content Include="App_Plugins\Merchello\client\js\merchello.ui.js" />
+    <Content Include="App_Plugins\Merchello\client\js\merchello.ui.min.js" />
+    <Content Include="App_Plugins\Merchello\client\js\merchello.ui.settings.js" />
+    <Content Include="App_Plugins\Merchello\client\lib\card-validator.min.js" />
     <Content Include="App_Plugins\Merchello\js\merchello.controllers.js" />
     <Content Include="App_Plugins\Merchello\js\merchello.directives.js" />
     <Content Include="App_Plugins\Merchello\js\merchello.filters.js" />
@@ -625,7 +637,6 @@
     <Content Include="bin\controls.xml" />
     <Content Include="bin\CookComputing.XmlRpcV2.dll" />
     <Content Include="bin\Examine.dll" />
-    <Content Include="bin\Examine.pdb" />
     <Content Include="bin\HtmlAgilityPack.dll" />
     <Content Include="bin\HtmlAgilityPack.pdb" />
     <Content Include="bin\HtmlAgilityPack.xml" />
@@ -645,7 +656,6 @@
     <Content Include="bin\Merchello.Examine.pdb" />
     <Content Include="bin\Merchello.Examine.xml" />
     <Content Include="bin\Merchello.FastTrack.dll" />
-    <Content Include="bin\Merchello.FastTrack.pdb" />
     <Content Include="bin\Merchello.FastTrack.Ui.dll" />
     <Content Include="bin\Merchello.FastTrack.Ui.pdb" />
     <Content Include="bin\Merchello.Providers.dll" />
@@ -676,6 +686,7 @@
     <Content Include="bin\Microsoft.Owin.Security.OAuth.xml" />
     <Content Include="bin\Microsoft.Owin.Security.xml" />
     <Content Include="bin\Microsoft.Owin.xml" />
+    <Content Include="bin\Microsoft.Web.Administration.dll" />
     <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\MiniProfiler.dll" />
     <Content Include="bin\MiniProfiler.pdb" />
@@ -768,6 +779,98 @@
     <Content Include="Config\Lang\ru-RU.user.xml" />
     <Content Include="Config\Lang\sv-SE.user.xml" />
     <Content Include="Config\Lang\zh-CN.user.xml" />
+    <Content Include="content\files\etcExport\ETCorder\07f8624a-a85f-4780-b027-65b98c268dd8_20180719_112711296.xml" />
+    <Content Include="content\files\etcExport\ETCorder\0ece6a92-6c34-43d7-b9ad-8ce94a2df6e7_20180719_112835183.xml" />
+    <Content Include="content\files\etcExport\ETCorder\250909c1-9d0b-4829-a47f-7f3840b34348_20180719_104741645.xml" />
+    <Content Include="content\files\etcExport\ETCorder\3cae905d-371e-412c-b4c3-355a58a215cd_20180719_104506182.xml" />
+    <Content Include="content\files\etcExport\ETCorder\4649486b-d399-489b-b70d-90a292f97fec_20180719_115044822.xml" />
+    <Content Include="content\files\etcExport\ETCorder\5c03b204-c845-4194-9ab0-8e3cc758b5c6_20180801_132943514.xml" />
+    <Content Include="content\files\etcExport\ETCorder\5c29f6bc-4258-4232-b8f3-697747d7885e_20180801_133404040.xml" />
+    <Content Include="content\files\etcExport\ETCorder\6d1d98fa-8375-4f77-8c6b-84f778763038_20180719_104640610.xml" />
+    <Content Include="content\files\etcExport\ETCorder\6fd8624d-5699-4f75-943e-bab6b9388c24_20180719_122031775.xml" />
+    <Content Include="content\files\etcExport\ETCorder\74231114-4133-4992-9ce2-1f34544269de_20180808_141145833.xml" />
+    <Content Include="content\files\etcExport\ETCorder\7eb4cf01-2e74-486f-945b-5014f160f02f_20180719_115448314.xml" />
+    <Content Include="content\files\etcExport\ETCorder\8836f61d-f2f1-4b88-ae9d-c8dad60d8114_20180719_120536998.xml" />
+    <Content Include="content\files\etcExport\ETCorder\95f26fdd-8219-4f86-9a83-41b0ece9e1dc_20180719_113920699.xml" />
+    <Content Include="content\files\etcExport\ETCorder\bea905ef-2133-4161-aab7-040de53ac4be_20180719_112541786.xml" />
+    <Content Include="content\files\etcExport\ETCorder\d8dfd9ed-3f5c-46b7-ac9f-30ece0b49f14_20180719_112600087.xml" />
+    <Content Include="content\files\etcExport\ETCorder\f18a6981-60ca-4b58-97e9-50a43d1e5f1c_20180719_112744201.xml" />
+    <Content Include="content\files\etcExport\ETCorder\ff7f705d-65fa-40d7-834c-cf401baf735e_20181009_120213413.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\06e55e73-a4fa-42b0-ae2e-12f88d75dc00_20190313_124104530.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\0be32431-1d10-4727-b317-c42509736f39_20181004_075443790.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\12352741-aafc-444c-b88e-4c90dcaf51e8_20190313_131006218.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\1b290487-3bc5-4a9e-973a-113e1e356e05_20181120_112826893.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\20e09d4e-607c-426c-a27b-0783e4c7fcfc_20180821_074012811.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\2706b0fe-27ed-4d42-8483-9acf3fd8a9ed_20181121_090211040.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\2f7204bc-f664-4071-90f8-0eb84753dec1_20181004_072516644.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\353ae0d1-ddd6-47f2-bd40-4c1c291b9987_20181120_105824168.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\3605dd0c-54af-46c0-b916-80168a052e6f_20181120_110232560.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\395729df-0076-4b17-b61a-3bf5ac4ed2d3_20180821_080227699.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\3f5963ed-87ce-4d53-9f16-85d4337de991_20180705_064041027.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\40b4b66b-86ac-40ba-9c3c-e8b59cc72fa7_20181004_072001688.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\46078843-5325-4edc-a806-7565dccbd92e_20180705_064454290.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\48f7ddff-4e9f-4865-9163-b8354cacc4a7_20180821_082641553.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\4ad5d3f1-8578-43cb-981d-6093debeabd4_20181120_113138523.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\4b212194-f8e9-41d7-9c7c-785b33c262f9_20181004_074145949.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\4c385a95-8eba-404d-809c-3340be18e7b7_20181004_071738177.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\4ce30f24-d4ee-47a9-8e7a-764c9bb34f27_20180717_153553656.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\4e69fd10-63ee-4387-8ea4-c78049668aad_20181120_110159192.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\5e5ab59d-b2c6-45cf-8872-939a73c45127_20180820_144627333.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\6881c265-00e2-44f3-b396-b967446c3299_20190313_124435377.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\6e448cb6-b233-4126-a281-86c918e06c9c_20180705_064404746.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\6ed8a00f-0fe2-4409-8701-40f9338273d1_20190116_081405335.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\79262a71-ca40-48c7-b680-b5835a32f63d_20181120_105911304.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\7fc69e7a-c449-4f77-805c-4554a493c101_20181004_072821295.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\8c432282-7c22-4c4f-9773-490548761fe2_20180820_144845621.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\9eb2fc30-8424-43cc-b47b-0d7688b8bce4_20181120_112838094.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\a722d17c-6b53-47ff-8e18-42c963391354_20180704_152500586.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\a968658a-937e-4244-bdf3-e6c88feff3b4_20180820_151551439.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\a9ace649-5283-442f-8b0f-528edb01e8fc_20190313_130549634.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\a9f16a1c-a4ed-42cf-a9be-521205559d41_20190313_130108889.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\af55304f-2bd5-46a1-baeb-83a23a5723b4_20190313_125118917.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\b1b61be7-f0be-43af-80ab-a011d392810a_20180820_145310001.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\b31ec5a4-a564-47df-a2e4-049cc77e6017_20180821_074746897.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\b361326b-68e9-4d61-b831-06c9006f09d1_20181120_112807115.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\b58539d7-1c24-43d8-acc7-85106dbd4e97_20180704_152941118.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\bf240e37-9138-471c-8cfa-3eab86e4e9f7_20180821_074425696.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\c472887d-cae0-48d1-9276-367c7660c905_20190116_081745853.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\ceb29276-cf7a-4188-aaab-12b7a86cb937_20190116_081423266.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\d1f5de74-cd0b-4977-8513-d42b1b3600f1_20180821_071103895.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\d739294a-833d-464e-ae26-8cde273bd2eb_20180820_142932348.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\d7feb2b1-5f1e-4472-abdf-054f167205f0_20190116_081622482.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\e2fcee14-9cfb-495e-9a7c-62a15786eb9d_20180821_073642177.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\e332d2eb-ed82-4a22-9507-1f2fe72404be_20181120_110324937.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\e3da1f4b-da04-463c-bfac-0e3183e8791a_20181004_072133994.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\e7bcd32a-cbb4-4631-9b8f-dc2ce9c43775_20181004_073458654.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\e82719c7-5cfa-43ec-9cd4-44efd27b243c_20180705_064612626.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\ea77e8b9-9fa8-4927-8c58-08806195c7be_20190116_081548500.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\efdcca00-4a2d-4480-bbe5-f2457a9b82cc_20181004_072012452.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\f5f4e633-af31-4541-b589-a1918c719b49_20180821_073300267.xml" />
+    <Content Include="content\files\etcImport\ETCcatalog\fadd9679-30d9-4324-89c1-2fe75d8df95f_20180820_144958421.xml" />
+    <Content Include="content\files\etcImport\Invoice\e20bc67a-9de1-44ad-9924-ecc2f1bdae2e_20181203_122445060.xml" />
+    <Content Include="content\files\etcImport\Invoice\fa5ed28b-c03b-4bed-b41b-b868b2d09309_20181203_113823913.xml" />
+    <Content Include="content\files\etcImport\NewDataSet\06a01bef-3401-4002-8ee3-1f1f27c1849f_20181017_151728295.xml" />
+    <Content Include="content\files\etcImport\NewDataSet\45f73a21-d4d3-4143-a56a-b23d4b86bb4d_20180723_150028891.xml" />
+    <Content Include="content\files\etcImport\NewDataSet\8a1984e0-8ce2-4a1a-a7f3-cd2169d4a62d_20180912_135318683.xml" />
+    <Content Include="content\files\etcImport\SalesOrder\21b4a8c4-3504-4949-b706-ff6dab2b990b_20180807_144403338.xml" />
+    <Content Include="content\files\etcImport\SalesOrder\3256362b-43a9-4ec1-9d34-830d03fde070_20181019_143241966.xml" />
+    <Content Include="content\files\etcImport\SalesOrder\3a396f56-aabf-4e46-9399-01226dcbb213_20181019_143939725.xml" />
+    <Content Include="content\files\etcImport\SalesOrder\703e4901-91d5-463c-afe9-0d5fbecb1608_20181019_145619863.xml" />
+    <Content Include="content\files\etcImport\SalesOrder\c993b195-3973-4108-b73e-ac68c44515e8_20181019_145558962.xml" />
+    <Content Include="content\files\etcImport\Storelocator\006a3b52-4c3d-4336-8739-4a7394711233_20190110_075933660.xml" />
+    <Content Include="content\files\etcImport\Storelocator\3f44fef3-32a4-4750-bc5e-7c216df07b92_20190110_075518759.xml" />
+    <Content Include="content\files\etcImport\Storelocator\4086d469-dde7-4516-a753-5fc748f3a97d_20190110_075327355.xml" />
+    <Content Include="content\files\etcImport\Storelocator\740ad7f5-a687-47b4-9e7e-02c796849d2f_20190109_121934713.xml" />
+    <Content Include="content\files\etcImport\Storelocator\e5fa9c57-83f9-4dc9-b9a8-1691795687f2_20190110_074552535.xml" />
+    <Content Include="content\files\etcImport\Storelocator\e7ba9bfe-b671-4aee-af44-3436bc292401_20190110_075447515.xml" />
+    <Content Include="content\files\etcImport\Storelocator\ebe07037-9dba-47a2-a59a-b9a3402babe2_20190110_080451370.xml" />
+    <Content Include="css\vwa_account.css" />
+    <Content Include="css\vwa_catalog.css" />
+    <Content Include="css\vwa_hk.css" />
+    <Content Include="css\vwa_maps.css" />
+    <Content Include="css\vwa_media.css" />
+    <Content Include="css\vwa_nav.css" />
+    <Content Include="css\vwa_style.css" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="media\1001\despite.jpg" />
@@ -901,7 +1004,14 @@
     <None Include="App_Plugins\Hotspots\Views\web.Release.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
+    <Content Include="content\files\histinvoice\16704940.PDF" />
+    <Content Include="content\files\web.config" />
+    <Content Include="App_Plugins\Merchello\client\css\merchello.ui.css.map" />
+    <Content Include="App_Plugins\Merchello\client\css\merchello.ui.min.css.map" />
+    <Content Include="App_Plugins\Merchello\client\js\merchello.ui.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\Productie .pubxml" />
+    <None Include="Properties\PublishProfiles\VWAServer Live.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.creditCardValidator.js" />
@@ -910,12 +1020,17 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\underscore.min.js" />
+    <Content Include="Scripts\vwa_functions.js" />
+    <Content Include="Scripts\vwa_maps.js" />
     <Content Include="Styles\css\bootstrap-theme.css" />
     <Content Include="Styles\css\bootstrap-theme.min.css" />
     <Content Include="Styles\css\bootstrap.css" />
     <Content Include="Styles\css\bootstrap.min.css" />
     <Content Include="Styles\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Umbraco\Js\umbraco.services.js" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\trees.config" />
     <Content Include="Config\ExamineSettings.config">
       <SubType>Designer</SubType>
@@ -958,9 +1073,7 @@
     <Content Include="Styles\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Styles\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Views\ftBillingAddress.cshtml" />
-    <Content Include="Views\ftFinalSaleSummary.cshtml" />
     <Content Include="Views\ftPayment.cshtml" />
-    <Content Include="Views\ftPaymentMethod.cshtml" />
     <Content Include="Views\ftPreSaleSummary.cshtml" />
     <Content Include="Views\ftShippingAddress.cshtml" />
     <Content Include="Views\ftShipRateQuote.cshtml" />
@@ -980,6 +1093,44 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\hkCategories.cshtml" />
+    <Content Include="Views\Partials\MainNavigation.cshtml" />
+    <Content Include="Views\Master.cshtml" />
+    <Content Include="Views\Dealers.cshtml" />
+    <Content Include="Views\Partials\Forms\Form.cshtml" />
+    <Content Include="Views\MacroPartials\InsertUmbracoFormWithTheme.cshtml" />
+    <Content Include="Views\Merchello\Notification\OrderConfirmation_subject.cshtml" />
+    <Content Include="Views\Dealers_2.cshtml" />
+    <Content Include="Views\StoreLocator\GetStoresAsHtml.cshtml" />
+    <Content Include="Views\Partials\Navigation\SubNavigation.cshtml" />
+    <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
+    <Content Include="Views\Partials\MegaMenu.cshtml" />
+    <Content Include="Views\Merchello\Notification\OrderConfirmation_hkliving.cshtml" />
+    <Content Include="Views\Merchello\Notification\OrderConfirmation_subject_hkliving.cshtml" />
+    <Content Include="Views\HomePagina.cshtml" />
+    <Content Include="Views\Contact.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\FeaturedProducts.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\bootstrap3-horizontal\Fieldtypes\FieldType.RadioButtonList.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\bootstrap3-horizontal\Form.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\bootstrap3-vertical\Fieldtypes\FieldType.RadioButtonList.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\bootstrap3-vertical\Form.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.CheckBox.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.CheckBoxList.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.DataConsent.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.DatePicker.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.DropDownList.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.FileUpload.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.HiddenField.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.PasswordField.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.RadioButtonList.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\Fieldtype.Recaptcha.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\Fieldtype.Recaptcha2.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.Text.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.Textarea.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Fieldtypes\FieldType.Textfield.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Form.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Render.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Script.cshtml" />
+    <Content Include="Views\Partials\Forms\Themes\default\Submitted.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -995,6 +1146,8 @@
   <ItemGroup>
     <Content Include="App_Code\CustomerCxtDataViewer.cs" />
     <Content Include="App_Code\paging.cs" />
+    <Content Include="App_Code\StoreLocator\StoreLocatorController.cs" />
+    <Content Include="App_Code\PSK\PSKHelper.cs" />
     <Compile Include="App_Plugins\HapHap\OfferAdminController.cs" />
     <Compile Include="App_Plugins\HapHap\ArticleFilterController.cs" />
     <Compile Include="App_Plugins\HapHap\Models\CatalogFilterPostModel.cs" />
@@ -1035,7 +1188,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Plugins\KassenConfigurator_example\" />
+    <Folder Include="App_Plugins\LeBlender\backoffice\GridEditorManager\" />
+    <Folder Include="App_Plugins\LeBlender\common\directive\" />
+    <Folder Include="App_Plugins\LeBlender\common\filter\" />
+    <Folder Include="App_Plugins\LeBlender\common\services\" />
+    <Folder Include="App_Plugins\LeBlender\editors\leblendereditor\assets\" />
+    <Folder Include="App_Plugins\LeBlender\editors\leblendereditor\views\" />
+    <Folder Include="App_Plugins\LeBlender\editors\textstring\" />
+    <Folder Include="App_Plugins\LeBlender\views_samples\" />
+    <Folder Include="content\files\histsalesorder\" />
     <Folder Include="Views\Article\" />
+    <Folder Include="Views\Partials\StoreLocator\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

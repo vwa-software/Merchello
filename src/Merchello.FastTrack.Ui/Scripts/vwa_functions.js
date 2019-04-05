@@ -267,6 +267,7 @@ $(function () {
 // For demo purposes, can be deleted
 // ------------------------------------------------------ //
 
+/*
 var stylesheet = $('link#theme-stylesheet');
 $("<link id='new-stylesheet' rel='stylesheet'>").insertAfter(stylesheet);
 var alternateColour = $('link#new-stylesheet');
@@ -292,6 +293,8 @@ $("#colour").change(function () {
 
     return false;
 });
+rtemp */ 
+
 
 // Hotspot fade image
         
@@ -369,24 +372,26 @@ $(document).ready(function () {
 
     });
 
+	// Toggle sort icon
+	$('.tab-content .acc').click(function () {
+		$(this).find('i.sort').toggleClass('fa-sort-down fa-sort-up');
+	});
 
-    /*** REMOVE IF MOUSEOVER IS NOT REQUIRED ***/
-
+	// prevent accordion slide
+	$('.fas.fa-file-pdf').click(function (event) {
+		event.stopPropagation();
+	});
+	
     //ADDS THE .OVER CLASS FROM THE STYLESHEET ON MOUSEOVER 
     $('.accordionButton').mouseover(function () {
         $(this).addClass('over');
 
-        //ON MOUSEOUT REMOVE THE OVER CLASS
+     //ON MOUSEOUT REMOVE THE OVER CLASS
     }).mouseout(function () {
         $(this).removeClass('over');
     });
-
-    /*** END REMOVE IF MOUSEOVER IS NOT REQUIRED ***/
-
-
-    /********************************************************************************************************************
-    CLOSES ALL S ON PAGE LOAD
-    ********************************************************************************************************************/
+  
+	// CLOSES ALL S ON PAGE LOAD
     $('.accordionContent').hide();
 
 // /Accordion Account

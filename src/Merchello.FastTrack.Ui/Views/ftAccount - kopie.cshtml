@@ -1,0 +1,167 @@
+﻿@inherits Merchello.Web.Mvc.MerchelloViewPage<IPublishedContent>
+@using Merchello.Core.Models
+@using Merchello.Web
+@using Merchello.Web.Store.Localization
+
+@{
+	Layout = "Master.cshtml";
+
+	ICustomer customer = null;
+	if (CurrentCustomer is ICustomer)
+	{
+		customer = (ICustomer)CurrentCustomer;
+	}
+
+	var umbracomember = Members.GetCurrentMember();
+
+	if (customer != null)
+	{
+
+		<div class="hk_order hk_checkout">
+			@if (Model.HasProperty("brief") && Model.HasValue("brief"))
+			{
+				@Umbraco.Field("brief")
+			}
+			<div class="row">
+
+				<div class="col-md-12 ">
+					@if (!customer.WishList().IsEmpty)
+					{
+						<h2 class="hk_shop">@StoreFormsResource.LabelWishList</h2>
+						@Html.Action("WishListForm", "StoreWishList", new { area = "Merchello" })
+					}
+					<h2 class="hk_shop">Account</h2>
+					<div class="row">
+						<div class="col-md-2">
+							<strong>company name</strong>
+							<br />
+							@if (Members.IsLoggedIn())
+							{
+								@umbracomember.GetPropertyValue("company")
+							}
+							@*   @Html.Action("Invoices", "Account", new { area = "ETCConnector" })*@
+						</div>
+						<div class="col-md-2">
+							<strong>first name</strong>
+							<br />@string.Format("{0}", customer.FirstName)
+						</div>
+						@*<div class="col-md-2">
+								<strong>zipcode</strong>
+								<br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+							</div>*@
+						<div class="col-md-2">
+							<strong>phone</strong>
+							<br />
+							@umbracomember.GetPropertyValue("phoneHome")
+						</div>
+						@* <div class="col-md-2">
+								<input class="btn btn-hk-custom" type="button" value="edit" />
+							</div>*@
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+						</div>
+						<div class="col-md-2">
+							<strong>last name</strong>
+							<br />@string.Format("{0}", customer.LastName)
+						</div>
+						<div class="col-md-2">
+							<strong>email adress</strong>
+							<br />
+							<a href="mailto:@customer.Email">@customer.Email</a>
+						</div>
+						<div class="col-md-2">
+						</div>
+						<div class="col-md-2">
+
+						</div>
+						<div class="col-md-2">
+
+						</div>
+						<div class="col-md-2">
+						</div>
+					</div>
+					@*    <div class="row">
+								 <div class="col-md-2">
+									 <strong>company name</strong>
+									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+								 </div>
+								 <div class="col-md-2">
+									 <strong>last name</strong>
+									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+								 </div>
+								 <div class="col-md-2">
+									 <strong>country</strong>
+									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+								 </div>
+								 <div class="col-md-2">
+									 <strong>postalcode</strong>
+									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+								 </div>
+								 <div class="col-md-2">
+									 <strong>phone</strong>
+									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+								 </div>
+								 <div class="col-md-2">
+									 <input class="btn" type="button" value="edit" />
+								 </div>
+							 </div>
+
+						</div> *@
+
+					@* <div class="col-md-6">
+							<h2 class="hk_shop">@StoreFormsResource.LabelAddresses</h2>
+							@Html.Action("CustomerBillingAddress", "CustomerMembership", new { area = "FastTrack" })
+
+							@Html.Action("CustomerShippingAddress", "CustomerMembership", new { area = "FastTrack" })
+						</div>*@
+				</div>
+
+				<div class="row" style="margin:20px 0px 0px 0px">
+					<div class="col-md-12">
+						@Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active show" href="#invoices" role="tab" data-toggle="tab" aria-selected="true">my invoices</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#orders" role="tab" data-toggle="tab">my orders</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div class="col-md-12 hk_shop_forms tab-pane fade in active show" role="tabpanel" id="invoices">
+								@* Maatwerk HKLiving Invoices
+									<h2 class="hk_shop">my invoices</h2>*@
+								@*Maatwerk HKLiving Invoices*@
+								@*Call to ETCConnector Account Controller*@
+								@Html.Action("Invoices", "Account", new { area = "ETCConnector" })
+							</div>
+							<div class="col-md-12 tab-pane fade" role="tabpanel" id="orders">
+								@*<h2 class="hk_shop">my orders</h2>*@
+								@*Maatwerk HKLiving Invoices*@
+								@*Call to ETCConnector Account Controller*@
+								@Html.Action("Orders", "Account", new { area = "ETCConnector" })
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		// customer == null, for some reasen.
+
+		<script type="text/javascript">
+			window.location = "/home";
+		</script>
+
+	}
+
+}
+

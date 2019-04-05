@@ -1,6 +1,6 @@
 ﻿<div id="angRoot" class="umb-panel tabbable umb-editor-wrapper" ng-controller="VWA.SpiderController">
 	<!--Todo :pagina opbouwen als voorbeeld : F:\umbraco\GIT2\Umbraco-CMS\src\Umbraco.Web.UI.Client\build\belle\views\datatypes\edit.html-->
-
+	
 	<umb-load-indicator ng-if="page.loading"></umb-load-indicator>
 	<form name="contentForm"
 		  novalidate
@@ -64,15 +64,15 @@
 
 
 								<!--<div ng-if="Data.RootNodeProperty != null">
-		Root node
-		<ng-form name="propertyForm">
-			<umb-property-editor model="Data.RootNodeProperty">
+					Root node
+					<ng-form name="propertyForm">
+						<umb-property-editor model="Data.RootNodeProperty">
 
 
-			</umb-property-editor>
-		</ng-form>
-	</div>
-	-->
+						</umb-property-editor>
+					</ng-form>
+				</div>
+				-->
 
 								<umb-control-group label="Ingeschakeld" description="Inschakelen om te spideren">
 									<input type="checkbox" name="chkEnabled" ng-checked="!Data.Disabled" ng-true-value="false" ng-false-value="true" ng-model="Data.Disabled" />
@@ -111,15 +111,18 @@
 
 								<umb-control-group label="Processor Type" description="Type processor">
 									<select ng-model="Data.ProcessorType">
-										<option value="ETC.Connector.Services.DataBaseProcessor">Database Processor</option>
-										<option value="ETC.Connector.Services.SpiderProcessor">Webspider Processor</option>
-										<option value="ETC.Connector.Services.ETCServices.InvoiceProcessor">InvoiceProcessor</option>
-										<option value="ETC.Connector.Services.ETCServices.AccountProcessor">AccountProcessor</option>
-										<option value="ETC.Connector.Services.ETCServices.ItemImportProcessor">ItemImportProcessor</option>
-										<option value="ETC.Connector.Services.ETCServices.ItemImageProcessor">ItemImageProcessor</option>
+										<option value="ETC.Connector.Services.DataBaseProcessor">Database</option>
+										<option value="ETC.Connector.Services.SpiderProcessor">Webspider</option>
+										<option value="ETC.Connector.Services.ETCServices.InvoiceProcessor">Invoice</option>
+										<option value="ETC.Connector.Services.ETCServices.SalesOrderProcessor">SalesOrder</option>
+										<option value="ETC.Connector.Services.ETCServices.AccountProcessor">Account</option>
+										<option value="ETC.Connector.Services.ETCServices.ItemImportProcessor">ItemImport</option>
+										<option value="ETC.Connector.Services.ETCServices.ItemImageProcessor">ItemImage</option>
+										<option value="ETC.Connector.Services.ETCServices.StoreLocatorProcessor">StoreLocator</option>
+										<option value="ETC.Connector.Services.GeoLocationProcessor">Geo Lookup</option>
 									</select>
 								</umb-control-group>
-							
+
 								<umb-control-group label="e-Mail beleid" ng-if="Data.ProcessorType == 'ETC.Connector.Services.ETCServices.AccountProcessor'" description="Wanneer krijgen de gebruikers een activatie email">
 									<select ng-model="Data.MailPolicy">
 										<option value="1">Verstuur geen mail</option>
@@ -137,9 +140,9 @@
 								</umb-control-group>
 
 								<!--<umb-control-group label="Bron" description="Website (xml) spideren of database uitlezen">
-		<label><input type="radio" ng-model="Data.SpiderDatabase" ng-value="true" />Database</label>
-		<label><input type="radio" ng-model="Data.SpiderDatabase" ng-value="false" />Website</label>
-	</umb-control-group>-->
+					<label><input type="radio" ng-model="Data.SpiderDatabase" ng-value="true" />Database</label>
+					<label><input type="radio" ng-model="Data.SpiderDatabase" ng-value="false" />Website</label>
+				</umb-control-group>-->
 
 
 
@@ -177,13 +180,13 @@
 
 
 								<!--
-		todo:
+					todo:
 
-		<umb-control-group label="Label" description="Label propertie wanneer object niet meer is gevonden">
-		<select ng-model="Data.SoldSpecID" class="umb-editor umb-textstring" ng-options="spec.Id as spec.Name for spec in Specs">
-			<option ng-repeat="spec in Specs" value="{{spec.Id}}" ng-selected="{{spec.Id == Data.SoldSpecID}}">{{spec.Name}}</option>
-		</select>
-	</umb-control-group>-->
+					<umb-control-group label="Label" description="Label propertie wanneer object niet meer is gevonden">
+					<select ng-model="Data.SoldSpecID" class="umb-editor umb-textstring" ng-options="spec.Id as spec.Name for spec in Specs">
+						<option ng-repeat="spec in Specs" value="{{spec.Id}}" ng-selected="{{spec.Id == Data.SoldSpecID}}">{{spec.Name}}</option>
+					</select>
+				</umb-control-group>-->
 
 
 							</div>
@@ -267,7 +270,46 @@
 								</div>
 							</nav>
 						</div>
+						
+					</umb-tab>
 
+					<umb-tab id="tab4" rel="4">
+
+						<!--Geo properties -->
+						<div class="form-horizontal">
+							<div class="umb-pane">
+								<umb-control-group label="Latitude eigenschap" description="Deze eigenschap wordt gevuld met de opgezochte geografische informatie">
+									<!---->
+									<select ng-model="Data.LatitudePropertyID" class="form-control"
+											ng-options="spec.Id as spec.Name for spec in Specs"></select>
+
+								</umb-control-group>
+							</div>
+						</div>
+
+						<!--Geo properties -->
+						<div class="form-horizontal">
+							<div class="umb-pane">
+								<umb-control-group label="Longitude eigenschap" description="Deze eigenschap wordt gevuld met de opgezochte geografische informatie">
+									<!---->
+									<select ng-model="Data.LongitudePropertyID" class="form-control"
+											ng-options="spec.Id as spec.Name for spec in Specs"></select>
+
+								</umb-control-group>
+							</div>
+						</div>
+
+						<!--Geo properties -->
+						<div class="form-horizontal">
+							<div class="umb-pane">
+								<umb-control-group label="Overschrijf eigenschap" description="Tijdens opslaan wordt er gecontroleerd of dit vinkje aan staat, zo ja dan wordt de geografische locatie opnieuw bepaald">
+									<!---->
+									<select ng-model="Data.RecalculatePropertyID" class="form-control"
+											ng-options="spec.Id as spec.Name for spec in Specs"></select>
+
+								</umb-control-group>
+							</div>
+						</div>
 
 
 					</umb-tab>

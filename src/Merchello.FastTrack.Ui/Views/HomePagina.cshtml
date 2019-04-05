@@ -1,51 +1,43 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.HomePagina>
 @using ContentModels = Umbraco.Web.PublishedContentModels;
-@{	Layout = "Master.cshtml";
+@{	
 
-}
+	Layout = "Master.cshtml";
 
-<div class="container-fluid hk_collections hk_catalog hk_homepage">
 
+}<div class="container-fluid hk_collections hk_catalog hk_homepage">
     <div class="row">
         <!-- Grid -->
         @Html.GetGridHtml(Model.Content, "grid")
         <!-- /Grid -->
     </div>
 </div>
-
-
 @section Scripts {
+    <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+    <script>
+				    $(document).ready(function () {
+					    $(".hk_media_display_list_double").lightSlider({
+						    adaptiveHeight: false,
+						    autoWidth: true,
+						    item: 2,
+						    slideMargin: 0,
+						    //slideMargin: 0,
+						    loop: true
+					    });
+				    });
 
-        <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
-        <script>
-				        $(document).ready(function () {
-					        $(".hk_media_display_list_double").lightSlider({
-						        adaptiveHeight: false,
-						        autoWidth: true,
-						        item: 2,
-						        slideMargin: 0,
-						        //slideMargin: 0,
-						        loop: true
-					        });
-				        });
+				    $('.hk_media_display_list').each(function (i, e) {
+					    var id = 'adaptive';
+					    $(e).attr('id', id + i);
+					    var selector = '#' + id + i;
+					    $(selector).lightSlider({
+						    adaptiveHeight: false,
+						    item: 1,
+						    slideMargin: 0,
+						    loop: true,
+						    pager: false
+					    });
+				    });
 
-				        $('.hk_media_display_list').each(function (i, e) {
-					        var id = 'adaptive';
-					        $(e).attr('id', id + i);
-					        var selector = '#' + id + i;
-					        $(selector).lightSlider({
-						        adaptiveHeight: false,
-						        item: 1,
-						        slideMargin: 0,
-						        loop: true,
-						        pager: false
-					        });
-				        });
-
-        </script>
-
-
-    <link rel="stylesheet" href="/scripts/css/image-map-pro.min.css">
-    <script type="text/javascript" src="/scripts/js/image-map-pro.min.js"></script>
-
+    </script>
 }

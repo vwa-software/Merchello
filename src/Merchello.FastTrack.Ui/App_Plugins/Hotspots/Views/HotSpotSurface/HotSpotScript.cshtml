@@ -1,15 +1,18 @@
 ﻿@model Dictionary<string, string>
+@using ClientDependency.Core.Mvc;
 @{
 	int newID = (int)(Context.Items.Contains("hotspotID") ? Context.Items["hotspotID"] : 0) + 1;
 	Context.Items["hotspotID"] = newID;
 	string clientId = string.Format("image-map-pro-{0}", newID);
-}
 
+	// include hotspot scripts/css
+	Html.RequiresCss("~/scripts/css/image-map-pro.min.css");
+	Html.RequiresJs("~/scripts/js/image-map-pro.js");
+}
 <div id="@clientId" class="hotspot wrapper id-@clientId">
 </div>
-
 @{
-	if (Model != null && Model.Count >0)
+	if (Model != null && Model.Count > 0)
 	{
 		<script type="text/javascript">
 			(function () {

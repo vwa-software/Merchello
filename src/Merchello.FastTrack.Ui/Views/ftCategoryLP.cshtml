@@ -181,11 +181,11 @@
 
 <div class="container-fluid hk_collections hk_category" id="hk_cat_@currentPageId">
     <div class="row">
-        <div class="col-3 col-xl-3 col-md-3">
+		<div class="col-4 col-xl-3 col-md-3">
             @RenderSearchForm(paging)
             @Html.Partial("hkCategories")
         </div>
-        <div class="col-9 col-xl-9 col-md-9 col-sm-9">
+        <div class="col-8 col-xl-9 col-md-9">
             @*col-12 col-xl-12 col-md-12 col-sm-12*@
             <div class="row">
                 <div class="col-12 hk_categorie_media_LP hk_categorie_media_top">
@@ -197,10 +197,10 @@
                     <div class="col-9 col-xl-9 col-md-9 col-sm-9">
                         @*col-12 col-xl-12 col-md-12 col-sm-12*@
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 hk_sort">
                                 @RenderSortingDropDown(paging)
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-6 text-right hk_sort">
                                 @RenderItemsDropDown(paging)
                             </div>
                         </div>
@@ -221,6 +221,25 @@
         </div>
 
 
+
+<div class="col-12 hk_categorie_featured">
+
+    @{
+        // http://projecten.vwa.nu:888/redmine/issues/5329
+        // Featured products..
+        // Products are rendered in partial view _productboxlist
+        // @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
+        // Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
+
+
+        // List of featured Products
+        // Filter op null values (product may be disabled, this results in a null value)
+
+
+
+    }
+
+</div>
 
         @helper RenderPaging(Paging paging, long currentId)
         {
@@ -340,4 +359,49 @@ if (paging.EndPageToShow < paging.TotalPages)
                     </ul>*@
             </form>
         </div>
+}
+
+@section Scripts {
+
+                <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+                <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+                
+                <script>
+				$('.hk_media_display_list').each(function (i, e) {
+					var id = 'adaptive';
+					$(e).attr('id', id + i);
+					var selector = '#' + id + i;
+					$(selector).lightSlider({
+						autoWidth: false,
+						loop: true,
+						keyPress: true
+					});
+				});
+
+                </script>
+}
+@section Breadcrumbs {
+
+    @{
+       
+            <div class="hk_breadcrumb">
+                <div class="">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">Home</a></li>
+                                    <li>
+                                        <a href="@Model.Url" class="hk_link_@Model.Name">@Model.Name </a>
+                                    </li>
+</ol>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+                                
+        
+    }
+
+
 }

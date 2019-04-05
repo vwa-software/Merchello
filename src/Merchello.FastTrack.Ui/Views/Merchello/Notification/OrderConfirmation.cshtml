@@ -6,11 +6,13 @@
 @using System.Web.Mvc.Html
 @using Umbraco.Core.Models
 @using Umbraco.Web
-@*
+
+@{
+
+	@*
 	MerchelloHelperViewPage<T> inherits from UmbracoViewPage<t> and exposes the MerchelloHelper as 'Merchello'
 	Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
 *@
-@{
 	string hostname = (HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority).TrimEnd("/");
 	string remarks = string.Empty;
 
@@ -28,6 +30,8 @@
 	{
 		// ignore		
 	}
+
+
 
 }
 <html>
@@ -365,15 +369,20 @@
 							</p>
 							<p style="color:#@grayColor">
 								<span style="color:#@primaryColor">your address:</span><br />
-                                @Model.Invoice.Customer().FullName<br />
-                                @Model.Invoice.BillToCompany<br />
+								@Model.Invoice.Customer().FullName<br />
+								@Model.Invoice.BillToCompany<br />
 								@Model.Invoice.BillToAddress1 @Model.Invoice.BillToAddress2<br />
-								@Model.Invoice.BillToLocality, @Model.Invoice.BillToRegion @Model.Invoice.BillToPostalCode
+								@Model.Invoice.BillToRegion @Model.Invoice.BillToPostalCode, @Model.Invoice.BillToLocality - @Model.Invoice.BillToCountryCode
 							</p>
 							<p style="color:#@grayColor">
 								<span style="color:#@primaryColor">email :</span> @Model.Invoice.BillToEmail<br />
 								<span style="color:#@primaryColor">phone :</span> @Model.Invoice.BillToPhone
 							</p>
+							<p style="color:#@grayColor">
+								<strong>REMARKS (SHIPPING ADDRESS)</strong><br />
+								@Html.Raw(remarks)
+							</p>
+							
 							<table border="0" width="100%" align="center">
 								<tbody>
 									<tr>
@@ -399,56 +408,55 @@
 										<th style="border-bottom: 2px solid #e9ecef;border-top: 1px solid #e9ecef;padding:5px;">total</th>
 									</tr>
 									@{
-                                        var cont = 1;
-                                        foreach (var item in Model.Invoice.Items)
-                                        {
-                                            string color = (cont % 2 == 0) ? rowBackgroun1 : rowBackgroun2;
-                                            decimal totalItem = item.Price * item.Quantity;
+										var cont = 1;
+										foreach (var item in Model.Invoice.Items.Where(a => a.LineItemType != LineItemType.Shipping))
+										{
+											string color = (cont % 2 == 0) ? rowBackgroun1 : rowBackgroun2;
+											decimal totalItem = item.Price * item.Quantity;
 											<tr style="background:#@whiteColor;color:#@grayColor">
 												<td align="center" style="border-top: 1px solid #e9ecef;">@cont</td>
 												<td class="img" style="border-top: 1px solid #e9ecef;">
 													@if (item.LineItemType == LineItemType.Product)
-                                                    {
+													{
 
-                                                        // Get merchello product from product key, stored in extendeddata.
-                                                        var product = Merchello.TypedProductContent(item.ExtendedData.GetProductKey());
+														// Get merchello product from product key, stored in extendeddata.
+														var product = Merchello.TypedProductContent(item.ExtendedData.GetProductKey());
 
-                                                        // ID of the image
+														// ID of the image
 
-                                                        var mediaID = product.GetPropertyValue<string>("ftProduct_Afbeelding");
-                                                        // Get the Umbraco image object
-                                                        var image = Umbraco.TypedMedia(mediaID);
+														var mediaID = product.GetPropertyValue<string>("ftProduct_Afbeelding");
+														// Get the Umbraco image object
+														var image = Umbraco.TypedMedia(mediaID);
 
-                                                        // Check if image is available, and render if so.
-                                                        if (image != null && !string.IsNullOrWhiteSpace(image.Url))
-                                                        {
+														// Check if image is available, and render if so.
+														if (image != null && !string.IsNullOrWhiteSpace(image.Url))
+														{
 															<img src="@(hostname)/@image.GetCropUrl(75, 75)" alt="@item.Name" />
-                                                        }
-                                                    }
+														}
+													}
 												</td>
-
 												<td style="border-top: 1px solid #e9ecef;padding:5px; text-align:left;">
 													@switch (item.LineItemType)
-                                                    {
-                                                        case LineItemType.Shipping:
+													{
+														case LineItemType.Shipping:
 															@("Shipping:")
-                                                            break;
-                                                        case LineItemType.Discount:
+															break;
+														case LineItemType.Discount:
 															@("Discount:")
-                                                            break;
-                                                        case LineItemType.Tax:
+															break;
+														case LineItemType.Tax:
 															@("Vat:")
-                                                            break;
-                                                        default:
+															break;
+														default:
 															@(item.Name + " | " + item.Sku)
-                                                            break;
-                                                    }	
+															break;
+													}
 												<td align="right" style="border-top: 1px solid #e9ecef;padding:5px;">@item.Price.AsFormattedCurrency(Model.CurrencySymbol)</td>
 												<td align="center" style="border-top: 1px solid #e9ecef;padding:5px;">@item.Quantity</td>
 												<td align="right" style="border-top: 1px solid #e9ecef;padding:5px;">@totalItem.AsFormattedCurrency(Model.CurrencySymbol)</td>
 											</tr>
-                                            cont++;
-                                        }
+											cont++;
+										}
 									}
 									<tr>
 										<td colspan="4" style="border-top: 1px solid #e9ecef;">&nbsp;</td>
@@ -457,14 +465,10 @@
 									</tr>
 								</tbody>
 							</table>
-                            <p style="color:#@grayColor">
-                            <strong>REMARKS (SHIPPING ADDRESS)</strong><br />
-                            @(remarks)
-                            </p>
-                            <p style="color:#@grayColor">&nbsp;</p>
-                            <p style="color:#@grayColor">
-								We will process your order and ship your items soon, have an excellent day.<br /><br />
-
+							
+							<p style="color:#@grayColor">&nbsp;</p>
+							<p style="color:#@grayColor">
+								Thank you for your order, have an excellent day <br /><br />
 							</p>
 						</td>
 						<td width="32px"></td>

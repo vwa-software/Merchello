@@ -1,0 +1,28 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using Umbraco.Web
+
+@{
+    // 1099 is the categorie content node
+
+    ////  @foreach (var item in Model.Content.Descendants().Where(x = x.TemplateId > 0))
+    var Collections = Umbraco.TypedContent(1099);
+    var AllCategories = Collections.Descendants().Where(x => x.IsVisible());
+    var featured = AllCategories.Where(x => x.GetPropertyValue<bool>("onlyFeaturedCategory", true));
+    var categories = AllCategories.Where(x => !x.GetPropertyValue<bool>("onlyFeaturedCategory", true) || x.GetPropertyValue<bool>("alsoDefaultCategory", true));
+}
+
+
+<div class="hk_featured_lbl">
+  
+    	@if (featured.Count() > 0)
+         	{
+									
+								}
+								else
+								{
+<h2 class="hk_category_name">Featured</h2>
+								}
+
+
+</div>
+

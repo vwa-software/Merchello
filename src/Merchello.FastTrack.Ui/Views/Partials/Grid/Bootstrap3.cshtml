@@ -75,7 +75,13 @@
                 var propertyValue = property.Value.ToString();
                 if (string.IsNullOrWhiteSpace(propertyValue) == false)
                 {
-                    cssVals.Add(property.Name + ":" + propertyValue + ";");
+                    if (property.Name == "ctaflex" && propertyValue == "true") {  
+                        cssVals.Add("flex-wrap:wrap;");
+                        cssVals.Add("display:flex;");
+                    } else {
+                        cssVals.Add(property.Name + ":" + propertyValue + ";");
+                        cssVals.Add(property.Name + ":" + propertyValue + ";");
+                    }
                 }
             }
 

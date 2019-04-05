@@ -122,9 +122,9 @@
 			bool logedIn = false;
 			try
 			{
-				logedIn =  Members.Login(model.Username, model.Password);
+				logedIn = Members.Login(model.Username, model.Password);
 			}
-			catch(System.FormatException)
+			catch (System.FormatException)
 			{
 				// Calculated error, import does not import passwords, so the base-64 string is not recognized.
 				// Logger.Error<CustomerMembershipController>("Password for user " + model.Username + " could not be validated", ex);
@@ -162,7 +162,7 @@
 			{
 				var member = Members.GetByUsername(model.Username);
 
-				
+
 				if (member == null)
 				{
 					viewData.Messages = new[] { "Account does not exist for this email address." };
@@ -175,8 +175,18 @@
 					};
 
 					if (!member.GetPropertyValue<bool>("umbracoMemberApproved")) messages.Add(Umbraco.GetDictionaryValue("Account_disabled"));
-					if (member.GetPropertyValue<bool>("umbracoMemberLockedOut")) messages.Add("This account has been locked due to too many unsucessful login attempts.");
 
+					if (member.GetPropertyValue<bool>("umbracoMemberLockedOut"))
+					{
+						messages.Add("This account has been locked due to too many unsucessful login attempts. <br/>Please contact HKLiving to restore your account");
+					}
+					else if (!string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts")))
+					{
+						if (int.TryParse(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts"), out int failedPasswordAttempts))
+						{
+							messages.Add(string.Format("You have {0} attempts left.", 5 - failedPasswordAttempts));
+						}
+					}
 					viewData.Messages = messages;
 				}
 
@@ -274,7 +284,7 @@
 			{
 				return Redirect("/");
 			}
-			
+
 			return RedirectToUmbracoPage(redirectId);
 		}
 
@@ -314,16 +324,6 @@
 		[ChildActionOnly]
 		public virtual ActionResult LoginForm(string view = "", string redirectPath = "")
 		{
-			if (User.Identity.IsAuthenticated)
-			{
-				if (string.IsNullOrEmpty(redirectPath))
-				{
-					return new RedirectResult("/");
-
-				}
-				return new RedirectResult(redirectPath);
-			}
-
 			var model = new LoginModel { RememberMe = true };
 			return view.IsNullOrWhiteSpace() ? PartialView(model) : PartialView(view, model);
 		}
@@ -406,7 +406,7 @@
 		{
 			if (!ModelState.IsValid) return CurrentUmbracoPage();
 			var viewData = new StoreViewData();
-									
+
 			model.Password = model.Password.Trim();
 
 
@@ -468,7 +468,7 @@
 				ViewData["MerchelloViewData"] = viewData;
 				return CurrentUmbracoPage();
 			}
-			
+
 			MemberActivationModel activationModel = new MemberActivationModel(member);
 			string sEncrypt = Guid.NewGuid().ToString().Replace("-", string.Empty);
 			string token = Encrypter.Encrypt(sEncrypt, Encrypter.EncryptEnum.SHA1);
@@ -489,10 +489,10 @@
 				LogHelper.Error<CustomerMembershipController>(string.Format("ForgotPassword - documenttype {0} does not contain passwordResetToken property", member.ContentTypeAlias), ex);
 			}
 
-			new EmailService().SendMailFromView<MemberActivationModel>(activationModel, "ResetEmailTemplate", "Reset password", new string[]{ member.Email });
+			new EmailService().SendMailFromView<MemberActivationModel>(activationModel, "ResetEmailTemplate", "Reset password", new string[] { member.Email });
 
 			viewData.Success = true;
-			viewData.Messages = new string[] {	"A password reset link has been emailed to you." };
+			viewData.Messages = new string[] { "A password reset link has been emailed to you." };
 
 			this.ViewData["MerchelloViewData"] = viewData;
 			return (ActionResult)this.CurrentUmbracoPage();

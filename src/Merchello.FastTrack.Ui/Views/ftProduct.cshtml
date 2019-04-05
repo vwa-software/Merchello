@@ -43,15 +43,39 @@
 	var mediaId2 = Model.GetPropertyValue<string>("ftProduct_Afbeelding2");
 	var mediaId3 = Model.GetPropertyValue<string>("ftProduct_Afbeelding3");
 	var mediaId4 = Model.GetPropertyValue<string>("ftProduct_Afbeelding4");
+	var mediaId5 = Model.GetPropertyValue<string>("ftProduct_Afbeelding5");
 	var image = Umbraco.TypedMedia(mediaId);
 	var image2 = Umbraco.TypedMedia(mediaId2);
 	var image3 = Umbraco.TypedMedia(mediaId3);
 	var image4 = Umbraco.TypedMedia(mediaId4);
+	var image5 = Umbraco.TypedMedia(mediaId5);
 
 	// Retail price
-	var justRprice = Model.GetPropertyValue<string>("ftProduct_RetailPrice");
-	var Rprice = "Retail price: " + Model.GetPropertyValue<decimal>("ftProduct_RetailPrice").AsFormattedCurrency("eur");
-	var noRprice = "";
+	string Rprice = string.Empty;
+
+	// Alleen b2b klanten krijgen retail price te zien.
+	// http://projecten.vwa.nu:888/redmine/issues/5645
+	if (!this.CurrentCustomer.IsAnonymous)
+	{
+		// http://projecten.vwa.nu:888/redmine/issues/5959
+		// nl retailprijs, int, retailprijs int.
+		if (this.CurrentCustomer.PriceGroup.Alias == "001")
+		{
+			// nl
+			if (Model.HasValue("ftProduct_RetailPrice") && Model.GetPropertyValue<decimal>("ftProduct_RetailPrice") > 0)
+			{
+				Rprice = "Retail price: " + Model.GetPropertyValue<decimal>("ftProduct_RetailPrice").AsFormattedCurrency("eur");
+			}
+		}
+		else
+		{
+			// int
+			if (Model.HasValue("ftProduct_RetailPriceINT") && Model.GetPropertyValue<decimal>("ftProduct_RetailPriceINT") > 0)
+			{
+				Rprice = "Retail price: " + Model.GetPropertyValue<decimal>("ftProduct_RetailPriceINT").AsFormattedCurrency("eur");
+			}
+		}
+	}
 }
 
 <div class="container-fluid container hk_collections hk_product ">
@@ -64,32 +88,39 @@
 						<div class="clearfix" style="max-width:474px;">
 							<ul id="image-gallery" class="gallery list-unstyled">
 
-								@if (Model.HasValue("ftProduct_Afbeelding"))
+								@if (image != null)
 								{
-									<li data-thumb="@image.GetCropUrl(150, 150)" data-src="@image.GetCropUrl(900, 900)">
+									<li data-thumb="@image.GetCropUrl("PLPthumb")" data-src="@image.GetCropUrl(900, 900)">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image.GetCropUrl(900, 900)" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<img class="img-responsive" src="@image.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
-								@if (Model.HasValue("ftProduct_Afbeelding2"))
+								@if (image2 != null)
 								{
-									<li data-thumb="@image2.GetCropUrl(150, 150)" data-src="@image2.GetCropUrl(900, 900)">
+									<li data-thumb="@image2.GetCropUrl("PLPthumb")" data-src="@image2.GetCropUrl(900, 900)">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image2.GetCropUrl(900, 900)" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<img class="img-responsive" src="@image2.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
-								@if (Model.HasValue("ftProduct_Afbeelding3"))
+								@if (image3 != null)
 								{
-									<li data-thumb="@image3.GetCropUrl(150, 150)" data-src="@image3.GetCropUrl(900, 900)">
+									<li data-thumb="@image3.GetCropUrl("PLPthumb")" data-src="@image3.GetCropUrl(900, 900)">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image3.GetCropUrl(900, 900)" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<img class="img-responsive" src="@image3.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
-								@if (Model.HasValue("ftProduct_Afbeelding4"))
+								@if (image4 != null)
 								{
-									<li data-thumb="@image4.GetCropUrl(150, 150)" data-src="@image4.GetCropUrl(900, 900)">
+									<li data-thumb="@image4.GetCropUrl("PLPthumb")" data-src="@image4.GetCropUrl(900, 900)">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image4.GetCropUrl(900, 900)" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<img class="img-responsive" src="@image4.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+									</li>
+								}
+								@if (image5 != null)
+								{
+									<li data-thumb="@image5.GetCropUrl("PLPthumb")" data-src="@image5.GetCropUrl(900, 900)">
+										@* data-lity hier te gebruiken *@
+										<img class="img-responsive" src="@image5.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 							</ul>
@@ -102,32 +133,26 @@
 					@*<p>@Html.Raw(Model.GetPropertyValue<string>("ftProduct_eenzinomschr"))</p>*@
 					<span class="hk_description">@Html.Raw(Model.GetPropertyValue<string>("ftProduct_DescriptionHtml"))</span>
 					<p>
-						<span>
-							@{ if (!String.IsNullOrEmpty(@justRprice))
-								{
-									@Rprice
-								}
-								else
-								{
-									@noRprice}
-							}
-						</span>
+						<span>@Rprice</span>
 					</p>
+
 					@Categories()
 
 					@{
-						<div style="display:none">@(Model.GetPropertyValue<DateTime>("ftProduct_ExpDelivery"))</div>
-
 						// Determine out of stock message
-						if (Model.TotalInventoryCount <= 0)
+						if (!string.IsNullOrEmpty(Model.GetPropertyValue<string>("ftProduct_Neverinstock")))
+						{
+							<ul class="neverinstock">
+								<li>@Html.Raw(Model.GetPropertyValue("ftProduct_Neverinstock")) </li>
+							</ul>
+						}
+						else if (Model.TotalInventoryCount <= 0 && !this.CurrentCustomer.IsAnonymous)
 						{
 							<ul>
 								<li>Out of stock</li>
-								@if (Model.HasProperty("ftProduct_ExpDelivery") && Model.HasValue("ftProduct_ExpDelivery"))
-								{
-									string date = Model.GetPropertyValue<DateTime>("ftProduct_ExpDelivery").ToShortDateString();
+								@if (Model.HasProperty("ftProduct_ExpDelivery") && Model.HasValue("ftProduct_ExpDelivery"))	{
 									<li class="hk_row_specs" style="list-style-type:none; padding:0px;">
-										<strong style="font-weight:normal;">Expected stock date</strong>: @(date)
+										Expected stock date: @(Model.GetPropertyValue<DateTime>("ftProduct_ExpDelivery").ToShortDateString())
 									</li>
 								}
 							</ul>
@@ -151,9 +176,246 @@
 							<li class="hk_row_specs">
 								<strong>product code</strong>:  @(Model.GetPropertyValue<string>("ftProduct_Artikelnummer"))
 							</li>
+							@* spec: 01 *@
+							@if (Model.HasProperty("ftProduct_MOQ") && Model.HasValue("ftProduct_MOQ"))
+							{
+								<li class="hk_row_specs">
+									<strong>MOQ</strong>: @Html.Raw(Model.GetPropertyValue<string>("ftProduct_MOQ"))
+								</li>
+							}
+							@* spec: 06 *@
+							@if (Model.HasProperty("ftProduct_Colour") && Model.HasValue("ftProduct_Colour"))
+							{
+								<li class="hk_row_specs">
+									<strong>colour</strong>: @(Model.GetPropertyValue<string>("ftProduct_Colour"))
+								</li>
+							}
+							@* spec: 20 *@
+							@if (Model.HasProperty("ftProduct_WashingInstructionFabricItemsOnly") && Model.HasValue("ftProduct_WashingInstructionFabricItemsOnly"))
+							{
+								<li class="hk_row_specs">
+									<strong>washing instructions @*washing instruction fabric items only*@</strong>: @(Model.GetPropertyValue<string>("ftProduct_WashingInstructionFabricItemsOnly"))
+								</li>
+							}
 							<li class="hk_row_specs">
 								<strong>dimensions</strong>: @Html.Raw(Model.GetPropertyValue<string>("ftProduct_afmetingen"))
 							</li>
+							@*EXtra Product Specifications  *@
+							@* spec: 02 *@
+							@if (Model.HasProperty("ftProduct_ProductLengthdepthCm") && Model.HasValue("ftProduct_ProductLengthdepthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>product length/depth (cm)</strong>: @(Model.GetPropertyValue<decimal>("ftProduct_ProductLengthdepthCm"))
+								</li>
+							}
+							@* spec: 11 *@
+							@if (Model.HasProperty("ftProduct_ProductWidthCm") && Model.HasValue("ftProduct_ProductWidthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>product width (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductWidthCm"))
+								</li>
+							}
+							@* spec: 03 *@
+							@if (Model.HasProperty("ftProduct_ProductHeightCm") && Model.HasValue("ftProduct_ProductHeightCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>product height (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductHeightCm"))
+								</li>
+							}
+							@* spec: 04 *@
+							@if (Model.HasProperty("ftProduct_ProductDiameterCm") && Model.HasValue("ftProduct_ProductDiameterCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>product diameter (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductDiameterCm"))
+								</li>
+							}
+							@* spec: 05 *@
+							@if (Model.HasProperty("ftProduct_ProductWeightGr") && Model.HasValue("ftProduct_ProductWeightGr"))
+							{
+								<li class="hk_row_specs">
+									<strong>product weight (gr)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductWeightGr"))
+								</li>
+							}
+							@* spec: 07 *@
+							@if (Model.HasProperty("ftProduct_Material") && Model.HasValue("ftProduct_Material"))
+							{
+								<li class="hk_row_specs">
+									<strong>material</strong>: @(Model.GetPropertyValue<string>("ftProduct_Material"))
+								</li>
+							}
+							@* spec: 08 *@
+							@if (Model.HasProperty("ftProduct_Characteristic") && Model.HasValue("ftProduct_Characteristic"))
+							{
+								<li class="hk_row_specs">
+									<strong>characteristic</strong>: @(Model.GetPropertyValue<string>("ftProduct_Characteristic"))
+								</li>
+							}
+							@* spec: 09 *@
+							@if (Model.HasProperty("ftProduct_FoodSafe") && Model.HasValue("ftProduct_FoodSafe"))
+							{
+								<li class="hk_row_specs">
+									<strong>food safe</strong>: @(Model.GetPropertyValue<string>("ftProduct_FoodSafe"))
+								</li>
+							}
+							@* spec: 10 *@
+							@if (Model.HasProperty("ftProduct_DishwasherProof") && Model.HasValue("ftProduct_DishwasherProof"))
+							{
+								<li class="hk_row_specs">
+									<strong>dishwasher proof</strong>: @(Model.GetPropertyValue<string>("ftProduct_DishwasherProof"))
+								</li>
+							}
+							@* spec: 12 *@
+							@if (Model.HasProperty("ftProduct_CareInstructionOtherThenFabricItems") && Model.HasValue("ftProduct_CareInstructionOtherThenFabricItems"))
+							{
+								<li class="hk_row_specs">
+									<strong>care instruction other then fabric items</strong>: @(Model.GetPropertyValue<string>("ftProduct_CareInstructionOtherThenFabricItems"))
+								</li>
+							}
+							@* spec: 13 *@
+							@if (Model.HasProperty("ftProduct_DecorativeUseOnly") && Model.HasValue("ftProduct_DecorativeUseOnly"))
+							{
+								<li class="hk_row_specs">
+									<strong>decorative use only</strong>: @(Model.GetPropertyValue<string>("ftProduct_DecorativeUseOnly"))
+								</li>
+							}
+							@* spec: 14 *@
+							@if (Model.HasProperty("ftProduct_WaterResistant") && Model.HasValue("ftProduct_WaterResistant"))
+							{
+								<li class="hk_row_specs">
+									<strong>water resistant</strong>: @(Model.GetPropertyValue<string>("ftProduct_WaterResistant"))
+								</li>
+							}
+							@* spec: 15 *@
+							@if (Model.HasProperty("ftProduct_ProductCapacityML") && Model.HasValue("ftProduct_ProductCapacityML"))
+							{
+								<li class="hk_row_specs">
+									<strong>product capacity (ML)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductCapacityML"))
+								</li>
+							}
+							@* spec: 16 *@
+							@if (Model.HasProperty("ftProduct_MicrovaveProof") && Model.HasValue("ftProduct_MicrovaveProof"))
+							{
+								<li class="hk_row_specs">
+									<strong>microwave proof</strong>: @(Model.GetPropertyValue<string>("ftProduct_MicrovaveProof"))
+								</li>
+							}
+							@* spec: 17 *@
+							@if (Model.HasProperty("ftProduct_OutdoorUse") && Model.HasValue("ftProduct_OutdoorUse"))
+							{
+								<li class="hk_row_specs">
+									<strong>outdoor use</strong>: @(Model.GetPropertyValue<string>("ftProduct_OutdoorUse"))
+								</li>
+							}
+							@* spec: 18 *@
+							@if (Model.HasProperty("ftProduct_Remark") && Model.HasValue("ftProduct_Remark"))
+							{
+								<li class="hk_row_specs">
+									<strong>remark</strong>: @(Model.GetPropertyValue<string>("ftProduct_Remark"))
+								</li>
+							}
+							@* spec: 19 *@
+							@if (Model.HasProperty("ftProduct_MaximumCarryingWeightKG") && Model.HasValue("ftProduct_MaximumCarryingWeightKG"))
+							{
+								<li class="hk_row_specs">
+									<strong>maximum carrying weight KG</strong>: @(Model.GetPropertyValue<string>("ftProduct_MaximumCarryingWeightKG"))
+								</li>
+							}
+							@* spec: 21 *@
+							@if (Model.HasProperty("ftProduct_EnergySource") && Model.HasValue("ftProduct_EnergySource"))
+							{
+								<li class="hk_row_specs">
+									<strong>energy source</strong>: @(Model.GetPropertyValue<string>("ftProduct_EnergySource"))
+								</li>
+							}
+							@* spec: 22 *@
+							@if (Model.HasProperty("ftProduct_Fitting") && Model.HasValue("ftProduct_Fitting"))
+							{
+								<li class="hk_row_specs">
+									<strong>fitting</strong>: @(Model.GetPropertyValue<string>("ftProduct_Fitting"))
+								</li>
+							}
+							@* spec: 23 *@
+							@if (Model.HasProperty("ftProduct_Wattage") && Model.HasValue("ftProduct_Wattage"))
+							{
+								<li class="hk_row_specs">
+									<strong>wattage</strong>: @(Model.GetPropertyValue<string>("ftProduct_Wattage"))
+								</li>
+							}
+							@* spec: 24 *@
+							@if (Model.HasProperty("ftProduct_WiringLengthCm") && Model.HasValue("ftProduct_WiringLengthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>wiring length (cm)</strong>: @(Model.GetPropertyValue<decimal>("ftProduct_WiringLengthCm"))
+								</li>
+							}
+							@* spec: 25 *@
+							@if (Model.HasProperty("ftProduct_Dimmable") && Model.HasValue("ftProduct_Dimmable"))
+							{
+								<li class="hk_row_specs">
+									<strong>dimmable</strong>: @(Model.GetPropertyValue<string>("ftProduct_Dimmable"))
+								</li>
+							}
+							@* spec: 26 *@
+							@if (Model.HasProperty("ftProduct_IncludingCeilingCap") && Model.HasValue("ftProduct_IncludingCeilingCap"))
+							{
+								<li class="hk_row_specs">
+									<strong>including ceiling cap</strong>: @(Model.GetPropertyValue<string>("ftProduct_IncludingCeilingCap"))
+								</li>
+							}
+							@* spec: 27 *@
+							@if (Model.HasProperty("ftProduct_IncludingSwitch") && Model.HasValue("ftProduct_IncludingSwitch"))
+							{
+								<li class="hk_row_specs">
+									<strong>including switch</strong>: @(Model.GetPropertyValue<string>("ftProduct_IncludingSwitch"))
+								</li>
+							}
+							@* spec: 28 *@
+							@if (Model.HasProperty("ftProduct_InternalDimmer") && Model.HasValue("ftProduct_InternalDimmer"))
+							{
+								<li class="hk_row_specs">
+									<strong>internal dimmer</strong>: @(Model.GetPropertyValue<string>("ftProduct_InternalDimmer"))
+								</li>
+							}
+							
+							
+							@* #6234 *@
+
+							@*
+							@if (Model.HasProperty("ARMRESTS") && Model.HasValue("ARMRESTS"))
+							{
+								<li class="hk_row_specs">
+									<strong>Height armrests: </strong>: @(Model.GetPropertyValue<string>("ARMRESTS"))
+								</li>
+							}
+							*@
+							@if (Model.HasProperty("ftProduct_SeatingHeightCm") && Model.HasValue("ftProduct_SeatingHeightCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Seating height: </strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingHeightCm"))
+								</li>
+							}	
+							@if (Model.HasProperty("ftProduct_SeatingDepthCm") && Model.HasValue("ftProduct_SeatingDepthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Seating depth: </strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingDepthCm"))
+								</li>
+							}	
+							@if (Model.HasProperty("ftProduct_DifferencesMayAppear") && Model.HasValue("ftProduct_DifferencesMayAppear"))
+							{
+								<li class="hk_row_specs">
+									<strong>Differences may appear: </strong>: @(Model.GetPropertyValue<string>("ftProduct_DifferencesMayAppear"))
+								</li>
+							}	
+							@if (Model.HasProperty("ftProduct_Regulations") && Model.HasValue("ftProduct_Regulations"))
+							{
+								<li class="hk_row_specs">
+									<strong>Regulations: </strong>: @(Model.GetPropertyValue<string>("ftProduct_Regulations"))
+								</li>
+							}	
+						
+							
+
+							
 							@*@if (Model.HasValue("ftProduct_ExpDelivery"))
 								{
 									<li class="hk_row_specs">
@@ -163,23 +425,38 @@
 								<li class="hk_row_specs">
 										@(Model.GetPropertyValue<string>("ftProduct_Unit"))
 									</li>*@
-							@if (Model.HasProperty("relatedProducts") && Model.HasValue("relatedProducts"))
-							{
-								<li class="hk_row_specs related-products">
-									<h3>Related Products</h3>
-									@Html.Partial("_ProductBoxList", Model.GetPropertyValue<IEnumerable<IProductContent>>("relatedProducts"))
-								</li>
 
-							}
 						</ul>
 
 					</div>
 				</div>
 			</div>
 			<hr />
-		</div>
+			<div>
+				<div class="hk_product_specs">
+					<ul>
+						@if (Model.HasProperty("relatedProducts") && Model.HasValue("relatedProducts"))
+						{
+							<li class="hk_row_specs related-products">
+								<h1 class="hk_category_name" style="font-weight:600;"><span>Related Products</span></h1>
+								@try
+								{
+									// iEnumarable can contain null values, this throws a model binding exeption
+									var related = Model.GetPropertyValue<IEnumerable<IProductContent>>("relatedProducts").Where(a => a != null);
+									@Html.Partial("_ProductBoxList", related)
+								}
+								catch (Exception ex)
+								{
 
+								}
+							</li>
+						}
+				</ul>
+			</div>
+		</div>
 	</div>
+
+</div>
 </div>
 @* @foreach(var variant in Model.ProductVariants)
 	{
@@ -213,20 +490,20 @@
 
 
 @helper Categories()
+{
+	if (categoryPages.Count() > 0)
 	{
-		if (categoryPages.Count() > 0)
-		{
-			var needsComma = false;
-			<p style="display:none;">
-				Categories:
-				@foreach (var pc in categoryPages)
-				{
-					@Umbraco.If(needsComma, ",") @Html.Raw(string.IsNullOrEmpty(pc.Item2) ? "<span>" + pc.Item1 + "</span>" : "<a href=\"" + pc.Item2 + "\">" + pc.Item1 + "</a>")
-					needsComma = true;
-				}
-			</p>
+		var needsComma = false;
+		<p style="display:none;">
+			Categories:
+			@foreach (var pc in categoryPages)
+			{
+				@Umbraco.If(needsComma, ",") @Html.Raw(string.IsNullOrEmpty(pc.Item2) ? "<span>" + pc.Item1 + "</span>" : "<a href=\"" + pc.Item2 + "\">" + pc.Item1 + "</a>")
+				needsComma = true;
+			}
+		</p>
 
-		}
+	}
 }
 
 

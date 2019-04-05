@@ -1901,6 +1901,10 @@
 
 			var dtos = new List<ProductDto>();
 
+			DateTime startTime = System.DateTime.Now;
+
+			Logger.Info<ProductRepository>("Start PerformGetAll with " + keys.Count().ToString() + " keys");
+
 			if (keys.Any())
 			{
 				// This is to get around the WhereIn max limit of 2100 parameters and to help with performance of each WhereIn query
@@ -1914,8 +1918,11 @@
 			}
 			else
 			{
+				
 				dtos = Database.Fetch<ProductDto, ProductVariantDto, ProductVariantIndexDto>(GetBaseQuery(false));
 			}
+
+			Logger.Info<ProductRepository>("Mid PerformGetAll with " + dtos.Count().ToString() + " keys");
 
 			foreach (var dto in dtos)
 			{
@@ -1934,7 +1941,7 @@
 				yield return product;
 			}
 
-
+			Logger.Info<ProductRepository>("End PerformGetAll");
 
 			//if (keys.Any())
 			//{

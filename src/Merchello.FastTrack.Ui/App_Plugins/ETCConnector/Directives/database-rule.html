@@ -36,9 +36,9 @@
 			</div>
 
 			<!--<div class="span3 controls controls-row attribute">
-				<label class="control-label">Attribute selectie </label>
-				<input ng-model="SpiderSpec.Rule.AttributeName" type="text" class="form-control" />
-			</div>-->
+		<label class="control-label">Attribute selectie </label>
+		<input ng-model="SpiderSpec.Rule.AttributeName" type="text" class="form-control" />
+	</div>-->
 
 			<div class="span3 controls controls-row regex">
 				<label class="control-label">Regex</label>
@@ -63,15 +63,35 @@
 				<input type="checkbox" id="chkMandatory" name="chkListView" ng-model="SpiderSpec.Rule.Mandatory" class="form-control" />
 			</div>
 
+			<div class="span1 controls controls-row list">
+				<label class="control-label">Lijst</label>
+				<input type="checkbox" id="chkListView" name="chkListView" ng-model="SpiderSpec.Rule.ListView" class="form-control" />
+			</div>
+
+			<div class="span1 controls controls-row">
+				<label class="control-label">Geo lookup</label>
+				<input type="checkbox" id="chkUseInGeoLookup" name="chkUseInGeoLookup" ng-model="SpiderSpec.Rule.UseInGeoLookup" class="form-control" />
+			</div>
+
+			<div class="span2 controls controls-row" ng-show="SpiderSpec.Rule.UseInGeoLookup">
+				<label class="control-label">Geo lookup volgorde</label>
+				<input type="text" id="chkGeoLookupSortNr" name="chkGeoLookupSortNr" ng-model="SpiderSpec.Rule.GeoLookupSortNr" class="form-control" />
+			</div>
+
+			<div class="span2 controls controls-row">
+				<label class="control-label">Overschrijf wanneer leeg</label>
+				<input type="checkbox" id="chkOverwriteEmpty" name="chkOverwriteEmpty" ng-model="SpiderSpec.Rule.OverwriteEmpty" class="form-control" />
+			</div>
+
 			<!--<div class="span1 controls controls-row html">
-				 <label class="control-label">Html</label>
-				 <input type="checkbox" id="chkHtml" name="chkHtml" ng-model="SpiderSpec.Rule.SelectHtml" class="form-control" />
-			 </div>
-			 <div class="span1 controls controls-row list">
-				 <label class="control-label">Lijst</label>
-				 <input type="checkbox" id="chkListView" name="chkListView" ng-model="SpiderSpec.Rule.ListView" class="form-control" />
-			 </div>
-			-->
+		 <label class="control-label">Html</label>
+		 <input type="checkbox" id="chkHtml" name="chkHtml" ng-model="SpiderSpec.Rule.SelectHtml" class="form-control" />
+	 </div>
+	 <div class="span1 controls controls-row list">
+		 <label class="control-label">Lijst</label>
+		 <input type="checkbox" id="chkListView" name="chkListView" ng-model="SpiderSpec.Rule.ListView" class="form-control" />
+	 </div>
+	-->
 		</div>
 
 		<div class="span1">

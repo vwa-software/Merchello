@@ -23,7 +23,8 @@
 
 		$scope.Tabs = [{ id: 0, label: 'Algemeen', alias: 'Algemeen' }, { id: 1, label: 'Vaste mapping', alias: 'Vaste mapping' }
 			, { id: 2, label: 'Property mapping', alias: 'Property mapping' }
-			, { id: 3, label: 'Uitsluit mapping', alias: 'Uitsluit mapping' }		];
+			, { id: 3, label: 'Uitsluit mapping', alias: 'Uitsluit mapping' }
+			, { id: 4, label: 'Geolocatie', alias: 'Geolocatie' }];
 
 		$scope.actionInProgress = false;
 		$scope.bulkStatus = '';

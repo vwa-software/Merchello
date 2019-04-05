@@ -1,0 +1,99 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+@{	Layout = "Master.cshtml";
+	
+}
+
+
+<div class="hk_news_page">
+		<div class="container hk_news_item">
+			<div class="row">
+					<div class="col-md-4 col-xs-12">
+
+                        <ul id="image-gallery" class="gallery list-unstyled">
+                            @foreach (var image in CurrentPage.afbeelding)
+                            {
+
+                                <li data-thumb="@image.Url?anchor=center&amp;mode=crop&amp;width=150&amp;height=150&amp;rnd=131782865150000000" data-src="@image.Url?anchor=center&amp;mode=crop&amp;width=900&amp;height=900&amp;rnd=131782865150000000">
+                                    <img src="@image.Url?anchor=center&mode=crop&width=400&height=400" style="" border="0" />
+                                </li>
+                            }
+                        </ul>
+    </div>
+                    <div class="col-md-8 col-xs-12">
+                        <h1>@CurrentPage.Name</h1>
+                        <h3>@CurrentPage.subtitel</h3>
+                        <p>@CurrentPage.bericht</p>
+                    </div>
+                    @*<div class="col-md-4">
+                <h4>Alle nieuwsberichten</h4>
+                @{  var selection = Model.Content.Site().FirstChild("nieuws").Children("nieuwsArtikel").OrderBy("CreateDate desc")
+                                        .Where(x => x.IsVisible());
+                }
+                <ul>
+                    @foreach(var item in selection){
+                        <li>
+                            <a href="@item.Url">@item.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>*@
+                </div>
+		</div>
+</div>
+
+
+@section Scripts {
+
+
+    <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/js/lightgallery-all.min.js"></script>
+    <script type="text/javascript">
+				jQuery(document).ready(function () {
+					window.prettyPrint && prettyPrint();
+					jQuery('#image-gallery').lightSlider({
+						gallery: true,
+						item: 1,
+						loop: true,
+						thumbItem: 9,
+						slideMargin: 0,
+						enableDrag: false,
+						currentPagerPosition: 'left',
+						onSliderLoad: function (el) {
+							el.lightGallery({
+								selector: '#image-gallery .lslide'
+							});
+						}
+					});
+				});
+    </script>
+
+
+}
+@section Breadcrumbs {
+
+    @{
+       
+            <div class="hk_breadcrumb">
+                <div class="">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/collections/stories/">Stories</a></li>
+                                    <li>
+                                        <a href="@CurrentPage.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Name </a>
+                                    </li>
+</ol>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+                                
+        
+    }
+
+
+}

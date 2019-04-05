@@ -140,14 +140,12 @@
 		{
 			get
 			{
-				if (this._priceGroup == null)
+				if (this._priceGroup == null || (this._priceGroup.IsEmpty && !this.IsAnonymous) || this.IsDirty())
 					this._priceGroup = PriceGroupService.GetPriceGroupForMember();
 				return this._priceGroup;
 			}
 		}
-
-
-
+				
 		/// <summary>
 		/// Property selectors.
 		/// </summary>

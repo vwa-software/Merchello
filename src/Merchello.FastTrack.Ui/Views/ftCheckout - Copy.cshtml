@@ -1,0 +1,42 @@
+﻿@inherits Merchello.Web.Mvc.MerchelloTemplatePage
+@using Merchello.FastTrack.Ui
+@using Merchello.Web
+
+@{
+    Layout = "Master.cshtml";
+    if (CurrentCustomer.Basket().IsEmpty)
+    {
+        Response.Redirect(ExampleUiHelper.Content.GetStoreRoot().Url);
+    }
+}
+
+<div class="hk_order hk_checkout">
+
+    @RenderBody()
+
+
+    <div class="row hk_category_specs">
+        <div class="col-md-12">
+            <h2 class="hk_shop">Shopping Cart</h2>
+        </div>
+    </div>
+    <div class="hk_shop_forms">
+        @Html.Action("BasketForm", "StoreBasket", new { area = "Merchello" })
+    </div>
+ @*// var currentPageId =  UmbracoContext.Current.PageId;*@
+    @if (@UmbracoContext.Current.PageId == 1104)
+    {<div class="row">
+        <div class="col-lg-8 col-xs-6 col-md-6">
+            <a href="/shopping-cart" class="btn btn-primary">Back to Shopping Cart</a>
+        </div>
+        <div class="col-lg-4 col-xs-6 col-md-6 text-right">
+            @*<a href="@ExampleUiHelper.Content.GetCheckout().Url" class="btn btn-primary">Checkout</a>*@
+            <form action="complete-order/ship-rate-quote/" data-muistage="BillingAddress" enctype="multipart/form-data" method="post" novalidate="novalidate"> 
+                <input type="submit" class="btn btn-default" value="Order" />
+                </form>
+</div>
+    </div> }
+    else
+    { }
+
+</div>

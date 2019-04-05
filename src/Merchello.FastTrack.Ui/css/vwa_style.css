@@ -7,6 +7,33 @@ Date: 2018-07-26
 Type: VWA Style CSS
 */
 
+
+ul#hk_media_slider {
+	list-style: none outside none;
+	padding-left: 0;
+	margin: 0;
+}
+
+.demo .item {
+	margin-bottom: 60px;
+}
+
+.content-slider li {
+	background-color: #ed3020;
+	text-align: center;
+	color: #FFF;
+}
+
+.content-slider h3 {
+	margin: 0;
+	padding: 70px 0;
+}
+
+.demo {
+	width: 800px;
+}
+
+
 /* Regular */
 
 html {
@@ -127,6 +154,10 @@ p {height:inherit!important
     text-transform:initial;
 }
 
+form .field-validation-error {
+    font-size: 10px;
+}
+
 /* /Regular */
 
 /* Header Slider */
@@ -216,7 +247,15 @@ display:none; }
         padding-left: 0px;
     }
 
-    body.Home .hk_breadcrumb .breadcrumb li:first-child {
+    body.Home .hk_breadcrumb .breadcrumb li:first-child,
+ 	body.Cookie .hk_breadcrumb .breadcrumb li:first-child,
+	body.Cookie .breadcrumb li:nth-child(2):before,
+ 	body.Terms .hk_breadcrumb .breadcrumb li:first-child,
+	body.Terms .breadcrumb li:nth-child(2):before,
+ 	body.Privacy .hk_breadcrumb .breadcrumb li:first-child,
+	body.Privacy .breadcrumb li:nth-child(2):before,
+ 	body.page .hk_breadcrumb .breadcrumb li:first-child,
+	body.page .breadcrumb li:nth-child(2):before{
         display:none;
     }
 
@@ -252,8 +291,6 @@ display:none; }
     .breadcrumb a:hover {
         opacity:1;
     }
-
-
 
     .breadcrumb>li+li:before {
         color:#444;
@@ -490,6 +527,20 @@ body.Contact .umbraco-forms-field label{
     }
 
 /* /Header */
+
+/* Pressroom */
+
+#hk_Pressroom .grid-section strong {
+    width: 152px;
+    display: inline-table;
+	font-weight:normal;
+}
+#hk_Pressroom .grid-section a {
+	text-decoration:underline;
+	color:#000;
+}
+
+/* /Pressroom */
 
 /* Contact Page */
 
@@ -1326,8 +1377,16 @@ div.container-fluid p {
 
     .hk_content .umb-grid .grid-section .container,
 	.umb-grid .grid-section > .container {
-        /*width: 100%;*/
-    	margin: 0px -12px 0px -12px;
+        /*width: 100%;
+        margin: 0px -12px 0px -12px;*/
+        
+    }
+	.hk_grid{
+		width:100%;
+	}
+
+    .hk_grid .umb-grid .grid-section .container {
+        padding: 0px;
     }
 
     .hk_content .umb-grid .grid-section .container .col-md-12{
@@ -1472,8 +1531,10 @@ footer .container {
         opacity: 0.6;
     }
 
-    .footer .container .row .col-md-4:last-child > div{
-     float:right;
+    .footer .container .row .col-md-4:last-child > div {
+		/*
+     	float:right;
+		*/
     }
    
 
@@ -1493,6 +1554,7 @@ footer .container {
     .footer .container .row .col-md-12 p {
       line-height: 22px;
     }
+
     .footer .container .row .col-md-12 p a {
         white-space:nowrap;
     }
@@ -1610,5 +1672,13 @@ footer .container {
 
 /* /Footer Social */
 
+@media only screen and (min-width: 800px) {
+	.footer .umb-grid .grid-section div:nth-child(2) .col-md-12 p {
+		display: inline-block;
+	}
+}
+
 
 /* /Footer */
+
+

@@ -46,11 +46,3 @@
 
     Html.RenderAction("RenderForm", "UmbracoForms", new {formId = form, recordId = recordGuid, theme = theme, includeScripts = includeScripts });
 }
-
-<script>
-	$(function () {
-		if ($('.umbraco-forms-submitmessage').length){
-			$('.umbraco-forms-submitmessage').get(0).scrollIntoView();
-		}
-	})
-</script>

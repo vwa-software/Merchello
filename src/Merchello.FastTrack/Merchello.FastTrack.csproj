@@ -63,6 +63,11 @@
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ETC.B2B.PriceGroup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Merchello.FastTrack.Ui\bin\ETC.B2B.PriceGroup.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Examine, Version=0.1.89.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Examine.0.1.89\lib\net45\Examine.dll</HintPath>
     </Reference>
@@ -250,15 +255,10 @@
     <Compile Include="Configuration\FastTrackSection.cs" />
     <Compile Include="Controllers\Membership\CustomerMembershipController.cs" />
     <Compile Include="Controllers\Membership\ResetPasswordController.cs" />
-    <Compile Include="Controllers\Payment\BraintreePayPalController.cs" />
-    <Compile Include="Controllers\Payment\BraintreeStandardCcController.cs" />
     <Compile Include="Controllers\Payment\CashPaymentController.cs" />
-    <Compile Include="Controllers\CheckoutAddressController.cs" />
     <Compile Include="Controllers\CheckoutPaymentMethodController.cs" />
     <Compile Include="Controllers\CheckoutShipRateQuoteController.cs" />
     <Compile Include="Controllers\CheckoutSummaryController.cs" />
-    <Compile Include="Controllers\Payment\FastTrackBraintreeControllerBase.cs" />
-    <Compile Include="Controllers\Payment\PurchaseOrderPaymentController.cs" />
     <Compile Include="Factories\FastTrackBillingAddressModelFactory.cs" />
     <Compile Include="Factories\FastTrackCheckoutAddressModelFactoryBase{T}.cs" />
     <Compile Include="Factories\FastTrackCheckoutSummaryModelFactory.cs" />
@@ -290,10 +290,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\vwa-plugins\ETC.B2B.PriceGroups\ETC.B2B.Pricegroup.csproj">
-      <Project>{ae46917c-de3a-4d74-86c0-9172a8e8cdcc}</Project>
-      <Name>ETC.B2B.Pricegroup</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\vwa-plugins\ETC.B2B.WEB\ETC.B2B.WEB.csproj">
       <Project>{c2015e2f-1ea0-4b90-a4d7-9ee39d061419}</Project>
       <Name>ETC.B2B.WEB</Name>

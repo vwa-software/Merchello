@@ -26,7 +26,6 @@
 						ng-options="spec.Id as spec.Name for spec in Specs">
 					<!--<option ng-selected="{{spec.Id == SpiderSpec.Rule.SpecID}}" ng-repeat="spec in Specs" value="{{spec.Id}}">{{spec.Name}}</option>-->
 				</select>
-
 				<div ng-if="SpiderSpec.Fixed">
 					{{SpiderSpec.Rule.RuleName}}
 				</div>
@@ -73,7 +72,7 @@
 
 	<div class="rule umb-el-wrap row">
 
-		
+
 
 		<div class="span1 controls controls-row html">
 			<label class="control-label">Html</label>
@@ -87,10 +86,23 @@
 
 		<div class="span1 controls controls-row mandatory">
 			<label class="control-label">Verplicht</label>
-			<input type="checkbox" id="chkMandatory" name="chkListView" ng-model="SpiderSpec.Rule.Mandatory" class="form-control" />
+			<input type="checkbox" id="chkMandatory" name="chkMandatory" ng-model="SpiderSpec.Rule.Mandatory" class="form-control" />
 		</div>
 
+		<div class="span1 controls controls-row">
+			<label class="control-label">Geo lookup</label>
+			<input type="checkbox" id="chkUseInGeoLookup" name="chkUseInGeoLookup" ng-model="SpiderSpec.Rule.UseInGeoLookup" class="form-control" />
+		</div>
 
+		<div class="span2 controls controls-row" ng-show="SpiderSpec.Rule.UseInGeoLookup">
+			<label class="control-label">Geo lookup volgorde</label>
+			<input type="text" id="chkGeoLookupSortNr" name="chkGeoLookupSortNr" ng-model="SpiderSpec.Rule.GeoLookupSortNr" class="form-control" />
+		</div>
+
+		<div class="span2 controls controls-row">
+			<label class="control-label">Overschrijf wanneer leeg</label>
+			<input type="checkbox" id="chkOverwriteEmpty" name="chkOverwriteEmpty" ng-model="SpiderSpec.Rule.OverwriteEmpty" class="form-control" />
+		</div>
 
 	</div>
 	<div class='rule umb-el-wrap row' ng-if="!SpiderSpec.Fixed">

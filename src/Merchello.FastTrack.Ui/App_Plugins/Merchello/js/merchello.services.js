@@ -335,13 +335,14 @@ angular.module('merchello.services').service('merchelloListViewHelper',
             product: {
                 columns: [
                     { name: 'name', localizeKey: 'merchelloVariant_product' },
-                    { name: 'sku', localizeKey: 'merchelloVariant_sku' },
+					{ name: 'sku', localizeKey: 'merchelloVariant_sku' },
                     { name: 'available', localizeKey: 'merchelloProducts_available' },
                     { name: 'shippable', localizeKey: 'merchelloProducts_shippable' },
                     { name: 'taxable', localizeKey: 'merchelloProducts_taxable' },
                     { name: 'totalInventory', localizeKey: 'merchelloGeneral_quantity', resultColumn: true },
                     { name: 'onSale', localizeKey: 'merchelloVariant_productOnSale', resultColumn: true },
-                    { name: 'price', localizeKey: 'merchelloGeneral_price' }
+					{ name: 'price', localizeKey: 'merchelloGeneral_price' },
+					{ name: 'sortOrder', localizeKey: 'merchelloTableCaptions_sortOrder' }
                 ]
             },
 

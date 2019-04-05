@@ -1,0 +1,73 @@
+﻿@using Cogworks.Meganav.Models
+@using ContentModels = Umbraco.Web.PublishedContentModels
+@model IPublishedContent
+
+<li class="nav-item dropdown position-static">
+    @RenderNavigation(Model.GetPropertyValue<IEnumerable<MeganavItem>>("megaMenu"), 0)
+</li>
+
+@helper RenderNavigation(IEnumerable<MeganavItem> megaitems, int level)
+{
+
+if (megaitems.Any())
+{
+
+    foreach (var megaitem in megaitems)
+    {
+     
+        @*<a data-toggle="@(level == 0 ? "dropdown" : "")" href="@megaitem.Url" target="@megaitem.Target" class="nav-link lvl@(level)">@megaitem.Title<i class="@(level == 0 ? "" : "fa fa-angle-down")"></i></a>*@
+
+        if (level == 0)
+        {
+        
+            <a data-toggle="@(level == 0 ? "dropdown" : "")" href="@megaitem.Url" target="@megaitem.Target" class="hk_@megaitem.Title nav-link lvl@(level)">@megaitem.Title<i class="@(level == 0 ? "" : "fa fa-angle-down")"></i></a>
+        
+            <div class="hk_@megaitem.Title lvl@(level) @(level == 0 ? "dropdown-menu megamenu py-lg-0" : "") ">
+                <div class="row hk_megamenu_dropdown">
+                    @*//Root level, render image*@
+                    <div class="hk_wrapper_mm_dropdown row">
+                        <div class="col-lg-3 d-none d-lg-block">
+                            @{
+                                var typedMediaPickerSingle = Model.GetPropertyValue<IPublishedContent>("featuredImageCollection");
+                                if (typedMediaPickerSingle != null)
+                                {
+                                    <div class="hk_img_dropdowm"><img src="@typedMediaPickerSingle.Url?width=400&height=400&center=0,5,0,5&mode=crop" alt="@typedMediaPickerSingle.GetPropertyValue("alt")" class="bg-image"></div>
+                                    @*<div class="hk_img_dropdowm"><img src="@typedMediaPickerSingle.Url?width=400&height=275&center=0,5,0,5&mode=crop" alt="@typedMediaPickerSingle.GetPropertyValue("alt")" class="bg-image"></div>
+                                     <div class="hk_img_dropdowm"><img src="@typedMediaPickerSingle.GetCropUrl(300, 200)" alt="@typedMediaPickerSingle.GetPropertyValue("alt")" class="bg-image"></div>*@
+            
+                                }
+                            }    
+            
+                            <div class="hk_imgtitle_dropdowm"><h3>@Model.GetPropertyValue("featuredImageCollectionTitle")</h3></div>
+                            </div>
+                        <div class="col-lg-9">
+                            <div class="row p-3 pr-lg-0 pl-lg-5 pt-lg-5">
+                                @RenderNavigation(megaitem.Children, level + 1)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (level == 1)
+        {
+            <div class="col-lg-3">
+                <!-- Megamenu list-->
+                <h2 class="text-uppercase hk_menu_@megaitem.Title"><a href="@megaitem.Url">@megaitem.Title</a></h2>
+                <ul class="megamenu-list list-unstyled  hk_row_@megaitem.Title">
+                    @RenderNavigation(megaitem.Children, level + 1)
+                </ul>
+        
+            </div>
+        }
+        else
+        {
+            <li class="megamenu-list-item">
+                <a href="@megaitem.Url" target="@megaitem.Target" class="megamenu-list-link lvl@(level)">@megaitem.Title</a>
+            </li>
+            @RenderNavigation(megaitem.Children, level + 1)
+            }
+        }
+    }
+}
+

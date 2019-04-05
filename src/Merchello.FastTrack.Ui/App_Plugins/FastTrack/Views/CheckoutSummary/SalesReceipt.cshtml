@@ -29,7 +29,7 @@
                 <div class="col-md-12">
                   @*  <h2 class="hk_shop">Sales Receipt</h2*@
                     <h3 style="text-transform:initial;line-height: 20px;">Thank you for your order at HKliving.<br />
-                    Your weborder number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span></h3>
+                    Your web order number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span></h3>
                 </div>
             </div>
             <div class="row">
@@ -53,7 +53,7 @@
                                 <h2 class="hk_shop">Remarks (Shipping Address)</h2>
                             </div>
                             <div class="panel-body">
-                             @(remarks)
+                             @Html.Raw(remarks)
     @* @Html.Partial("_Address", Model.ShippingAddress)*@
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                                 <td colspan="4" class="text-right"><strong>sub total:</strong></td>
                                 <td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency(Model.CurrencyCode)</strong></td>
                             </tr>
-                            @foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product))
+                            @foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product && x.LineItemType != LineItemType.Shipping))
                             {
                                 <tr>
                                     <td>

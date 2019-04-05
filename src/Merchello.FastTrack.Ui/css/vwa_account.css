@@ -1,9 +1,29 @@
+/* Login */
+
+.Login h4.umbraco-forms-caption {
+display:none;
+}
+
+/* /Login */
+
 /* ORDER - common style for verey step in the process */
     
-.hk_order { 
-    width:100%;
-}
-  
+	.hk_order { 
+		width:100%;
+	}
+
+	input#update-cart,
+	input.pull-right {
+		float:right;
+	}
+
+    /* Shipping */
+
+    .hk_shipping .hk_shop {
+        font-size:14px;
+    }
+
+    /* /Shipping */
 
 /* /ORDER */
 /* Shop Account */
@@ -33,12 +53,20 @@
      content: "Dealer ";
      text-transform:uppercase;
     }
-
-    /**/.hk_Checkout label,
+    
+    /**/
+    .hk_Checkout label,
     .hk_content.hk_Login label {
-        display:none;
-        position:absolute;
-        visibility:hidden;
+        display: none;
+        position: absolute;
+        visibility: hidden;
+    }
+
+    .hk_content.hk_Login .dataconsent .umbraco-forms-field-wrapper label {
+        display:inherit;
+        position:inherit;
+        visibility:inherit;
+        font-size: 1.1em;
     }
     
     .hk_content.hk_Complete > .container > .row .col-md-6:first-child,
@@ -101,6 +129,54 @@
     .hk_order_summary {
         /*display:none;*/
     }
+    .hk_checkout .col-md-12 .row {
+        margin:0px 0px 20px 0px;
+    }
+    
+    .hk_checkout .col-md-12 .col-md-2{
+
+    }
+    .hk_checkout .col-md-12 .col-md-2:first-child {
+        padding-left:0px;
+    }
+    
+    .hk_Account .hk_category_name {
+        text-transform:lowercase;
+        font-weight:100;
+    }
+
+    .hk_Account .hk_category_name:before {
+        content: "Dealer " ;
+        text-transform:uppercase;
+        font-weight:800;
+    }
+
+    .hk_Account .hk_category_name span:before {
+        content: "/" ;
+        padding:0px 10px 0px 10px;
+    }
+    
+    /* Complete order */
+    
+    .hk_Complete.order .col-md-6:first-child {
+        padding-right:24px;
+
+    }
+    .hk_Complete.order .col-md-6:last-child {
+        padding-left:24px;
+
+    }
+
+    .table.table-striped.mui-basket.mui-default tr th:last-child {
+        text-align:right;
+    }
+
+    /* Complete order */
+
+    .btn-hk-custom {
+        display:none;
+    }
+
     
     /* /Shop Account */
 
@@ -113,6 +189,7 @@
 
     .hk_account_forms label {
         display:none;
+
     }
 
     /* /Forgot Password */
@@ -132,3 +209,190 @@
 	}
 
     /* /Validation */
+
+/* WEBORDER / ORDERS */
+
+.tab-content {
+    display: block;
+    width: 100%;
+}
+.tab-content .col-md-12 {
+    padding: 0px;
+}
+
+.table th {
+    border-top: 0px solid #fff!important;
+}
+
+.nav-tabs {
+    border-bottom: 0px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+    color: #444444;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    border-radius: 2px 2px 0px 0px;
+    border: 1px solid #c6c6c6;
+    border-bottom: 0px;
+    margin: 0px 10px 0px 0px;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #444444;
+    background-color: #fff;
+    border-color: #c6c6c6 #c6c6c6 #fff;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: #efefef;
+}
+
+.hk_shop_forms .row,
+.hk_shop_forms .invoiceitemswrapper{
+font-size:11px!important;}
+
+.row.invoice/*,
+.row.invoiceitem*/{
+	font-size:11px!important;
+	font-weight:700;
+    padding: .75rem 0rem .75rem 0rem;
+    vertical-align: top;
+    /*border-top: 1px solid #e9ecef;*/
+	color:#929292;
+	margin:0px!important;
+}
+
+.row.invoiceitem{
+	font-size:11px!important;
+    padding: .75rem 0rem .75rem 0rem;
+    vertical-align: top;
+    border-top: 1px solid #e9ecef;
+	/*color:#929292;*/
+	margin:0px!important;
+}
+
+.row.invoiceitem:last-child{
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px!important;
+}
+
+.invoiceitemswrapper .row.invoiceitem.head {
+    border-top: 7px solid #fff;
+    background: #F7F6F6;
+    font-weight: 700;
+}
+
+.row.invoiceitem * {
+	padding-right: 12px!important;
+    padding-left: 12px!important;
+}
+
+.row.invoice * {
+	color:#929292;
+	color:#444;
+}
+
+.row.invoice.acc{
+    background: white;
+    font-weight: normal;
+    cursor: pointer;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.row.invoice.acc:hover,
+.row.invoice.acc:focus,
+.row.invoice.acc.on{
+    background: #EBEBEB;
+    font-weight: normal;
+}
+
+.accordionButton.on {
+    background: #EBEBEB!important;}
+
+.accordionButton.on .row.invoice.acc{
+    background: transparent!important;}
+
+.row.invoice.head {
+   	border-bottom: 2px solid #e9ecef;
+	color:#000;
+}
+.row.invoice.head * {
+   /* border-bottom: 2px solid #e9ecef;*/
+	color:#000;
+}
+
+.row.invoice > div {
+   /* border-bottom: 1px solid #e9ecef;*/
+}
+
+/* Accordion - account */
+ #wrapper-acc {
+    width: 100%;
+    /*margin-left: auto;
+    margin-right: auto;*/
+}
+
+.accordionButton {
+    width: 100%;
+    /*background: #003366;
+    border-bottom: 1px solid #FFFFFF;*/
+    cursor: pointer;
+}
+
+.accordionContent {
+    width: 100%;
+    
+}
+
+    .row.invoiceitem.head div {
+    border-left: 1px solid #ccc;
+    }
+
+
+    .row.invoiceitem.head div:first-child {
+        border-left: 0px!important;
+    }
+
+
+/***********************************************************************************************************************
+ EXTRA STYLES ADDED FOR MOUSEOVER / ACTIVE EVENTS
+************************************************************************************************************************/
+ .on {
+    background: #fff;
+}
+.over {
+    background: #EBEBEB;
+}
+
+
+blockquote,
+.umbraco-forms-submitmessage{
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+  }
+
+.umbraco-forms-submitmessage{
+    margin: 0px;;
+  }
+
+.fa-sort-up:before {
+    line-height: initial;
+}
+
+.fa-file-pdf{
+	font-size:20px;
+}
+
+.fas.sort {
+	float: right;
+	font-size: 18px;
+	line-height: 8px;
+}
+/* /Accordion - account */
+
+
+/* WEBORDER / ORDERS */

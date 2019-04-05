@@ -14,27 +14,6 @@
 
 	var umbracomember = Members.GetCurrentMember();
 
-	@*var member = Members.GetCurrentMember();
-
-	bool isApproved = member != null && member.GetPropertyValue<bool>("umbracomemberapproved") && !member.GetPropertyValue<bool>("umbracomemberlockedout");
-	if (!isApproved)
-	{
-		// look for
-		// Umbraco.Web.Routing.PublishedContentRequestEngine
-		var publicAccessAttempt = UmbracoContext.Application.Services.PublicAccessService.IsProtected(this.Url.ToString());
-		if (publicAccessAttempt)
-		{
-			var loginPageId = publicAccessAttempt.Result.LoginNodeId;
-
-			<script>
-				window.@Url.RouteUrl("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = 3885 }, null)
-			</script>
-			
-
-		}
-	}*@
-
-
 	if (customer != null)
 	{
 
@@ -140,22 +119,32 @@
 
 				<div class="row" style="margin:20px 0px 0px 0px">
 					<div class="col-md-12">
-						@Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+						@* @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" }) *@
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="nav-item">
-								<a class="nav-link active show" href="#invoices" role="tab" data-toggle="tab" aria-selected="true">my invoices</a>
+								<a class="nav-link active show" href="#history" role="tab" data-toggle="tab" aria-selected="true">my web order history</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#orders" role="tab" data-toggle="tab">my orders</a>
+								<a class="nav-link" href="#orders" role="tab" data-toggle="tab">my order history</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#invoices" role="tab" data-toggle="tab" aria-selected="true">my invoices</a>
 							</li>
 						</ul>
 
 						<div class="tab-content">
-							<div class="col-md-12 hk_shop_forms tab-pane fade in active show" role="tabpanel" id="invoices">
+							<div class="col-md-12 tab-pane fade in active show" role="tabpanel" id="history">
+								@* Maatwerk HKLiving Invoices
+									<h2 class="hk_shop">my web order history</h2>*@
+								@*Maatwerk HKLiving Invoices*@
+								@*Call to ETCConnector Account Controller*@
+								@Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+							</div>
+							<div class="col-md-12 tab-pane fade in" role="tabpanel" id="invoices">
 								@* Maatwerk HKLiving Invoices
 									<h2 class="hk_shop">my invoices</h2>*@
 								@*Maatwerk HKLiving Invoices*@
@@ -185,4 +174,3 @@
 	}
 
 }
-

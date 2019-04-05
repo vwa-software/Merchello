@@ -1745,9 +1745,25 @@
         internal T ModifyData<T>(T data)
             where T : class, IProductVariantDataModifierData
         {
-            if (!EnableDataModifiers) return data;
+
+			var count = ((Merchello.Web.DataModifiers.Product.ProductVariantDataModifierChain)this._dataModifier.Value).TaskCount;
+			if (count < 2)
+			{
+				Umbraco.Core.Logging.LogHelper.Warn(this.GetType(), "Only 1 datamodifier found");
+			}
+			
+			if (!EnableDataModifiers) {
+				//Umbraco.Core.Logging.LogHelper.Warn(this.GetType(), "EnableDataModifiers = false");
+				return data;
+			}
+
             var attempt = _dataModifier.Value.Modify(data);
-            if (!attempt.Success) return data;
+
+			if (!attempt.Success)
+			{
+				Umbraco.Core.Logging.LogHelper.Warn(this.GetType(), "Datamodifier failed for: " + data.Name);
+				return data;
+			}
 
             var modified = attempt.Result as T;
             return modified ?? data;
@@ -1809,7 +1825,7 @@
         /// </returns>
         private IProductContent GetProductContent(Guid key)
         {
-            var display = GetByKey(key);
+			var display = GetByKey(key);
             return display == null ? null :
                 display.AsProductContent(_productContentFactory.Value);
         }

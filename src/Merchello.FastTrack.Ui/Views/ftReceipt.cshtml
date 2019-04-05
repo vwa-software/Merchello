@@ -3,3 +3,14 @@
 	Layout = "Master.cshtml";
 }
 @Html.Action("SalesReceipt", "CheckoutSummary", new { area = "FastTrack" })
+@section Breadcrumbs {
+
+    @{
+       
+    
+				@Html.Partial("Breadcrumb")
+        
+    }
+
+
+}

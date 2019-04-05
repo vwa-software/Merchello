@@ -2,11 +2,13 @@ angular.module('merchello').controller('Merchello.Directives.EntityStaticCollect
     ['$scope', 'notificationsService', 'dialogService', 'entityCollectionHelper', 'entityCollectionResource', 'dialogDataFactory', 'entityCollectionDisplayBuilder',
     function($scope, notificationsService, dialogService, entityCollectionHelper, entityCollectionResource, dialogDataFactory, entityCollectionDisplayBuilder) {
 
-        $scope.collections = [];
-        $scope.remove = remove;
+		$scope.collections = [];
 
-        // exposed methods
-        $scope.openStaticEntityCollectionPicker = openStaticEntityCollectionPicker;
+		// exposed methods
+		$scope.remove = remove;
+		$scope.save = save;
+		$scope.openStaticEntityCollectionPicker = openStaticEntityCollectionPicker;
+		$scope.blur = blur;
 
         function init() {
             $scope.$watch('preValuesLoaded', function(pvl) {
@@ -50,7 +52,21 @@ angular.module('merchello').controller('Merchello.Directives.EntityStaticCollect
             entityCollectionResource.removeEntityFromCollection($scope.entity.key, collection.key).then(function() {
                 loadCollections();
             });
-        }
+		}
+
+		// blur is raised in the directive
+		function blur(scope) {
+			if (scope.collection && scope.collection.changed) {
+				save(scope.collection);
+				scope.collection.changed = false;
+			}
+		}
+
+		function save(collection) {
+			entityCollectionResource.saveEntityFromCollection($scope.entity.key, collection.key, collection.listSortOrder).then(function () {
+				loadCollections();
+			});
+		}
 
         // initialize the controller
         init();

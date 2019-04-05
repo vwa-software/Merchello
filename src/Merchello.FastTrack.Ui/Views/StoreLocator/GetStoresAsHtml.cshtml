@@ -1,0 +1,53 @@
+﻿@inherits UmbracoViewPage<VWA.Storelocator.StoreLocatorResult>
+@using Umbraco.Web
+@{
+	var store = Model;
+}
+
+@if (Model.SearchResultIsEmpty)
+{
+	<div class="row">
+		<div class="empty well-sm vwa_noresult">
+			<h3>No results found. Find a HKliving dealer in the area here!</h3>
+		</div>
+	</div>
+}
+	<div class="hk_dealers_list">
+
+		<div class="row">
+			@foreach (var listdealer in Model.Stores)
+
+		{
+
+			<div class="col-md-4 col-sm-6 col-xl-3">
+				<div class="wrapper_dealer">
+					<h2>@(listdealer.Name)</h2>
+					<p>@(listdealer.Adres)</p>
+					<p>
+						@listdealer.Postcode@(string.IsNullOrWhiteSpace(listdealer.Postcode) ? "" : ", ")@(listdealer.Plaats)
+					</p>
+					<p>@(listdealer.Land)</p>
+
+					@{
+
+					string websiteAdress = listdealer.Website;
+
+					if (!websiteAdress.StartsWith("http"))
+					{
+						websiteAdress = "http://" + websiteAdress;
+					}
+
+					if (!string.IsNullOrWhiteSpace(websiteAdress))
+					{
+
+						<p><a target="_blank" href="@Html.Raw(websiteAdress)">@(listdealer.WebsiteNaam)</a></p>
+
+				}
+					}
+					@* <p><a href="#" class="dealer_website">hkliving.nl</a></p>*@
+				</div>
+			</div>
+	}
+		</div>
+	</div>
+

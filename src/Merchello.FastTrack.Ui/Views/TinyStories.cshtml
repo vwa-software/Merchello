@@ -1,0 +1,141 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.TinyStories>
+@*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
+@using ContentModels = Umbraco.Web.PublishedContentModels;
+@{
+    Layout = "Master.cshtml";
+}
+
+
+@* the fun starts here *@
+
+<div class="hk_news_page">
+	<div class="container hk_news_items">
+    @{
+    var pageSize = 5;
+    if (Model.Content.HasValue("numberOfItemsPerPage"))
+    {
+        pageSize = Model.Content.GetPropertyValue<int>("numberOfItemsPerPage");
+    }
+    var page = 1; int.TryParse(Request.QueryString["page"], out page);
+    var items = Umbraco.TypedContent(Model.Content.Id).Children.Where(x => x.DocumentTypeAlias == "TinyStorie1" && x.IsVisible());
+    var totalPages = (int)Math.Ceiling((double)items.Count() / (double)pageSize);
+
+    if (page > totalPages)
+    {
+        page = totalPages;
+    }
+    else if (page < 1)
+    {
+        page = 1;
+    }
+
+    foreach (var article in CurrentPage.Children.Skip((page - 1) * pageSize).Take(pageSize))
+    {
+
+    <div class="row">
+        <div class="col-sm-3 col-md-3">
+            <ul id="image-gallery" class="gallery list-unstyled">
+
+                    @foreach (var image in article.afbeelding)
+                {
+                            <li data-thumb="@image.Url?anchor=center&amp;mode=crop&amp;width=150&amp;height=150&amp;rnd=131782865150000000" data-src="@image.Url?anchor=center&amp;mode=crop&amp;width=900&amp;height=900&amp;rnd=131782865150000000">
+                                    <img src="@image.Url?anchor=center&mode=crop&width=400&height=400" style="" border="0" />
+                                </li>
+                       
+                 }
+                </ul>
+
+</div>
+        <div class="col-sm-9 col-md-9">
+            <h2>
+                <a href="@article.Url">@Umbraco.StripHtml(article.Name)</a>
+                <span>@Umbraco.StripHtml(article.subTitel)</span>
+            </h2>
+            <p>@Umbraco.Truncate(article.bericht, 300)</p>
+            <a href="@article.Url" class="btn vwa_btn_blue_border">@Umbraco.StripHtml(article.verderKnop)</a>
+        </div>
+    </div>
+    <hr>
+        }
+
+
+        if (totalPages > 1)
+        {
+            <div class="vwa_pagination-wrapper">
+                <div class="vwa_pagination-container">
+                    <ul class="pagination">
+                        @if (page > 1)
+                {
+                            <li><a href="?page=@(page-1)" class="fa fa-backward"> </a></li>
+                        }
+                        @for (int p = 1; p < totalPages + 1; p++)
+                {
+                            <li class="@(p == page ? "active" : string.Empty)">
+                                <a href="?page=@p">@p</a>
+                            </li>
+                        }
+                        @if (page < totalPages)
+                        {
+                            <li><a href="?page=@(page+1)" class="fa fa-forward"> </a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    }
+
+	</div>
+
+</div>
+
+@section Scripts {
+
+
+    <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.19/js/lightgallery-all.min.js"></script>
+    <script type="text/javascript">
+				jQuery(document).ready(function () {
+					window.prettyPrint && prettyPrint();
+					jQuery('#image-gallery').lightSlider({
+						gallery: true,
+						item: 1,
+						loop: true,
+						thumbItem: 9,
+						slideMargin: 0,
+						enableDrag: false,
+						currentPagerPosition: 'left',
+						onSliderLoad: function (el) {
+							el.lightGallery({
+								selector: '#image-gallery .lslide'
+							});
+						}
+					});
+				});
+    </script>
+
+
+}
+@section Breadcrumbs {
+
+    @{
+       
+            <div class="hk_breadcrumb">
+                <div class="">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/collections/stories/">Stories</a></li>
+</ol>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+                                
+        
+    }
+
+
+}
