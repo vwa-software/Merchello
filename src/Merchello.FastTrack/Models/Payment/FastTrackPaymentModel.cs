@@ -18,5 +18,13 @@
 		/// </summary>
 		[DataType(DataType.MultilineText)]
 		public string Remarks { get; set; }
-    }
+
+		/// <summary>
+		/// Remarks of the order
+		/// </summary>
+		[DataType(DataType.MultilineText)]
+		public string Remarks2 { get; set; }
+
+
+	}
 }

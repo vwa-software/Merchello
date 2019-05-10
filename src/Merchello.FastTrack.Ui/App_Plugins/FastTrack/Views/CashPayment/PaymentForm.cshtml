@@ -12,7 +12,7 @@
 	var member = Members.GetCurrentMember();
 	bool isApproved = member != null && member.GetPropertyValue<bool>("umbracomemberapproved") && !member.GetPropertyValue<bool>("umbracomemberlockedout");
 
-	
+
 	if (errors != null && errors.Messages != null && errors.Messages.Count() > 0)
 	{
 		<ul>
@@ -29,9 +29,23 @@
 
 			@Html.AntiForgeryToken()
 			@Html.HiddenFor(x => x.SuccessRedirectUrl)
+
 			<div class="row">
 				<div class="col-md-12">
-					<h2 class="hk_shop">Remarks (shipping address)</h2>
+					<h2 class="hk_shop">Remarks</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-10">
+					@Html.EditorFor(m => m.Remarks2)
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="hk_shop">Shipping address</h2>
 				</div>
 			</div>
 			<div class="row">

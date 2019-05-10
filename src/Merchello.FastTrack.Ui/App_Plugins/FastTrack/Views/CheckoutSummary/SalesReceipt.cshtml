@@ -7,6 +7,19 @@
 
 @{
 
+	http://projecten.vwa.nu:888/redmine/issues/5523
+
+	string notes = string.Empty;
+
+	var invoice = Merchello.Core.MerchelloContext.Current.Services.InvoiceService.GetByKey(Model.InvoiceKey);
+	if(invoice.Notes != null)
+	{
+		foreach(var note in invoice.Notes)
+		{
+			notes += note.Message += "<br/>";
+		}
+	}
+
 	var shipping = Model.ShippingAddress;
 	string remarks = string.Empty;
 
@@ -20,127 +33,172 @@
 	}
 	catch (Exception)
 	{
-		// ignore		
+		// ignore
 	}
+	var first = true;
 }
 
+@*Google ecomerce tags*@
+<script>
+	window.dataLayer = window.dataLayer || [];
+	dataLayer.push({
+		"currencyCode": "@Model.CurrencyCode",
+		"transactionId": "@Model.InvoiceNumber",
+		"transactionTotal": @(Model.Total.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)),
+		"transactionProducts": [
+			@foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
+			{
+				if (!first){
+					@:,
+				}
+				<text>{
+					"sku": @Html.Raw(System.Web.Helpers.Json.Encode(item.Sku)) ,
+				"name": @Html.Raw(System.Web.Helpers.Json.Encode(item.Name)) ,
+				"price": @item.Amount.ToString("F2",System.Globalization.CultureInfo.InvariantCulture),
+				"quantity": @item.Quantity
+				}</text>
+				first = false;
+			}
+		]
+	});
+</script>
+
 <div class="container-fluid hk_order hk_checkout hk_shop_forms">
-            <div class="row">
-                <div class="col-md-12">
-                  @*  <h2 class="hk_shop">Sales Receipt</h2*@
-                    <h3 style="text-transform:initial;line-height: 20px;">Thank you for your order at HKliving.<br />
-                    Your web order number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span></h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 basket-summary">
+	<div class="row">
+		<div class="col-md-12">
+			@*  <h2 class="hk_shop">Sales Receipt</h2*@
+			<h3 style="text-transform:initial;line-height: 20px;">
+				Thank you for your order at HKliving.<br />
+				Your web order number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span>
+			</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 basket-summary">
 
-                    <div class="panel panel-default">
-                        <div class="">
-                            <h2 class="hk_shop">Billing Address</h2>
-                        </div>
-                        <div class="panel-body">
-                            @Html.Partial("_Address", Model.BillingAddress)
-                        </div>
-                    </div>
+			<div class="panel panel-default">
+				<div class="">
+					<h2 class="hk_shop">Billing Address</h2>
+				</div>
+				<div class="panel-body">
+					@Html.Partial("_Address", Model.BillingAddress)
+				</div>
+			</div>
 
-                </div>
-                @if (!string.IsNullOrEmpty(remarks))
-                {
-                    <div class="col-md-6 basket-summary">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h2 class="hk_shop">Remarks (Shipping Address)</h2>
-                            </div>
-                            <div class="panel-body">
-                             @Html.Raw(remarks)
-    @* @Html.Partial("_Address", Model.ShippingAddress)*@
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+		</div>
+		@if (!string.IsNullOrEmpty(remarks))
+		{
+			<div class="col-md-4 basket-summary">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 class="hk_shop">Shipping Address</h2>
+					</div>
+					<div class="panel-body">
+						@Html.Raw(remarks)
+						@* @Html.Partial("_Address", Model.ShippingAddress)*@
+					</div>
+				</div>
+			</div>
+		}
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h2 class="hk_shop">articles</h2>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table mui-basket mui-default">
-                            <thead>
-                                <tr>
-                                    <th>article</th>
-                                    <th></th>
-                                    <th class="th_right">article price</th>
-                                    <th class="th_right">amount</th>
-                                    <th class="th_right">price</th>
-                                </tr>
-                            </thead>
-                            @foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
-                            {
-                                <tr>
-                                    <td>
-                                        @if (item.LineItemType == LineItemType.Product && item.Product.HasValue("ftProduct_Afbeelding"))
-                                        {
-                                            var mediaId = item.Product.GetPropertyValue<string>("ftProduct_Afbeelding");
-                                            var image = Umbraco.TypedMedia(mediaId);
-                                            <img src="@image.GetCropUrl(75, 75)" alt="@item.Product.Name" />
-                                        }
-                                    </td>
-                                    <td>@item.Name</td>
-                                    <td class="text-right">@item.Amount.AsFormattedCurrency(Model.CurrencyCode)</td>
-                                    <td class="text-right">@item.Quantity</td>
-                                    <td class="text-right">@item.Total().AsFormattedCurrency(Model.CurrencyCode)</td>
-                                </tr>
-                            }
-                            <tr>
-                                <td colspan="4" class="text-right"><strong>sub total:</strong></td>
-                                <td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency(Model.CurrencyCode)</strong></td>
-                            </tr>
-                            @foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product && x.LineItemType != LineItemType.Shipping))
-                            {
-                                <tr>
-                                    <td>
-                                        @switch (item.LineItemType)
-                                    {
-                                        case LineItemType.Shipping:
-                                            @("Shipping:")
-                                            break;
-                                        case LineItemType.Discount:
-                                            @("Discount:")
-                                            break;
-                                        case LineItemType.Tax:
-                                            @("Tax:")
-                                            break;
-                                    }
-                                </td>
-                                <td>@(item.LineItemType != LineItemType.Discount ? item.Name : item.Sku)</td>
-                                <td colspan="3" class="text-right">
-                                    @if (item.LineItemType == LineItemType.Discount)
-                                    {
-                                        <span>(@item.Total().AsFormattedCurrency(Model.CurrencyCode))</span>
-                                    }
-                                    else
-                                    {
-                                        @item.Total().AsFormattedCurrency(Model.CurrencyCode)
-                                    }
-                                </td>
-                            </tr>
-                            }
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-right"><strong>@Model.Total.AsFormattedCurrency(Model.CurrencyCode)</strong></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+		@if (!string.IsNullOrEmpty(notes))
+		{
+			<div class="col-md-4 basket-summary">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 class="hk_shop">Remarks</h2>
+					</div>
+					<div class="panel-body">
+						@Html.Raw(notes)
+						@* @Html.Partial("_Address", Model.ShippingAddress)*@
+					</div>
+				</div>
+			</div>
+		}
+
+		
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="hk_shop">articles</h2>
+				</div>
+				<div class="panel-body">
+					<table class="table mui-basket mui-default">
+						<thead>
+							<tr>
+								<th>article</th>
+								<th></th>
+								<th class="th_right">article price</th>
+								<th class="th_right">amount</th>
+								<th class="th_right">price</th>
+							</tr>
+						</thead>
+						@foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
+						{
+							<tr>
+								<td>
+									@if (item.LineItemType == LineItemType.Product && item.Product != null && item.Product.HasValue("ftProduct_Afbeelding"))
+									{
+										var mediaId = item.Product.GetPropertyValue<string>("ftProduct_Afbeelding");
+										var image = Umbraco.TypedMedia(mediaId);
+										<img src="@image.GetCropUrl(75, 75)" alt="@item.Product.Name" />
+									}
+								</td>
+								<td>@item.Name</td>
+								<td class="text-right">@item.Amount.AsFormattedCurrency(Model.CurrencyCode)</td>
+								<td class="text-right">@item.Quantity</td>
+								<td class="text-right">@item.Total().AsFormattedCurrency(Model.CurrencyCode)</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="4" class="text-right"><strong>sub total:</strong></td>
+							<td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency(Model.CurrencyCode)</strong></td>
+						</tr>
+						@foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product && x.LineItemType != LineItemType.Shipping))
+						{
+							<tr>
+								<td>
+									@switch (item.LineItemType)
+									{
+										case LineItemType.Shipping:
+											@("Shipping:")
+											break;
+										case LineItemType.Discount:
+											@("Discount:")
+											break;
+										case LineItemType.Tax:
+											@("Tax:")
+											break;
+									}
+								</td>
+								<td>@(item.LineItemType != LineItemType.Discount ? item.Name : item.Sku)</td>
+								<td colspan="3" class="text-right">
+									@if (item.LineItemType == LineItemType.Discount)
+									{
+										<span>(@item.Total().AsFormattedCurrency(Model.CurrencyCode))</span>
+									}
+									else
+									{
+										@item.Total().AsFormattedCurrency(Model.CurrencyCode)
+									}
+								</td>
+							</tr>
+						}
+						<tfoot>
+							<tr>
+								<td colspan="4" class="text-right"><strong>Total:</strong></td>
+								<td class="text-right"><strong>@Model.Total.AsFormattedCurrency(Model.CurrencyCode)</strong></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
 
 
-            </div>
-        </div>
+		</div>
+	</div>
 
-    </div>
+</div>

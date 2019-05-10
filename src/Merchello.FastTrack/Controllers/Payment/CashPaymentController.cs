@@ -38,6 +38,11 @@
 				CheckoutManager.Customer.SaveShipToAddress(adress);
 				CheckoutManager.Shipping.ClearShipmentRateQuotes();
 
+				if (!string.IsNullOrEmpty(model.Remarks2))
+				{
+					CheckoutManager.Extended.AddNote(model.Remarks2);
+				}
+
 				var factory = new CheckoutShipRateQuoteModelFactory<FastTrackShipRateQuoteModel>();
 				var quoteModel = factory.Create(Basket, adress, false);
 

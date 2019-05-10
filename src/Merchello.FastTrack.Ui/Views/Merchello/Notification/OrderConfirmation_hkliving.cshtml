@@ -6,13 +6,12 @@
 @using System.Web.Mvc.Html
 @using Umbraco.Core.Models
 @using Umbraco.Web
-
 @{
 
 	@*
-	MerchelloHelperViewPage<T> inherits from UmbracoViewPage<t> and exposes the MerchelloHelper as 'Merchello'
-	Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
-*@
+		MerchelloHelperViewPage<T> inherits from UmbracoViewPage<t> and exposes the MerchelloHelper as 'Merchello'
+		Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
+	*@
 	string hostname = (HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority).TrimEnd("/");
 	string remarks = string.Empty;
 
@@ -28,9 +27,18 @@
 	}
 	catch (Exception)
 	{
-		// ignore		
+		// ignore
 	}
 
+	//http://projecten.vwa.nu:888/redmine/issues/5523
+	string notes = string.Empty;
+	if (Model.Invoice.Notes != null)
+	{
+		foreach (var note in Model.Invoice.Notes)
+		{
+			notes += note.Message += "<br/>";
+		}
+	}
 
 
 }
@@ -39,8 +47,8 @@
 	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>HKliving web order</title>
-
 	<style type="text/css">
+
 		/* Take care of image borders and formatting, client hacks */
 		img {
 			max-width: 600px;
@@ -347,14 +355,14 @@
 		<tr>
 			<td align="center" valign="top" width="100%" style="background-color: #ffffff;" class="content-padding">
 				@{
-                    string primaryColor = "444444";
-                    string secundaryColor = "EDDEBC";
-                    string whiteColor = "FFFFFF";
-                    string grayColor = "666666";
-                    string lightgrayColor = "9D9D9D";
+					string primaryColor = "444444";
+					string secundaryColor = "EDDEBC";
+					string whiteColor = "FFFFFF";
+					string grayColor = "666666";
+					string lightgrayColor = "9D9D9D";
 
-                    string rowBackgroun1 = "F6F6F6";
-                    string rowBackgroun2 = "E5E5E5";
+					string rowBackgroun1 = "F6F6F6";
+					string rowBackgroun2 = "E5E5E5";
 				}
 				<table align="center" width="100%">
 					<tr height="32px"></tr>
@@ -380,9 +388,17 @@
 							</p>
 
 							<p style="color:#@grayColor">
-								<strong>REMARKS (SHIPPING ADDRESS)</strong><br />
+								<strong>SHIPPING ADDRESS</strong><br />
 								@Html.Raw(remarks)
 							</p>
+
+							@if (!string.IsNullOrEmpty(notes))
+							{
+								<p style="color:#@grayColor">
+									<strong>REMARKS</strong><br />
+									@Html.Raw(notes)
+								</p>
+							}
 
 							<table border="0" width="100%" align="center">
 								<tbody>
