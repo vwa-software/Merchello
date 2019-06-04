@@ -10,350 +10,362 @@
 @functions{
 
 
-	private IEnumerable<Guid> GetChildCollectionKeys(Guid key)
-	{
-		var returnList = new List<Guid>();
-		returnList.Add(key);
-		_GetChildCollectionKeys(key, returnList);
-		return returnList;
-	}
+    private IEnumerable<Guid> GetChildCollectionKeys(Guid key)
+    {
+        var returnList = new List<Guid>();
+        returnList.Add(key);
+        _GetChildCollectionKeys(key, returnList);
+        return returnList;
+    }
 
-	private void _GetChildCollectionKeys(Guid key, List<Guid> returnList)
-	{
-		foreach (var child in Merchello.Collections.Product.GetChildCollections(key))
-		{
-			if (child.Children().Count() > 0)
-			{
-				_GetChildCollectionKeys(child.Key, returnList);
-			}
-			returnList.Add(child.Key);
-		}
-	}
+    private void _GetChildCollectionKeys(Guid key, List<Guid> returnList)
+    {
+        foreach (var child in Merchello.Collections.Product.GetChildCollections(key))
+        {
+            if (child.Children().Count() > 0)
+            {
+                _GetChildCollectionKeys(child.Key, returnList);
+            }
+            returnList.Add(child.Key);
+        }
+    }
 
 
-	private void AddCollectionsToQuery(Guid key, ref string rawQuery)
-	{
-		foreach (var child in GetChildCollectionKeys(key))
-		{
-			rawQuery += " " + child.ToString();
-		}
-	}
+    private void AddCollectionsToQuery(Guid key, ref string rawQuery)
+    {
+        foreach (var child in GetChildCollectionKeys(key))
+        {
+            rawQuery += " " + child.ToString();
+        }
+    }
 
 }
 
 @{
-	Layout = "Master.cshtml";
-
-
-	string[] protectedCollections = {   "ecfa2964-c513-4527-8453-1c8611fe2900", // service items
-								"0f4d5320-4823-4c4a-85c3-993bb094b94a", // strbr
-								"0da7ef31-5527-4dfe-b5bb-af54e007d010", // Exclude for anonumous
-								"678b9bae-d87a-42de-878a-e23839167bfb" // presale
-							};
+    Layout = "Master.cshtml";
 
-	//http://projecten.vwa.nu:888/redmine/issues/5316
-	// Remember this page for basket return button
-	Session["lastcollectionId"] = UmbracoContext.Current.PageId;
-
-	// Products is the property of documenttype FtCategory, of datatype Merchello.ProductListView
-	// Name Produts can vary per implementation
-	var ProductsProperty = Model.GetProperty("Products");
-	long total = 0;
 
-	// init the pager object with a default items per page of 20, read query parameters.
-	Paging paging = new Paging(20);
+    string[] protectedCollections = {   "ecfa2964-c513-4527-8453-1c8611fe2900", // service items
+                                "0f4d5320-4823-4c4a-85c3-993bb094b94a", // strbr
+                                "0da7ef31-5527-4dfe-b5bb-af54e007d010" // Exclude for anonumous
+                                // ,"678b9bae-d87a-42de-878a-e23839167bfb" // presale
+                            };
 
-	// products to be listed
-	IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> products = null;
+    //http://projecten.vwa.nu:888/redmine/issues/5316
+    // Remember this page for basket return button
+    Session["lastcollectionId"] = UmbracoContext.Current.PageId;
 
-	// url to navigate to when searching
-	paging.SearchUrl = Model.Url;
+    // Products is the property of documenttype FtCategory, of datatype Merchello.ProductListView
+    // Name Produts can vary per implementation
+    var ProductsProperty = Model.GetProperty("Products");
+    long total = 0;
 
+    // init the pager object with a default items per page of 20, read query parameters.
+    Paging paging = new Paging(20);
 
-	// initialize merchello product searcher
-	Examine.Providers.BaseSearchProvider searcher = null;
+    // products to be listed
+    IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> products = null;
 
-	// ProductContentQuery
-	IProductContentQueryBuilder query = this.Merchello.ProductContentQuery();
-	query.Clusivity(CollectionClusivity.ExistsInAnyCollectionOrFilter);
+    // url to navigate to when searching
+    paging.SearchUrl = "/collections/all-products/";
 
-	// default sortterm
-	if (string.IsNullOrEmpty(paging.SortTerm))
-	{
-		paging.SortTerm = "sortorder";
-	}
 
-	// When searching, not sort on sortorder
-	if (!string.IsNullOrEmpty(paging.SearchTerm))
-	{
-		if (paging.SortTerm.ToLower() == "sortorder")
-		{
-			paging.SortTerm = "sku";
-		}
-	}
+    // initialize merchello product searcher
+    Examine.Providers.BaseSearchProvider searcher = null;
 
-	if (paging.SortTerm.ToLower() == "sortorder")
-	{
+    // ProductContentQuery
+    IProductContentQueryBuilder query = this.Merchello.ProductContentQuery();
+    query.Clusivity(CollectionClusivity.ExistsInAnyCollectionOrFilter);
 
-		// stukje uit Merchello.Web.PropertyConverters\ProductListViewValueConverter.cs
+    // default sortterm
+    if (string.IsNullOrEmpty(paging.SortTerm))
+    {
+        paging.SortTerm = "sortorder";
+    }
 
-		// DataValue is the collection which is choosen in the content node in Umbraco Admin area
-		// Can be string.empty or the selected collection key
-		if (ProductsProperty.DataValue != null)
-		{
-			var collectionKey = ProductsProperty.DataValue.ToString();
+    // When searching, not sort on sortorder
+    if (!string.IsNullOrEmpty(paging.SearchTerm))
+    {
+        if (paging.SortTerm.ToLower() == "sortorder")
+        {
+            paging.SortTerm = "sku";
+        }
+    }
 
-			if (collectionKey.IsNullOrWhiteSpace())
-			{
-				total = query.Execute().TotalItems;
-				query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderBy(ProductSortField.Sku);
-				products = query.Execute().Items;
-			}
-			try
-			{
-				var key = new Guid(collectionKey);
-				var keys = GetChildCollectionKeys(key);
+    string collectionKey = (ProductsProperty.DataValue ?? string.Empty).ToString();
 
-				Action<Umbraco.Core.Persistence.Sql> fnSql = sql =>
-				{
-					if (CurrentCustomer.IsAnonymous)
-					{
 
-						// exclude service items and strbr collections
-						Guid[] excludes = protectedCollections.Select(a => new Guid(a)).ToArray();
+    if (paging.SortTerm.ToLower() == "sortorder" && !string.IsNullOrEmpty(collectionKey))
+    {
 
-						sql.Append(" AND NOT EXISTS (SELECT 1 FROM [merchProduct2EntityCollection] A1 WHERE [A1].[entityCollectionKey] IN (@0)", excludes);
-						sql.Append(" AND A1.productkey=A.productkey)");
-					}
-					sql.Append(" AND [A].[available]=1");
-				};
-
-				total = query.ConstrainByCollectionKey(keys).Execute(fnSql).TotalItems;
 
-				// calculate pager
-				paging.CalculatePages(total);
+        // stukje uit Merchello.Web.PropertyConverters\ProductListViewValueConverter.cs
 
-				query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderByCollection(key, global::Merchello.Core.Persistence.Querying.SortDirection.Descending).ConstrainByCollectionKey(keys);
+        // DataValue is the collection which is choosen in the content node in Umbraco Admin area
+        // Can be string.empty or the selected collection key
+        if (!string.IsNullOrEmpty(collectionKey))
+        {
+            /*
+            var collectionKey = ProductsProperty.DataValue.ToString();
 
-				query.ThenSortBy = new string[] { ProductSortField.Sku.ToString() + " DESC" };
+            if (collectionKey.IsNullOrWhiteSpace())
+            {
+                total = query.Execute().TotalItems;
+                //query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderBy(ProductSortField.Sku, global::Merchello.Core.Persistence.Querying.SortDirection.Ascending);
+                query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderBy(ProductSortField.Sku);
+                products = query.Execute().Items;
 
-				products = query.Execute(fnSql).Items;
-			}
-			catch (Exception ex)
-			{
-				// ignore
-			}
-		}
-
-	}
+                @* https://our.umbraco.com/packages/collaboration/merchello/merchello/92199-listing-paginated-products-in-category *@
 
-	else
-	{
-
-		// perform lucerne search
-		ISearchResults searchResults = null;
-		try
-		{
-
-			searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
-
+            }
+            */
 
-			// fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
-			var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
+            try
+            {
+                var key = new Guid(collectionKey);
+                var keys = GetChildCollectionKeys(key);
 
-			var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+                Action<Umbraco.Core.Persistence.Sql> fnSql = sql =>
+                {
+                    if (CurrentCustomer.IsAnonymous)
+                    {
 
-			//http://www.lucenetutorial.com/lucene-query-syntax.html
-			string rawQuery = string.Empty;
+                // exclude service items and strbr collections
+                Guid[] excludes = protectedCollections.Select(a => new Guid(a)).ToArray();
 
-			if (!string.IsNullOrEmpty(paging.SearchTerm))
-			{
+                        sql.Append(" AND NOT EXISTS (SELECT 1 FROM [merchProduct2EntityCollection] A1 WHERE [A1].[entityCollectionKey] IN (@0)", excludes);
+                        sql.Append(" AND A1.productkey=A.productkey)");
+                    }
+                    sql.Append(" AND [A].[available]=1");
+                };
 
-				// Searching with fuzzynis
-				// rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
+                total = query.ConstrainByCollectionKey(keys).Execute(fnSql).TotalItems;
 
-				// Searching without fuzzynis
-				rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
+                // calculate pager
+                paging.CalculatePages(total);
 
-			}
-
-			// only the available products
-			rawQuery += "+available:true";
-
-			// when searching, de not limit to collections
-			if (string.IsNullOrEmpty(paging.SearchTerm))
-			{
-				if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
-				{
-
-					// in the selected collection
-					rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
-					try
-					{
-						AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
-					}
-					catch (Exception)
-					{
-						// ignore, in some cases the datavalue is no valid guid string.
-					}
-
-					rawQuery += ")";
-				}
-			}
-
-			if (CurrentCustomer.IsAnonymous)
-			{
-				// exclude service items, strbr collections and exclude for anonymous
-				string exclude = string.Join(" ", protectedCollections);
-				rawQuery += " -staticCollectionKeys:" + exclude;
-			}
-
-			/*
-			 For performance its best to Page and sort in lucern examine searcher.
-
-			 However, it's not fully possible to determine of an object is active or not (stock/avalablitity/sku's etc).
-			 When this is the case (products are counted but not visible), set underlying true to false
-			 */
-
-
-			/*
-			Sort and page in Lucerne (best performance)
-			*/
-
-			try
-			{
-				searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-			}
-			catch (Lucene.Net.QueryParsers.ParseException)
-			{
-				// exception, try without the search term.
-
-				// only the available products
-				rawQuery = "+available:true";
-
-				if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
-				{
-
-					// in the selected collection
-					rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
-					try
-					{
-						AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
-					}
-					catch (Exception)
-					{
-						// ignore, in some cases the datavalue is no valid guid string.
-					}
-
-					rawQuery += ")";
-				}
-				if (CurrentCustomer.IsAnonymous)
-				{
-					// exclude service items and strbr collections
-					rawQuery += " -staticCollectionKeys:ecfa2964-c513-4527-8453-1c8611fe2900 0f4d5320-4823-4c4a-85c3-993bb094b94a";
-				}
-
-				searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-			}
-
-
-			total = searchResults.Count();
-
-
-			// calculate pager
-			paging.CalculatePages(total);
-
-			IOrderedEnumerable<SearchResult> ordererd = null;
-
-			// sorting
-			switch (paging.SortTerm.ToLower())
-			{
-				case "priceasc":
-					ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
-					{
-						decimal price;
-						decimal.TryParse(a.Fields["price"], out price);
-						return price;
-					});
-					break;
-				case "pricedesc":
-					ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
-					{
-						decimal price;
-						decimal.TryParse(a.Fields["price"], out price);
-						return price;
-					});
-					break;
-
-				case "skudesc":
-					ordererd = searchResults.OrderByDescending<SearchResult, string>(a =>
-					{
-						return a.Fields["sku"].ToString();
-					});
-					break;
-				case "stockdate":
-					ordererd = searchResults.OrderBy<SearchResult, string>(a =>
-					{
-						int inventory = 0;
-						int.TryParse(a.Fields["totalInventoryCount"], out inventory);
-						return inventory > 0 ? "00" : (a.Fields.ContainsKey("stockDate") ? a.Fields["stockDate"] : "01");
-					}).ThenByDescending<SearchResult, string>(a =>
-					{
-						return a.Fields["sku"].ToString();
-					});
-					break;
-				default: //	case "skuasc":
-					ordererd = searchResults.OrderBy<SearchResult, string>(a =>
-					{
-						return a.Fields["sku"].ToString();
-					});
-					break;
-			}
-
-
-			products = query.Execute(b =>
-			{
-				return new Umbraco.Core.Persistence.Page<Guid>()
-				{
-					CurrentPage = paging.CurrentPage,
-
-			// Check if products are active/available (stock/price etc)
-			Items = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
-					{
-						return new Guid(a.Fields["productKey"]);
-					}).Where(a => a != null).ToList()
-							,
-					ItemsPerPage = paging.ItemsPerPage,
-					TotalItems = total,
-					TotalPages = paging.TotalPages
-				};
-			}).Items;
-
-
-		}
-		catch (Exception ex)
-		{
-			LogHelper.Error(this.GetType(), "Error trying to use searcher", ex);
-		}
-
-
-	}
-
-
-
-	if (products == null)
-	{
-		// create empty list
-		products = new List<Merchello.Web.Models.VirtualContent.IProductContent>();
-	}
-
-	var currentPageId = UmbracoContext.Current.PageId;
-
-	
+                query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderByCollection(key, global::Merchello.Core.Persistence.Querying.SortDirection.Descending).ConstrainByCollectionKey(keys);
+
+                query.ThenSortBy = new string[] { ProductSortField.Sku.ToString() + " DESC" };
+
+                products = query.Execute(fnSql).Items;
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+    }
+
+    else
+    {
+
+        // perform lucerne search
+        ISearchResults searchResults = null;
+        try
+        {
+
+            searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
+
+
+            // fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
+            var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
+
+            var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+
+            //http://www.lucenetutorial.com/lucene-query-syntax.html
+            string rawQuery = string.Empty;
+
+            if (!string.IsNullOrEmpty(paging.SearchTerm))
+            {
+
+                // Searching with fuzzynis
+                // rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
+
+                // Searching without fuzzynis
+                rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
+
+            }
+
+            // only the available products
+            rawQuery += "+available:true";
+
+            // when searching, de not limit to collections
+            if (string.IsNullOrEmpty(paging.SearchTerm))
+            {
+                if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
+                {
+
+                    // in the selected collection
+                    rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
+                    try
+                    {
+                        AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
+                    }
+                    catch (Exception)
+                    {
+                        // ignore, in some cases the datavalue is no valid guid string.
+                    }
+
+                    rawQuery += ")";
+                }
+            }
+
+            if (CurrentCustomer.IsAnonymous)
+            {
+                // exclude service items, strbr collections and exclude for anonymous
+                string exclude = string.Join(" ", protectedCollections);
+                rawQuery += " -staticCollectionKeys:" + exclude;
+            }
+
+            /*
+             For performance its best to Page and sort in lucern examine searcher.
+
+             However, it's not fully possible to determine of an object is active or not (stock/avalablitity/sku's etc).
+             When this is the case (products are counted but not visible), set underlying true to false
+             */
+
+
+            /*
+            Sort and page in Lucerne (best performance)
+            */
+
+            try
+            {
+                searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+            }
+            catch (Lucene.Net.QueryParsers.ParseException)
+            {
+                // exception, try without the search term.
+
+                // only the available products
+                rawQuery = "+available:true";
+
+                if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
+                {
+
+                    // in the selected collection
+                    rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
+                    try
+                    {
+                        AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
+                    }
+                    catch (Exception)
+                    {
+                        // ignore, in some cases the datavalue is no valid guid string.
+                    }
+
+                    rawQuery += ")";
+                }
+                if (CurrentCustomer.IsAnonymous)
+                {
+                    // exclude service items and strbr collections
+                    rawQuery += " -staticCollectionKeys:ecfa2964-c513-4527-8453-1c8611fe2900 0f4d5320-4823-4c4a-85c3-993bb094b94a";
+                }
+
+                searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+            }
+
+
+            total = searchResults.Count();
+
+
+            // calculate pager
+            paging.CalculatePages(total);
+
+            IOrderedEnumerable<SearchResult> ordererd = null;
+
+            // sorting
+            switch (paging.SortTerm.ToLower())
+            {
+                case "priceasc":
+                    ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
+                    {
+                        decimal price;
+                        decimal.TryParse(a.Fields["price"], out price);
+                        return price;
+                    });
+                    break;
+                case "pricedesc":
+                    ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
+                    {
+                        decimal price;
+                        decimal.TryParse(a.Fields["price"], out price);
+                        return price;
+                    });
+                    break;
+
+                case "skudesc":
+                    ordererd = searchResults.OrderByDescending<SearchResult, string>(a =>
+                    {
+                        return a.Fields["sku"].ToString();
+                    });
+                    break;
+                case "stockdate":
+                    ordererd = searchResults.OrderBy<SearchResult, string>(a =>
+                    {
+                        int inventory = 0;
+                        int.TryParse(a.Fields["totalInventoryCount"], out inventory);
+                        return inventory > 0 ? "00" : (a.Fields.ContainsKey("stockDate") ? a.Fields["stockDate"] : "01");
+                    }).ThenByDescending<SearchResult, string>(a =>
+                    {
+                        return a.Fields["sku"].ToString();
+                    });
+                    break;
+                default: //	case "skuasc":
+                    ordererd = searchResults.OrderBy<SearchResult, string>(a =>
+                    {
+                        return a.Fields["sku"].ToString();
+                    });
+                    break;
+            }
+
+
+            products = query.Execute(b =>
+            {
+                return new Umbraco.Core.Persistence.Page<Guid>()
+                {
+                    CurrentPage = paging.CurrentPage,
+
+            // Check if products are active/available (stock/price etc)
+            Items = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
+                    {
+                        return new Guid(a.Fields["productKey"]);
+                    }).Where(a => a != null).ToList()
+                            ,
+                    ItemsPerPage = paging.ItemsPerPage,
+                    TotalItems = total,
+                    TotalPages = paging.TotalPages
+                };
+            }).Items;
+
+
+        }
+        catch (Exception ex)
+        {
+            LogHelper.Error(this.GetType(), "Error trying to use searcher", ex);
+        }
+
+
+    }
+
+
+    if (products == null)
+    {
+        // create empty list
+        products = new List<Merchello.Web.Models.VirtualContent.IProductContent>();
+    }
+
+    var currentPageId = UmbracoContext.Current.PageId;
+
+
 }
 
 @*
-	@Html.Partial("_Headline")
+    @Html.Partial("_Headline")
 *@
 
 
@@ -361,294 +373,304 @@
 <!--ftCategoryView -->
 <div class="container-fluid hk_collections hk_category t" id="hk_cat_@currentPageId">
 
-	<div style="display:none">
-		pricegroup: @(this.CurrentCustomer.PriceGroup == null ? "--" : this.CurrentCustomer.PriceGroup.Alias)
-	</div>
+    <div style="display:none">
+        pricegroup: @(this.CurrentCustomer.PriceGroup == null ? "--" : this.CurrentCustomer.PriceGroup.Alias)
+    </div>
 
 
-	<div class="row">
-		<div class="col-12 hk_categorie_media hk_categorie_media_top">
-			@Html.GetGridHtml(Model, "collectionGridTop")
-		</div>
-		<div class="col-4 col-xl-3 col-md-3">
-			@*@Html.Partial("hkSearch")*@
-			@RenderSearchForm(paging)
-			@Html.Partial("hkCategories")
-		</div>
-		<div class="col-8 col-xl-9 col-md-9">
-			<div class="row">
-				<div class="col-md-6 hk_sort">
-					@RenderSortingDropDown(paging)
-				</div>
-				<div class="col-md-6 text-right hk_sort">
-					@RenderItemsDropDown(paging)
-				</div>
-			</div>
-			@Html.Partial("_ProductBoxList", products)
-			<div class="row col-12 pagination">
-				<nav aria-label="Page navigation" class="hk_pagination">
-					<ul class="pagination">
-						@RenderPaging(paging, paging.CurrentPage)
-					</ul>
-				</nav>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-12 hk_categorie_media hk_categorie_media_top">
+            @Html.GetGridHtml(Model, "collectionGridTop")
+        </div>
+        @* left side catalog *@
+        <div class="col-4 col-xl-3 col-md-3 r-catalog-left">
+            @*@Html.Partial("hkSearch")*@
+            @RenderSearchForm(paging)
+            @Html.Partial("hkCategories")
+        </div>
+        @* left side catalog button to open left side menu *@
+        <div class="r-catalog-left-button">
+            <div class="r-catalog-left-button-inner">
+                <div class="r-catalog-left-button-icon">
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8 col-xl-9 col-md-9 r-catalog-right">
+            <div class="row">
+                <div class="col-md-6 hk_sort">
+                    @RenderSortingDropDown(paging)
+                </div>
+                <div class="col-md-6 text-right hk_sort">
+                    @RenderItemsDropDown(paging)
+                </div>
+            </div>
+            @Html.Partial("_ProductBoxList", products)
+            <div class="row col-12 pagination">
+                <nav aria-label="Page navigation" class="hk_pagination">
+                    <ul class="pagination">
+                        @RenderPaging(paging, paging.CurrentPage)
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="col-12 hk_categorie_media">
-	@Html.GetGridHtml(Model, "collectionGrid")
+    @Html.GetGridHtml(Model, "collectionGrid")
 </div>
 
 <div class="col-12 hk_categorie_featured">
 
-	@{
-		// http://projecten.vwa.nu:888/redmine/issues/5329
-		// Featured products..
-		// Products are rendered in partial view _productboxlist
-		// @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
-		// Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
+    @{
+        // http://projecten.vwa.nu:888/redmine/issues/5329
+        // Featured products..
+        // Products are rendered in partial view _productboxlist
+        // @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
+        // Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
 
 
-		// List of featured Products
-		// Filter op null values (product may be disabled, this results in a null value)
+        // List of featured Products
+        // Filter op null values (product may be disabled, this results in a null value)
 
 
 
-		if (Model.FeaturedProducts != null)
-		{
+        if (Model.FeaturedProducts != null)
+        {
 
-			IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
+            IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
 
-			if (featuredProducts != null && featuredProducts.Count() > 0)
-			{
-				<div class="col-12 hk_categorie_media">
+            if (featuredProducts != null && featuredProducts.Count() > 0)
+            {
+                <div class="col-12 hk_categorie_media">
 
-					<div class="hk_category_name_list hk_highlighted">
-						<h1 class="hk_category_name"><span>@Umbraco.Field("featuredCategoryName")</span></h1>
-						<h2 class="hk_category_name">@Umbraco.Field("featuredCategoryLabel")</h2>
-					</div>
-					@Html.Partial("_ProductBoxList", featuredProducts)
-				</div>
+                    <div class="hk_category_name_list hk_highlighted">
+                        <h1 class="hk_category_name"><span>@Umbraco.Field("featuredCategoryName")</span></h1>
+                        <h2 class="hk_category_name">@Umbraco.Field("featuredCategoryLabel")</h2>
+                    </div>
+                    @Html.Partial("_ProductBoxList", featuredProducts)
+                </div>
 
-			}
-		}
-	}
+            }
+        }
+    }
 
 </div>
 
 
 
 @helper RenderPaging(Paging paging, long currentId)
-	{
-		/**/
+{
+    /**/
 
-		/**/
+    /**/
 
-		<li class="page-item">
-			<a class="@(paging.CurrentPage > 1 ? "" : "disabled")  fas fa-step-backward" @(paging.CurrentPage > 1 ? "href=?q=" + paging.SearchTerm + "&page=" + paging.PreviousPage + "&ItemsPerPage=" + paging.ItemsPerPage + "&SortTerm=" + paging.SortTerm : "disabled")>&nbsp;</a>
-		</li>
+    <li class="page-item">
+        <a class="@(paging.CurrentPage > 1 ? "" : "disabled")  fas fa-step-backward" @(paging.CurrentPage > 1 ? "href=?q=" + paging.SearchTerm + "&page=" + paging.PreviousPage + "&ItemsPerPage=" + paging.ItemsPerPage + "&SortTerm=" + paging.SortTerm : "disabled")>&nbsp;</a>
+    </li>
 
-		if (paging.StartPageToShow > 1)
-		{
-			<li class="page-item"><a href="?q=@(paging.SearchTerm)&page=1&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">1..</a><text>&nbsp;</text></li>
-		}
+    if (paging.StartPageToShow > 1)
+    {
+        <li class="page-item"><a href="?q=@(paging.SearchTerm)&page=1&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">1..</a><text>&nbsp;</text></li>
+    }
 
-		for (var i = paging.StartPageToShow; i <= paging.EndPageToShow; i++)
-		{
-			if (paging.CurrentPage == i)
-			{
-				<span><span>@i</span></span><text>&nbsp;</text>
-			}
-			else
-			{
-				@*<a href="?q=@(paging.SearchTerm)&page=@i">@i</a><text>&nbsp;</text>*@
-				<li class="page-item"><a href="?q=@(paging.SearchTerm)&page=@(i)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">@i</a><text>&nbsp;</text></li>
-			}
-		}
+    for (var i = paging.StartPageToShow; i <= paging.EndPageToShow; i++)
+    {
+        if (paging.CurrentPage == i)
+        {
+            <span><span>@i</span></span><text>&nbsp;</text>
+        }
+        else
+        {
+            @*<a href="?q=@(paging.SearchTerm)&page=@i">@i</a><text>&nbsp;</text>*@
+            <li class="page-item"><a href="?q=@(paging.SearchTerm)&page=@(i)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">@i</a><text>&nbsp;</text></li>
+        }
+    }
 
-		if (paging.EndPageToShow < paging.TotalPages)
-		{
-			<li class="page-item"><a href="?q=@(paging.SearchTerm)&page=@(paging.TotalPages)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">...@paging.TotalPages</a></li><text>&nbsp;</text>
-		}
-		<li class="page-item">	<a class="@(paging.CurrentPage < paging.TotalPages ? "" : "disabled") fas fa-step-forward" @(paging.CurrentPage < paging.TotalPages ? "href=?q=" + paging.SearchTerm + "&page=" + paging.NextPage + "&ItemsPerPage=" + paging.ItemsPerPage + "&SortTerm=" + paging.SortTerm : "disabled")>&nbsp;</a></li>
+    if (paging.EndPageToShow < paging.TotalPages)
+    {
+        <li class="page-item"><a href="?q=@(paging.SearchTerm)&page=@(paging.TotalPages)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=@(paging.SortTerm)">...@paging.TotalPages</a></li><text>&nbsp;</text>
+    }
+    <li class="page-item">	<a class="@(paging.CurrentPage < paging.TotalPages ? "" : "disabled") fas fa-step-forward" @(paging.CurrentPage < paging.TotalPages ? "href=?q=" + paging.SearchTerm + "&page=" + paging.NextPage + "&ItemsPerPage=" + paging.ItemsPerPage + "&SortTerm=" + paging.SortTerm : "disabled")>&nbsp;</a></li>
 }
 
 
 @helper RenderSortingDropDown(ETC.B2B.WEB.Paging paging)
-	{
+{
 
-		<div class="dropdown">
-			<button class="form-control form-sort" type="button" data-toggle="dropdown">
-				@{
-					// determine selected sortname
-					string sortname = string.Empty;
-					switch (paging.SortTerm.ToLower())
-					{
-						case "priceasc":
-							sortname = "Price ascending";
-							break;
+    <div class="dropdown">
+        <button class="form-control form-sort" type="button" data-toggle="dropdown">
+            @{
+                // determine selected sortname
+                string sortname = string.Empty;
+                switch (paging.SortTerm.ToLower())
+                {
+                    case "priceasc":
+                        sortname = "Price ascending";
+                        break;
 
-						case "pricedesc":
-							sortname = "Price descanding";
-							break;
-						case "skuasc":
-							sortname = "Productcode ascending";
-							break;
-						case "skudesc":
-							sortname = "Productcode descanding";
-							break;
-						case "stockdate":
-							sortname = "Stock date";
-							break;
-						default:
-							sortname = "sort products";
-							break;
-					}
-				}
-				@sortname
-				<i class="fa fa-caret-down"></i>
-			</button>
+                    case "pricedesc":
+                        sortname = "Price descending";
+                        break;
+                    case "skuasc":
+                        sortname = "Productcode ascending";
+                        break;
+                    case "skudesc":
+                        sortname = "Productcode descending";
+                        break;
+                    case "stockdate":
+                        sortname = "Stock date";
+                        break;
+                    default:
+                        sortname = "sort products";
+                        break;
+                }
+            }
+            @sortname
+            <i class="fa fa-caret-down"></i>
+        </button>
 
-			<ul class="dropdown-menu">
-				<li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
-				@*
-					<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
-					<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descanding</a></li>
-				*@
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skuasc">Productcode ascending</a></li>
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skudesc">Productcode descanding</a></li>
-				@if (!CurrentCustomer.IsAnonymous)
-				{
-					<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=stockdate">Stock date</a></li>
-				}
+        <ul class="dropdown-menu">
+            <li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
+            @*
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descending</a></li>
+            *@
+            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skuasc">Productcode ascending</a></li>
+            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=skudesc">Productcode descending</a></li>
+            @if (!CurrentCustomer.IsAnonymous)
+            {
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=stockdate">Stock date</a></li>
+            }
 
-			</ul>
-		</div>
+        </ul>
+    </div>
 }
 
 @*btn btn-primary dropdown-toggle*@
 @helper RenderItemsDropDown(ETC.B2B.WEB.Paging paging)
-	{
-		<div class="dropdown">
-			<button class="form-control form-sort" type="button" data-toggle="dropdown">
-				show @paging.ItemsPerPage results
-				<i class="fa fa-caret-down"></i>
-			</button>
-			<ul class="dropdown-menu">
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
-				<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
-			</ul>
-		</div>
+{
+    <div class="dropdown">
+        <button class="form-control form-sort" type="button" data-toggle="dropdown">
+            show @paging.ItemsPerPage results
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
+            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
+            <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
+        </ul>
+    </div>
 }
 
 @helper  RenderSearchForm(ETC.B2B.WEB.Paging paging)
-	{
-		<div class="hk_search">
+{
+    <div class="hk_search">
 
-			<h3>@(Umbraco.GetDictionaryValue("Search", "Search"))</h3>
+        <h3>@(Umbraco.GetDictionaryValue("Search", "Search"))</h3>
 
-			<form action="@paging.SearchUrl" class="form-inline search" id="hk_search-input" method="get">
+        <form action="@paging.SearchUrl" class="form-inline search" id="hk_search-input" method="get">
 
-				<div class="form-group">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))" id="etc-search-term" value="@paging.SearchTerm" name="q" />
-						<span class="input-group-addon">
-							<button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
-						</span>
-					</div>
-				</div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))" id="etc-search-term" value="@paging.SearchTerm" name="q" />
+                    <span class="input-group-addon">
+                        <button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
+                    </span>
+                </div>
+            </div>
 
 
-				@*<ul>
-						<li>
-							<input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
-						</li>
-						<li>
-							<button class="btn btn-info btn-lg" type="submit" >
-								<i class="glyphicon fa fa-search "></i>
-							</button>
-						</li>
-					</ul>*@
-			</form>
-		</div>
+            @*<ul>
+                    <li>
+                        <input type="text" class="form-control input-lg" placeholder="@(Umbraco.GetDictionaryValue("Search", "Search"))"  id="etc-search-term" value="@paging.SearchTerm" name="q" />
+                    </li>
+                    <li>
+                        <button class="btn btn-info btn-lg" type="submit" >
+                            <i class="glyphicon fa fa-search "></i>
+                        </button>
+                    </li>
+                </ul>*@
+        </form>
+    </div>
 }
 @section Scripts {
 
-	<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
+    <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
 
-	@*	<script>
-			$('.hk_media_display_list').each(function (i, e) {
-			var id = 'adaptive';
-				$(e).attr('id', id + i);
-			var selector = '#' + id + i;
-				$(selector).lightSlider({
-				autoWidth: false,
-					loop: true,
-					keyPress: true
-				});
-		});
+    @*	<script>
+            $('.hk_media_display_list').each(function (i, e) {
+            var id = 'adaptive';
+                $(e).attr('id', id + i);
+            var selector = '#' + id + i;
+                $(selector).lightSlider({
+                autoWidth: false,
+                    loop: true,
+                    keyPress: true
+                });
+        });
 
-		</script>
+        </script>
 
-		<script type="text/javascript">
-			$('.parent_list li').bind("click", function(){
+        <script type="text/javascript">
+            $('.parent_list li').bind("click", function(){
 
-				$(this).find('i').toggleClass('fa-plus fa-minus')
-					.closest('panel').siblings('panel')
-					.find('i')
-					.removeClass('fa-minus').addClass('fa-plus');
-		});
-		</script>*@
-	<script type="text/javascript">
-		$(function () {
-			$('.hk_media_display_list').each(function (i, e) {
-				var id = 'adaptive';
-				$(e).attr('id', id + i);
-				var selector = '#' + id + i;
-				$(selector).lightSlider({
-					autoWidth: false,
-					loop: true,
-					keyPress: true
-				});
-			});
+                $(this).find('i').toggleClass('fa-plus fa-minus')
+                    .closest('panel').siblings('panel')
+                    .find('i')
+                    .removeClass('fa-minus').addClass('fa-plus');
+        });
+        </script>*@
+    <script type="text/javascript">
+        $(function () {
+            $('.hk_media_display_list').each(function (i, e) {
+                var id = 'adaptive';
+                $(e).attr('id', id + i);
+                var selector = '#' + id + i;
+                $(selector).lightSlider({
+                    autoWidth: false,
+                    loop: true,
+                    keyPress: true
+                });
+            });
 
-			$('.parent_list a.collapsable').click(function () {
-				$(this).siblings('ul').toggle('toggle');
-				$(this).next().toggleClass('fa-plus fa-minus');
-				return false;
-			});
-		});
-	</script>
+            $('.parent_list a.collapsable').click(function () {
+                $(this).siblings('ul').toggle('toggle');
+                $(this).next().toggleClass('fa-plus fa-minus');
+                return false;
+            });
+        });
+    </script>
 
 
 }
 
 @section Breadcrumbs {
 
-	@{
+    @{
 
-		<div class="hk_breadcrumb">
-			<div class="">
-				<div class="row">
-					<div class="col-xl-12">
-						<ol class="breadcrumb">
-							<li><a href="/">Home</a></li>
-							<li><a href="/collections/" class="">Collections</a></li>
-							<li>
-								<a href="@Model.Url" class="hk_link_@Model.Name">@Model.Name </a>
-							</li>
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
+        <div class="hk_breadcrumb">
+            <div class="">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <ol class="breadcrumb">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/collections/" class="">Collections</a></li>
+                            <li>
+                                <a href="@Model.Url" class="hk_link_@Model.Name">@Model.Name </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
-	}
+    }
 
 
 }
