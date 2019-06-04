@@ -1,0 +1,556 @@
+
+
+.r-catalog-right > .row > .col-6 {
+	margin-bottom: 26px;	
+}	
+
+#hk_pressroom .hk_product-box {
+    padding: 0;
+	margin: 0;
+}
+
+#hk_pressroom .hk_product-box .hk_pr_Naam {
+	/*
+	visibility: hidden !important;
+	*/
+	visibility: visible;
+}
+
+#hk_pressroom .hk_product-box .caption img {
+    cursor: pointer;
+}
+
+.container-fluid .hk_product-box p {
+    opacity: 1;
+}
+
+#pres-dwnldframe {
+	height: 0;
+	width: 0;
+	max-height: 0;
+	max-width: 0;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 0;
+}	
+#hk_pressroom .r-catalog-left {
+	/*padding-left: 5px;	*/
+}	
+#hk_pressroom .r-catalog-left > ul {
+	/*margin-top: 20px;*/
+	overflow: hidden;
+}
+
+
+#hk_Pressroom .cat-link-open li form input {
+	margin-right: 8px;
+	margin-left: 8px;
+}
+#hk_pressroom ul,
+#hk_pressroom li {
+	margin-left: 0;
+	padding-left: 0;
+}	
+/*
+#hk_pressroom ul.pres-cat-link {
+	margin-top: 20px;
+}
+*/
+#hk_pressroom li.pres-cat-link ul {
+	float: left;
+	width: 100%;
+}
+
+
+#hk_pressroom li.pres-cat-link .cat-link-inner-left {
+	width: 80%;
+	float: left;
+	max-width: 190px;
+}
+#hk_pressroom li.pres-cat-link .cat-link-inner-right {
+	width: 20%;
+	float: left;
+	text-align: center;
+}
+#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown:after {
+	content: "+";
+	font-size: 20px;
+	font-weight: 900;
+	float: right;
+}	
+#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown.pres-dropdown-open:after {
+	content: "-";
+	font-size: 20px;
+	font-weight: 900;
+	float: right;
+	padding-right: 3px;
+	padding-left: 2px;
+}
+
+#hk_Pressroom .r-catalog-left a > input {
+    /* fix for chrome */
+	pointer-events:none;
+}
+
+#hk_pressroom .pres-cat-link.pres-cat-link-endpoint {
+	border-bottom: 1px solid #e9e9e9;
+	max-width: 160px;
+}
+/*
+#hk_pressroom .r-catalog-left ul {
+	max-height: 0px;
+	overflow: hidden;
+}
+#hk_pressroom .r-catalog-left ul.cat-link-open-force > li > ul,
+#hk_pressroom .r-catalog-left ul.cat-link-open-force,
+#hk_pressroom .r-catalog-left ul.cat-link-open {
+	max-height: 2000px;
+}
+*/
+
+#hk_pressroom .pres-cat-link > ul {
+	max-height: 0px;
+	overflow: hidden;
+}
+#hk_pressroom .pres-cat-link > ul.cat-link-open-force,
+#hk_pressroom .pres-cat-link > ul.cat-link-open {
+	max-height: 2000px;
+}
+
+#hk_pressroom li {
+	list-style: none;
+	margin-bottom: 1px;
+}
+
+#hk_pressroom .pres-cat-link {
+
+}
+
+#hk_pressroom ul.cat-link-open .pres-cat-link.pres-cat-link-endpoint:last-child {
+	margin-bottom: 20px;
+}
+
+#hk_pressroom p.pres-cat-dropdown:hover,
+#hk_pressroom a:hover,
+#hk_pressroom label:hover {
+	text-decoration: none;
+	transition: 0.3s;
+	color: rgba(68, 68, 68, 0.6);
+	cursor: pointer;
+}
+
+
+#hk_pressroom .hk_product-box .press-productbox-controls {
+	width: 70%;
+	margin: auto;
+}
+
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner {
+	width: 25%;
+	float: left;
+	padding: 3% 5% 3% 5%;
+}
+
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner.crl-disabled {
+	opacity: 0.2;
+}
+
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner .press-productbox-control-inner-img {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	height: 20px;
+}	
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:nth-child(1) .press-productbox-control-inner-img {
+	background-image:url("/media/8351/ico_new_message.png")
+}	
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:nth-child(2) .press-productbox-control-inner-img {
+	background-image:url("/media/8352/ico_download_cloud.png")
+}	
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:nth-child(3) .press-productbox-control-inner-img {
+	background-image:url("/media/8350/ico_download_doc.png")
+}	
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:nth-child(4) .press-productbox-control-inner-img {
+
+}
+
+
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner .productbox-control-inner-label {
+	background-color: #000000;
+	width: 80%;
+	min-height: 20px;
+	position: absolute;
+	bottom: -26px;
+	text-align: center;
+	border-radius: 5px;
+	opacity: 0;
+	transition: opacity 0.2s;
+	left: 10%;
+	pointer-events: none;
+	z-index: 5;
+}
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:not(.crl-disabled):hover .productbox-control-inner-label,
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:not(.crl-disabled):hover .producuctbox-control-enter-email {
+	opacity: 1;
+	transition: opacity 0s;
+}	
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner .productbox-control-inner-label p {
+	color: #ffffff;
+	margin-bottom: 0;
+	font-size: 12px;
+	padding-top: 3px;
+	padding-bottom: 2px;
+}
+
+#hk_pressroom .hk_product-box .press-productbox-controls .press-productbox-control-inner:not(.crl-disabled) .press-productbox-control-inner-img:hover {
+	opacity: 0.8;
+	cursor: pointer;
+}
+
+
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email {
+	position: absolute;
+	bottom: 35px;
+	left: 20%;
+	width: 60%;
+	transition: opacity 0.2s;
+	opacity: 0;
+}	
+
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-email-sent {
+	z-index: 1;
+	float: left;
+	width: 100%;
+	height: 20px;
+	max-height: 0px;
+	max-width: 0;
+	background-color: #444444;
+	/*
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	*/
+	border-radius: 4px;
+	margin-bottom: 2px;
+	overflow: hidden;
+	opacity: 1;
+	transition: opacity 3.5s ease-in, max-height 0.15s;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-email-sent.email-sent-show {
+	max-width: 100%;
+	max-height: 20px;
+	opacity: 0;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-email-sent p {
+	color: #ffffff;
+	opacity: 0;
+	transition: opacity 0.25s;
+	padding-top: 4px;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-email-sent.email-sent-show p {
+	opacity: 1;
+}	
+
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-top {
+	float: left;
+	width: 100%;
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-top .producuctbox-control-enter-email-top-inner {
+	border: 1px solid #000000;
+	background-color: #efefef;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-top .producuctbox-control-enter-email-top-inner p {
+	line-height: 5px;	
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-left {
+	float: left;
+	/* disabled the X button by width */
+	width: 30%;
+	display: none;
+	border: 1px solid black;
+	border-top: 0px;
+	border-bottom-left-radius: 5px;
+	background-color: #ffffff;
+	border-right-width: 0px;
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-left .producuctbox-control-enter-email-left-inner {
+	width: 20%;
+	margin-left: auto;
+	margin-right: auto;
+	height: 24px;
+	text-align: center;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-left:hover {
+	background-color: #444444;
+	cursor: pointer;
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-left .producuctbox-control-enter-email-left-inner p {
+	color: #444444;
+	font-size: 17px;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-left:hover .producuctbox-control-enter-email-left-inner p {
+	color: #ffffff;
+	font-size: 17px;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-right {
+	background-color: #ffffff;
+	float: right;
+	width: 100%;	
+	border: 1px solid black;
+	border-top: 0px;	
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;	
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-right .producuctbox-control-enter-email-right-inner {
+	margin-left: auto;
+	margin-right: auto;
+	height: 24px;
+	text-align: center;
+	padding-top: 5px;
+}
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-right:hover {
+	background-color: #444444;
+	cursor: pointer;
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-right .producuctbox-control-enter-email-right-inner p {
+	color: #444444;
+}	
+#hk_pressroom .hk_product-box .producuctbox-control-enter-email .producuctbox-control-enter-email-right:hover .producuctbox-control-enter-email-right-inner p {
+	color: #ffffff;
+}	
+
+form, input {
+	margin-bottom: 0px;
+}
+
+.press-productbox-control-inner input[name=selectProduct] {
+	height: 20px;
+}
+
+.producuctbox-control-enter-email-top-inner input {
+	width: 100%;
+	height: 100%;
+	border-width: 0px;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	min-height: 25px;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+.hk_collections.hk_category .product-box-list {
+	margin: 0;
+}
+
+#hk_pressroom .r-catalog-left label {
+	font-size: 13px;
+	word-wrap: break-word;
+	max-width: 80%;	
+}
+
+/* fix for radiobutton links in edge browser */
+#hk_pressroom .hk_product-box input[type=radio] {
+	pointer-events: none;
+	cursor: pointer;
+}
+
+/* style edit 09 04 */
+
+#hk_pressroom .pres-cat-head {
+	font-family: "Muli", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #444;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;	
+}
+
+#hk_pressroom .pres-cat-link.lvl1 .pres-cat-head {
+	font-size: 11px;
+	color: rgba(44, 44, 44, 0.7);
+}
+#hk_pressroom .pres-cat-link.lvl2 .pres-cat-head {
+	font-size: 10px;
+	color: rgba(44, 44, 44, 0.6);
+}
+#hk_pressroom .pres-cat-link.lvl2 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl3 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl4 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl5 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl6 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl7 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl8 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl9 .pres-cat-head,
+#hk_pressroom .pres-cat-link.lvl10 .pres-cat-head {
+	color: rgba(44, 44, 44, 0.5);
+}
+
+body {
+	font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;	
+}	
+
+.r-catalog-left label:hover, 
+.r-catalog-left label:focus, 
+.r-catalog-left a:hover, a:focus, 
+.r-catalog-left .caption img:hover, 
+.r-catalog-left .caption img:focus, 
+.r-catalog-left button:hover, 
+.r-catalog-left button:focus, 
+.r-catalog-left .btn:hover, 
+.r-catalog-left .btn:focus {
+    text-decoration: none;
+    transition: opacity 0.3s;
+    opacity: 0.6;
+}
+
+#hk_pressroom .r-catalog-left > ul {
+	font-size: 11px;
+	text-transform: lowercase;
+	line-height: 31px;
+}
+
+a, p, li, label {
+	color: #444;	
+}	
+
+.pres-cat-link-endpoint a {
+	/*display: block;*/
+	height: 100%;
+	width: 100%;
+}	
+
+/* image overlay for productbox front image */
+
+.pres-fullsc-front-image-container.pres-front-image-closed {
+	display: none;	
+}	
+.pres-fullsc-front-image-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.85);
+	z-index: 9999;
+}
+.pres-fullsc-front-image-container-inner {
+	position: relative;
+	height: 70vh;
+	top: 15vh;
+	width: 100%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}	
+.pres-fullsc-front-image-container-close {
+	position: absolute;
+	bottom: -10vh;
+	right: 48vw;
+	left: 48vw;
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;
+	width: 4vw;
+}	
+.pres-fullsc-front-image-container-close p {
+	color: #ffffff;
+	font-size: 20px;
+	filter: drop-shadow(1px 1px 1px black);
+}	
+/*
+.pres-fullsc-front-image-container-close:before {
+	content: "Close  ";
+	color: #ffffff;	
+}
+.pres-fullsc-front-image-container-close #front-image-container-close-overlay-btn:before {
+	background-color: white;
+	border-radius: 100%;	
+}
+*/
+.pres-fullsc-front-image-container-close:hover {
+	opacity: 0.8;
+}	
+
+/* end image overlay for productbox front image */
+
+
+#hk_pressroom .r-catalog-left a, 
+#hk_pressroom .r-catalog-left p, 
+#hk_pressroom .r-catalog-left li,
+#hk_pressroom .r-catalog-left label { 
+	color: rgba(68,68,68,0.6);
+}
+
+#hk_pressroom .r-catalog-left label {
+	color: rgba(68,68,68,0.6);	
+}	
+#hk_pressroom .r-catalog-left .pres-cat-head {
+	color: #444;	
+}	
+
+#hk_pressroom .hk_product-box .caption img {
+    max-height: 125px !important;
+    width: auto !important;
+    min-height: 125px !important;
+}
+
+
+@media only screen and (min-width: 990px) {	
+	#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown:after {
+		float: left;
+	}	
+	#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown.pres-dropdown-open:after {
+		float: left;
+	}	
+}
+
+@media only screen and (max-width: 990px) {	
+	#hk_pressroom .hk_product-box .producuctbox-control-enter-email {
+		bottom: 12%;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	#hk_pressroom .r-catalog-left label {
+		font-size: 13px;
+	}
+	#hk_pressroom .hk_product-box p {
+		font-size: 12px;
+	}	
+
+}
+
+@media only screen and (min-width: 450px) {
+	#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown {
+		font-size: 20px;
+		margin-top: -5px;
+		
+	}	
+}
+
+@media only screen and (max-width: 450px) {
+	#hk_pressroom .pres-cat-head {
+		font-size: 12px;
+	}
+	#hk_pressroom li.pres-cat-link .cat-link-inner-right .pres-cat-dropdown {
+		font-size: 17px;
+		
+	}	
+	#hk_pressroom .hk_product-box .producuctbox-control-enter-email {
+		bottom: 13%;
+		width: 62%;			
+	}
+	
+}
+
+/* pressroom logo category exception */
+#hk_pressroom li.LogoHideDrpdwnContent > div.cat-link-inner-right {
+	visibility: hidden !important;	
+}
+#hk_pressroom li.LogoHideDrpdwnContent > ul {
+	display: none !important;	
+}
+

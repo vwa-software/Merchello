@@ -1,0 +1,244 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using ClientDependency.Core.Mvc;
+@using Umbraco.Web
+
+@{
+	bool selected = false;
+}
+@functions {
+	public string GetChildHtml(int productsHomeId, IPublishedContent category, int marginLeft, int level, int count, string seasonId, IPublishedContent categoryHome, int selectedCategory, out bool selected)
+	{
+		System.Text.StringBuilder html = new System.Text.StringBuilder();
+		selected = false;
+
+		foreach (IPublishedContent item in category.Children("pressroom_category"))
+		{
+			bool itemSelected = (selectedCategory != 0 && item.Id == selectedCategory);
+			string ulClass = "";
+
+			/* disable the products root */
+			if (item.Id == 24396)
+			{
+				bool childSelected = false;
+				string childHtml = GetChildHtml(productsHomeId, item, marginLeft, level, count, seasonId, categoryHome, selectedCategory, out childSelected);
+				selected = selected || childSelected;
+				html.Append(childHtml);
+			}
+			else if (item.Children("pressroom_category").Any())
+			{
+				count++;
+				string dropdownClass = "";
+				bool childSelected = false;
+				string childHtml = GetChildHtml(productsHomeId, item, marginLeft, level + 1, count, seasonId, categoryHome, selectedCategory, out childSelected);
+				itemSelected = itemSelected || childSelected;
+
+				if (itemSelected)
+				{
+					ulClass = "cat-link-open";
+					dropdownClass = "pres-dropdown-open";
+				}
+
+				html.AppendFormat("<li class='lvl{1}'><ul class='{0}'>", ulClass, level);
+				html.AppendFormat("<li class='pres-cat-link lvl{0}'>", level);
+				html.AppendFormat("<div class='cat-link-inner-left'><a href='?category={0}&se={1}' class='pres-cat-head'>{2}</a></div>", item.Id, seasonId, item.Name);
+				html.AppendFormat("<div class='cat-link-inner-right'>");
+
+				html.AppendFormat("<p id='pres_prdct_drpdwn_{0}' class='pres-cat-dropdown {1}'>&nbsp;</p>", count, dropdownClass);
+				//}
+				//else
+				//{
+				//	html.AppendFormat("<p id='pres_prdct_drpdwn_{0}' class='pres-cat-dropdown'>&nbsp;</p>", count);
+				//}
+				html.AppendFormat("</div>");
+				html.Append(childHtml);
+
+
+				html.AppendFormat("</li>");
+				html.AppendFormat("</ul></li>");
+
+			}
+			else
+			{
+				if (itemSelected)
+				{
+					ulClass = "cat-link-open";
+				}
+
+				html.AppendFormat("<li class='pres-cat-link pres-cat-link-endpoint {3} lvl{4}'><a href='?category={0}&se={1}'>{2}</a></li>", item.Id, seasonId, item.Name, ulClass, level);
+			}
+
+
+			selected = selected || itemSelected;
+
+		}
+
+		return html.ToString();
+	}
+}
+
+@{
+	Html.RequiresCss("~/Css/vwa_pressroom.css", 20);
+	Html.RequiresJs("~/Scripts/vwa_pressroom.js", 20);
+
+	IPublishedContent categoryHome = Umbraco.TypedContent(24415);
+	IPublishedContent filterHome = Umbraco.TypedContent(24457);
+	int productsHomeId = 24396;
+	string seasonHomeId = "24457";
+	string seasonFirstFilter = Umbraco.TypedContent(seasonHomeId).Children.Any() ? Umbraco.TypedContent(seasonHomeId).FirstChild().Id.ToString() : "";
+	string seasonId = Request["se"] ?? seasonFirstFilter;
+
+	int ctgryInt = 0;
+
+	if (!int.TryParse(Request["category"], out ctgryInt))
+	{
+		ctgryInt = productsHomeId;
+	}
+
+	if (String.IsNullOrEmpty(seasonId))
+	{
+		seasonId = seasonFirstFilter;
+	}
+	string logoBool = Request["logo"] ?? "";
+	string documentsBool = Request["docs"] ?? "";
+
+	int marginLeft = 0;
+	int count = 0;
+}
+
+<ul>
+
+
+	@Html.Raw(GetChildHtml(productsHomeId, categoryHome, marginLeft, 0, count, seasonId, categoryHome, ctgryInt, out selected))
+</ul>
+
+@* END Category navigation *@
+
+@* Style navigation*@
+@*
+	<ul>
+		<li class="pres-cat-link">
+
+			<div class="cat-link-inner-left">
+				<p class="pres-cat-head">Style</p>
+			</div>
+			<div class="cat-link-inner-right">
+				<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+			</div>
+
+			<ul class="cat-link-open">
+				<li>
+					<form action = "" class="pers-style-form">
+						<input id = "style-form-bckgrclr1" type="radio" name="background-color:" value="#ffffff" style="margin-right:8px;" checked>
+						<label for="style-form-bckgrclr1">White background</label>
+						<br>
+						<input id = "style-form-bckgrclr2" type= "radio" name= "background-color:" value= "#f4f4f4" style= "margin-right:8px;" >
+						< label for="style-form-bckgrclr2">Grey background</label>
+						<br>
+						<input id = "style-form-bckgrclr3" type= "radio" name= "background-color:" value= "transparent" style= "margin-right:8px;" >
+						< label for="style-form-bckgrclr3">Transparent background</label>
+						<br>
+					</form>
+				</li>
+			</ul>
+		</li>
+	</ul>
+*@
+@* END Style navigation*@
+
+@* Logo navigation *@
+<ul>
+	<li class="pres-cat-link">
+		<div class="cat-link-inner-left">
+			@{
+				string logoUrl = "/pressroom/?category=" + ctgryInt.ToString() + "&se=" + seasonId + "&logo=1";
+			}
+			<a href="@logoUrl" class="pres-cat-head">Logo</a>
+		</div>
+		<div class="cat-link-inner-right">
+			<p class="pres-cat-dropdown" style="visibility:hidden">&nbsp;</p>
+		</div>
+	</li>
+</ul>
+@* END Logo navigation *@
+
+@* Documents navigation*@
+@*
+	<ul>
+		<li class="pres-cat-link">
+			<div class="cat-link-inner-left">
+				<a href = "/pressroom/?docs=1" class="pres-cat-head">Documents</a>
+			</div>
+			<div class="cat-link-inner-right">
+				<p class="pres-cat-dropdown" style="visibility:hidden">&nbsp;</p>
+			</div>
+		</li>
+	</ul>
+*@
+@* END Documents navigation *@
+
+@* Quality navigation*@
+<ul>
+	<li class="pres-cat-link">
+		<div class="cat-link-inner-left">
+			<p class="pres-cat-head">Quality</p>
+		</div>
+		<div class="cat-link-inner-right">
+			<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+		</div>
+		<ul class="cat-link-open">
+			<li>
+				<form action="">
+					< input id="quality-form-quality1" type="radio" name="quality" value="highResolution" style="margin-right:8px;" checked>
+					<label for="quality-form-quality1">High quality</label>
+					<br>
+					<input id="quality-form-quality2" type="radio" name="quality" value="webResolution" style="margin-right:8px;">
+					< label for="quality-form-quality2">Web quality</label>
+					<br>
+				</form>
+			</li>
+		</ul>
+	</li>
+</ul>
+@* END Quality navigation*@
+
+@* Season navigation *@
+@if (filterHome.Children().Any())
+{
+	<ul>
+		<li class="pres-cat-link" )">
+			<div class="cat-link-inner-left">
+				<p class="pres-cat-head">Season</p>
+			</div>
+			<div class="cat-link-inner-right">
+				<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+			</div>
+			<ul class="cat-link-open">
+				<li>
+					<form>
+						@{
+							bool frstRun = true;
+							int filterRadioId = 1;
+						}
+
+						@foreach (IPublishedContent filter in filterHome.Children())
+						{
+							string filterName = filter.GetPropertyValue<string>("filterName");
+							string radioUrl = "/pressroom/?category=" + ctgryInt.ToString() + "&se=" + filter.Id.ToString();
+							string strChecked = "false";
+
+							if (filter.Id.ToString() == seasonId || (String.IsNullOrEmpty(seasonId) && frstRun == true))
+							{
+								frstRun = false;
+								strChecked = "checked";
+							}
+
+							<a href="@radioUrl"><input id="filter-form-radio@(filterRadioId)" type="radio" name="season" value="@filterName" @strChecked style="margin-right:8px;"><label for="filter-form-radio@filterRadioId">@filterName</label></a><br>
+							filterRadioId++;
+						}
+					</form>
+				</li>
+			</ul>
+		</li>
+	</ul>
+}
+@* END Season navigation *@

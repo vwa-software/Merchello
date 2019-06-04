@@ -84,7 +84,9 @@
 		var gsLoaded = false;
 		var markersLoaded = false;
 		var _markers = null;
-	
+		var currentPos = null;
+
+
 		function initMap() {
 			gsLoaded = true;
 			if (markersLoaded)
@@ -142,23 +144,25 @@
 
 			// Get html list
 			$('#dealers_wrp').load('@Url.Action("GetStoresAsHtml", "StoreLocator")', requestparams, function () { }, function(){
-				$('#dealers_wrp').html("<p class='error'>Failed to get all stores</p>")
+				$('#dealers_wrp').html("<p class='error'>Failed to get all stores</p>");
 			});
 
 			return false;
 		}
 
 
-		function toggleShop(type) {
+		function toggleShop(type, event) {
 			var ell = $("#" + type);
 			var val = ell.val();
 			ell.val(val == "1" ? "0" : "1");
 
+			$(event.target).toggleClass('on', val == "0");
+
 			$("#btnSubmit").click();
 		}
 
-		$('#btnIsWebStore').click(function () { toggleShop("isWebStore") });
-		$('#btnIsStore').click(function () { toggleShop("isStore") });
+		$('#btnIsWebStore').click(function (e) { toggleShop("isWebStore",e) });
+		$('#btnIsStore').click(function (e) { toggleShop("isStore",e) });
 
 		$('#etc-search-term').on('keypress', function (e) {
 			if (e.which == 13) {
@@ -175,7 +179,7 @@
 			var search = $('#etc-search-term').val().trim();
 
 			if (!search.length) {
-				GetDealers();
+				GetDealers(currentPos);
 			} else {
 				var geocoder = new google.maps.Geocoder();
 

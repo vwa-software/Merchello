@@ -1,0 +1,12 @@
+
+
+/* desktop search edits */
+@media (min-width: 992px) {
+	
+	.search-area-wrapper .search-area {	
+		height: inherit;
+		top: 93px;
+	}	
+	
+	
+}	

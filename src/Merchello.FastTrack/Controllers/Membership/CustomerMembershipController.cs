@@ -38,7 +38,7 @@
 	/// for store implementations will vary.
 	/// </remarks>
 	[PluginController("FastTrack")]
-	public class CustomerMembershipController : CustomerMembershipControllerBase
+	public class CustomerMembershipController : SurfaceController
 	{
 		/// <summary>
 		/// The <see cref="IMemberService"/>.
