@@ -88,39 +88,55 @@
 						<div class="clearfix" style="max-width:474px;">
 							<ul id="image-gallery" class="gallery list-unstyled">
 
+                                @* temp > img are here for the lightgallery script thumbnail generation. TODO replace *@
 								@if (image != null)
 								{
-									<li data-thumb="@image.GetCropUrl("PLPthumb")" data-src="@image.GetCropUrl(900, 900)">
+									<li data-thumb="@image.Url" data-src="@image.Url">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<div class="img-responsive" style="background-image:url('@(image.Url)');">
+										    &nbsp;
+										</div>    
+										<img style="display:none;" class="img-responsive" src="@image.Url" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 								@if (image2 != null)
 								{
-									<li data-thumb="@image2.GetCropUrl("PLPthumb")" data-src="@image2.GetCropUrl(900, 900)">
+									<li data-thumb="@image2.Url" data-src="@image2.Url">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image2.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<div class="img-responsive" style="background-image:url('@(image2.Url)');">
+										    &nbsp;
+										</div>   								
+										<img style="display:none;" class="img-responsive" src="@image2.Url" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 								@if (image3 != null)
 								{
-									<li data-thumb="@image3.GetCropUrl("PLPthumb")" data-src="@image3.GetCropUrl(900, 900)">
+									<li data-thumb="@image3.Url" data-src="@image3.Url">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image3.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<div class="img-responsive" style="background-image:url('@(image3.Url)');">
+										    &nbsp;
+										</div>   									
+										<img style="display:none;" class="img-responsive" src="@image3.Url" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 								@if (image4 != null)
 								{
-									<li data-thumb="@image4.GetCropUrl("PLPthumb")" data-src="@image4.GetCropUrl(900, 900)">
+									<li data-thumb="@image4.Url" data-src="@image4.Url">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image4.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<div class="img-responsive" style="background-image:url('@(image4.Url)');">
+										    &nbsp;
+										</div>   									
+										<img style="display:none;" class="img-responsive" src="@image4.Url" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 								@if (image5 != null)
 								{
-									<li data-thumb="@image5.GetCropUrl("PLPthumb")" data-src="@image5.GetCropUrl(900, 900)">
+									<li data-thumb="@image5.Url" data-src="@image5.Url">
 										@* data-lity hier te gebruiken *@
-										<img class="img-responsive" src="@image5.GetCropUrl("PLPLarge")" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
+										<div class="img-responsive" style="background-image:url('@(image5.Url)');">
+										    &nbsp;
+										</div>   										
+										<img style="display:none;" class="img-responsive" src="@image5.Url" alt="@Model.Name">@* .GetCropUrl(height: 450) *@
 									</li>
 								}
 							</ul>
@@ -131,12 +147,18 @@
 				<div class="col-md-6 col-xs-12 column">
 					<h2>/&nbsp;&nbsp;&nbsp;@Model.Name</h2>
 					@*<p>@Html.Raw(Model.GetPropertyValue<string>("ftProduct_eenzinomschr"))</p>*@
+					<ul>
+					    <li class="hk_row_specs">
+							<h2 style="text-transform:uppercase;">@(Model.GetPropertyValue<string>("ftProduct_Artikelnummer"))</h2>
+					    </li>
+					</ul>
+					<br>
 					<span class="hk_description">@Html.Raw(Model.GetPropertyValue<string>("ftProduct_DescriptionHtml"))</span>
 					<p>
 						<span>@Rprice</span>
 					</p>
 
-					@Categories()
+					@*@Categories()*@
 
 					@{
 						// Determine out of stock message
@@ -173,9 +195,10 @@
 							@*<li class="hk_row_specs">
 									<strong>Afmetingen</strong>: @(Model.GetPropertyValue<string>("ftProduct_Naam"))
 								</li>*@
+							@*	ticket #6574 copied product code *@
 							<li class="hk_row_specs">
 								<strong>product code</strong>:  @(Model.GetPropertyValue<string>("ftProduct_Artikelnummer"))
-							</li>
+							</li>					
 							@* spec: 01 *@
 							@if (Model.HasProperty("ftProduct_MOQ") && Model.HasValue("ftProduct_MOQ"))
 							{
@@ -222,6 +245,43 @@
 									<strong>product height (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_ProductHeightCm"))
 								</li>
 							}
+							
+							
+							@* #6234 *@
+							
+							@if (Model.HasProperty("ftProduct_HeightArmrestsCm") && Model.HasValue("ftProduct_HeightArmrestsCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Height armrests (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_HeightArmrestsCm"))
+								</li>
+							}
+							@if (Model.HasProperty("ftProduct_BackrestHightCm") && Model.HasValue("ftProduct_BackrestHightCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Height backrest (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_BackrestHightCm"))
+								</li>
+							}							
+							
+							@if (Model.HasProperty("ftProduct_SeatingHeightCm") && Model.HasValue("ftProduct_SeatingHeightCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Seating height (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingHeightCm"))
+								</li>
+							}	
+							@if (Model.HasProperty("ftProduct_SeatingDepthCm") && Model.HasValue("ftProduct_SeatingDepthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Seating depth (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingDepthCm"))
+								</li>
+							}
+							@if (Model.HasProperty("ftProduct_SeatingWidthCm") && Model.HasValue("ftProduct_SeatingWidthCm"))
+							{
+								<li class="hk_row_specs">
+									<strong>Seating width (cm)</strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingWidthCm"))
+								</li>
+							}
+							
+							
 							@* spec: 04 *@
 							@if (Model.HasProperty("ftProduct_ProductDiameterCm") && Model.HasValue("ftProduct_ProductDiameterCm"))
 							{
@@ -327,6 +387,12 @@
 									<strong>energy source</strong>: @(Model.GetPropertyValue<string>("ftProduct_EnergySource"))
 								</li>
 							}
+							@if (Model.HasProperty("ftProduct_PlugType") && Model.HasValue("ftProduct_PlugType"))
+							{
+								<li class="hk_row_specs">
+									<strong>Plug Type</strong>: @(Model.GetPropertyValue<string>("ftProduct_PlugType"))
+								</li>
+							}							
 							@* spec: 22 *@
 							@if (Model.HasProperty("ftProduct_Fitting") && Model.HasValue("ftProduct_Fitting"))
 							{
@@ -379,39 +445,19 @@
 							
 							
 							@* #6234 *@
-
-							@*
-							@if (Model.HasProperty("ARMRESTS") && Model.HasValue("ARMRESTS"))
-							{
-								<li class="hk_row_specs">
-									<strong>Height armrests: </strong>: @(Model.GetPropertyValue<string>("ARMRESTS"))
-								</li>
-							}
-							*@
-							@if (Model.HasProperty("ftProduct_SeatingHeightCm") && Model.HasValue("ftProduct_SeatingHeightCm"))
-							{
-								<li class="hk_row_specs">
-									<strong>Seating height: </strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingHeightCm"))
-								</li>
-							}	
-							@if (Model.HasProperty("ftProduct_SeatingDepthCm") && Model.HasValue("ftProduct_SeatingDepthCm"))
-							{
-								<li class="hk_row_specs">
-									<strong>Seating depth: </strong>: @(Model.GetPropertyValue<string>("ftProduct_SeatingDepthCm"))
-								</li>
-							}	
 							@if (Model.HasProperty("ftProduct_DifferencesMayAppear") && Model.HasValue("ftProduct_DifferencesMayAppear"))
 							{
 								<li class="hk_row_specs">
-									<strong>Differences may appear: </strong>: @(Model.GetPropertyValue<string>("ftProduct_DifferencesMayAppear"))
+									<strong>Differences may appear</strong>: @(Model.GetPropertyValue<string>("ftProduct_DifferencesMayAppear"))
 								</li>
 							}	
 							@if (Model.HasProperty("ftProduct_Regulations") && Model.HasValue("ftProduct_Regulations"))
 							{
 								<li class="hk_row_specs">
-									<strong>Regulations: </strong>: @(Model.GetPropertyValue<string>("ftProduct_Regulations"))
+									<strong>Regulations</strong>: @(Model.GetPropertyValue<string>("ftProduct_Regulations"))
 								</li>
 							}	
+							
 						
 							
 
@@ -494,7 +540,7 @@
 	if (categoryPages.Count() > 0)
 	{
 		var needsComma = false;
-		<p style="display:none;">
+		<p style="display:none;"> 
 			Categories:
 			@foreach (var pc in categoryPages)
 			{
