@@ -162,14 +162,14 @@
 	<!-- Bootstrap core JavaScript
 	================================================== -->
 	@{
-		Html.RequiresJs("~/Scripts/jquery-eu-cookie-law-popup.js?cdv=1765341850",1);
-		Html.RequiresJs("~/Scripts/bootstrap.min.js",2);
+		Html.RequiresJs("~/Scripts/jquery-eu-cookie-law-popup.js?cdv=1765341850", 1);
+		Html.RequiresJs("~/Scripts/bootstrap.min.js", 2);
 		//  Custom JS functions
-		Html.RequiresJs("~/Scripts/vwa_functions.js",3);
-		Html.RequiresJs("~/Scripts/underscore.min.js",4);
-		Html.RequiresJs("~/App_Plugins/Merchello/client/js/merchello.ui.min.js",5);
-		Html.RequiresJs("~/App_Plugins/Merchello/client/js/merchello.ui.settings.js",6);
-		Html.RequiresJs("~/App_Plugins/Merchello/client/js/fasttrack.js",7);
+		Html.RequiresJs("~/Scripts/vwa_functions.js", 3);
+		Html.RequiresJs("~/Scripts/underscore.min.js", 4);
+		Html.RequiresJs("~/App_Plugins/Merchello/client/js/merchello.ui.js", 5);
+		Html.RequiresJs("~/App_Plugins/Merchello/client/js/merchello.ui.settings.js", 6);
+		Html.RequiresJs("~/App_Plugins/Merchello/client/js/fasttrack.js", 7);
 	}
 	@*
 			<script src="~/Scripts/jquery-eu-cookie-law-popup.js?cdv=1765341850" type="text/javascript"></script>
@@ -200,6 +200,17 @@
 
 	@RenderSection("Scripts", false)
 	@Html.RenderJsHere()
+
+	<script type="text/javascript">
+	@{
+		if(Merchello.Core.CurrencyContext.HasCurrent && Merchello.Core.CurrencyContext.Current is ETC.B2B.PriceGroup.CurrencyContext)
+		{
+			@:document.CurrencyCode = '@(((ETC.B2B.PriceGroup.CurrencyContext)Merchello.Core.CurrencyContext.Current).LocalizedCurrency.CurrencyCode)';
+		}
+	}
+	</script>
+	
+
 </body>
 
 <!-- Google Tag Manager (noscript) -->

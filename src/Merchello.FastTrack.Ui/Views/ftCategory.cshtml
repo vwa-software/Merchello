@@ -42,70 +42,75 @@
 }
 
 @{
-    Layout = "Master.cshtml";
+	Layout = "Master.cshtml";
 
 
-    string[] protectedCollections = {   "ecfa2964-c513-4527-8453-1c8611fe2900", // service items
+	string[] protectedCollections = {   "ecfa2964-c513-4527-8453-1c8611fe2900", // service items
                                 "0f4d5320-4823-4c4a-85c3-993bb094b94a", // strbr
                                 "0da7ef31-5527-4dfe-b5bb-af54e007d010" // Exclude for anonumous
                                 // ,"678b9bae-d87a-42de-878a-e23839167bfb" // presale
                             };
 
-    //http://projecten.vwa.nu:888/redmine/issues/5316
-    // Remember this page for basket return button
-    Session["lastcollectionId"] = UmbracoContext.Current.PageId;
 
-    // Products is the property of documenttype FtCategory, of datatype Merchello.ProductListView
-    // Name Produts can vary per implementation
-    var ProductsProperty = Model.GetProperty("Products");
-    long total = 0;
-
-    // init the pager object with a default items per page of 20, read query parameters.
-    Paging paging = new Paging(20);
-
-    // products to be listed
-    IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> products = null;
-
-    // url to navigate to when searching
-    paging.SearchUrl = "/collections/all-products/";
+	// Products is the property of documenttype FtCategory, of datatype Merchello.ProductListView
+	// Name Produts can vary per implementation
+	var ProductsProperty = Model.GetProperty("Products");
+	long total = 0;
 
 
-    // initialize merchello product searcher
-    Examine.Providers.BaseSearchProvider searcher = null;
+	// selected collection key (Category)
+	string collectionKey = (ProductsProperty.DataValue ?? string.Empty).ToString();
 
-    // ProductContentQuery
-    IProductContentQueryBuilder query = this.Merchello.ProductContentQuery();
-    query.Clusivity(CollectionClusivity.ExistsInAnyCollectionOrFilter);
+	//http://projecten.vwa.nu:888/redmine/issues/5316
+	// Remember this page for basket return button
+	Session["lastcollectionId"] = UmbracoContext.Current.PageId;
+	
+	//http://projecten.vwa.nu:888/redmine/issues/6410
+	// Remember the last collection key
+	Session["lastCollectionKey"] = collectionKey;
 
-    // default sortterm
-    if (string.IsNullOrEmpty(paging.SortTerm))
-    {
-        paging.SortTerm = "sortorder";
-    }
+	// init the pager object with a default items per page of 20, read query parameters.
+	Paging paging = new Paging(20);
 
-    // When searching, not sort on sortorder
-    if (!string.IsNullOrEmpty(paging.SearchTerm))
-    {
-        if (paging.SortTerm.ToLower() == "sortorder")
-        {
-            paging.SortTerm = "sku";
-        }
-    }
+	// products to be listed
+	IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> products = null;
 
-    string collectionKey = (ProductsProperty.DataValue ?? string.Empty).ToString();
+	// url to navigate to when searching
+	paging.SearchUrl = "/collections/all-products/";
 
 
-    if (paging.SortTerm.ToLower() == "sortorder" && !string.IsNullOrEmpty(collectionKey))
-    {
+	// initialize merchello product searcher
+	Examine.Providers.BaseSearchProvider searcher = null;
 
+	// ProductContentQuery
+	IProductContentQueryBuilder query = this.Merchello.ProductContentQuery();
+	query.Clusivity(CollectionClusivity.ExistsInAnyCollectionOrFilter);
 
-        // stukje uit Merchello.Web.PropertyConverters\ProductListViewValueConverter.cs
+	// default sortterm
+	if (string.IsNullOrEmpty(paging.SortTerm))
+	{
+		paging.SortTerm = "sortorder";
+	}
 
-        // DataValue is the collection which is choosen in the content node in Umbraco Admin area
-        // Can be string.empty or the selected collection key
-        if (!string.IsNullOrEmpty(collectionKey))
-        {
-            /*
+	// When searching, not sort on sortorder
+	if (!string.IsNullOrEmpty(paging.SearchTerm))
+	{
+		if (paging.SortTerm.ToLower() == "sortorder")
+		{
+			paging.SortTerm = "sku";
+		}
+	}
+
+	if (paging.SortTerm.ToLower() == "sortorder" && !string.IsNullOrEmpty(collectionKey))
+	{
+
+		// stukje uit Merchello.Web.PropertyConverters\ProductListViewValueConverter.cs
+
+		// DataValue is the collection which is choosen in the content node in Umbraco Admin area
+		// Can be string.empty or the selected collection key
+		if (!string.IsNullOrEmpty(collectionKey))
+		{
+			/*
             var collectionKey = ProductsProperty.DataValue.ToString();
 
             if (collectionKey.IsNullOrWhiteSpace())
@@ -120,108 +125,108 @@
             }
             */
 
-            try
-            {
-                var key = new Guid(collectionKey);
-                var keys = GetChildCollectionKeys(key);
+			try
+			{
+				var key = new Guid(collectionKey);
+				var keys = GetChildCollectionKeys(key);
 
-                Action<Umbraco.Core.Persistence.Sql> fnSql = sql =>
-                {
-                    if (CurrentCustomer.IsAnonymous)
-                    {
+				Action<Umbraco.Core.Persistence.Sql> fnSql = sql =>
+				{
+					if (CurrentCustomer.IsAnonymous)
+					{
 
-                // exclude service items and strbr collections
-                Guid[] excludes = protectedCollections.Select(a => new Guid(a)).ToArray();
+						// exclude service items and strbr collections
+						Guid[] excludes = protectedCollections.Select(a => new Guid(a)).ToArray();
 
-                        sql.Append(" AND NOT EXISTS (SELECT 1 FROM [merchProduct2EntityCollection] A1 WHERE [A1].[entityCollectionKey] IN (@0)", excludes);
-                        sql.Append(" AND A1.productkey=A.productkey)");
-                    }
-                    sql.Append(" AND [A].[available]=1");
-                };
+						sql.Append(" AND NOT EXISTS (SELECT 1 FROM [merchProduct2EntityCollection] A1 WHERE [A1].[entityCollectionKey] IN (@0)", excludes);
+						sql.Append(" AND A1.productkey=A.productkey)");
+					}
+					sql.Append(" AND [A].[available]=1");
+				};
 
-                total = query.ConstrainByCollectionKey(keys).Execute(fnSql).TotalItems;
+				total = query.ConstrainByCollectionKey(keys).Execute(fnSql).TotalItems;
 
-                // calculate pager
-                paging.CalculatePages(total);
+				// calculate pager
+				paging.CalculatePages(total);
 
-                query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderByCollection(key, global::Merchello.Core.Persistence.Querying.SortDirection.Descending).ConstrainByCollectionKey(keys);
+				query = query.Page(paging.CurrentPage).ItemsPerPage(paging.ItemsPerPage).OrderByCollection(key, global::Merchello.Core.Persistence.Querying.SortDirection.Descending).ConstrainByCollectionKey(keys);
 
-                query.ThenSortBy = new string[] { ProductSortField.Sku.ToString() + " DESC" };
+				query.ThenSortBy = new string[] { ProductSortField.Sku.ToString() + " DESC" };
 
-                products = query.Execute(fnSql).Items;
+				products = query.Execute(fnSql).Items;
 
-            }
-            catch (Exception ex)
-            {
+			}
+			catch (Exception ex)
+			{
 
-            }
+			}
 
-        }
+		}
 
-    }
+	}
 
-    else
-    {
+	else
+	{
 
-        // perform lucerne search
-        ISearchResults searchResults = null;
-        try
-        {
+		// perform lucerne search
+		ISearchResults searchResults = null;
+		try
+		{
 
-            searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
+			searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
 
 
-            // fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
-            var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
+			// fields to search -> fields from Developer -> Examine Management -> MerchelloProductIndexer
+			var fields = new string[] { "name", "sku", "price", "barcode", "detachedContents", "" };
 
-            var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
+			var searchCriteria = searcher.CreateSearchCriteria(Examine.SearchCriteria.BooleanOperation.Or);
 
-            //http://www.lucenetutorial.com/lucene-query-syntax.html
-            string rawQuery = string.Empty;
+			//http://www.lucenetutorial.com/lucene-query-syntax.html
+			string rawQuery = string.Empty;
 
-            if (!string.IsNullOrEmpty(paging.SearchTerm))
-            {
+			if (!string.IsNullOrEmpty(paging.SearchTerm))
+			{
 
-                // Searching with fuzzynis
-                // rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
+				// Searching with fuzzynis
+				// rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* " + paging.SearchTerm + "~0.1", fields).TrimEnd(" ") + ")";
 
-                // Searching without fuzzynis
-                rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
+				// Searching without fuzzynis
+				rawQuery = "+(" + string.Join(":*" + paging.SearchTerm + "* ", fields).TrimEnd(" ") + ") ";
 
-            }
+			}
 
-            // only the available products
-            rawQuery += "+available:true";
+			// only the available products
+			rawQuery += "+available:true";
 
-            // when searching, de not limit to collections
-            if (string.IsNullOrEmpty(paging.SearchTerm))
-            {
-                if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
-                {
+			// when searching, de not limit to collections
+			if (string.IsNullOrEmpty(paging.SearchTerm))
+			{
+				if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
+				{
 
-                    // in the selected collection
-                    rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
-                    try
-                    {
-                        AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
-                    }
-                    catch (Exception)
-                    {
-                        // ignore, in some cases the datavalue is no valid guid string.
-                    }
+					// in the selected collection
+					rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
+					try
+					{
+						AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
+					}
+					catch (Exception)
+					{
+						// ignore, in some cases the datavalue is no valid guid string.
+					}
 
-                    rawQuery += ")";
-                }
-            }
+					rawQuery += ")";
+				}
+			}
 
-            if (CurrentCustomer.IsAnonymous)
-            {
-                // exclude service items, strbr collections and exclude for anonymous
-                string exclude = string.Join(" ", protectedCollections);
-                rawQuery += " -staticCollectionKeys:" + exclude;
-            }
+			if (CurrentCustomer.IsAnonymous)
+			{
+				// exclude service items, strbr collections and exclude for anonymous
+				string exclude = string.Join(" ", protectedCollections);
+				rawQuery += " -staticCollectionKeys:" + exclude;
+			}
 
-            /*
+			/*
              For performance its best to Page and sort in lucern examine searcher.
 
              However, it's not fully possible to determine of an object is active or not (stock/avalablitity/sku's etc).
@@ -229,137 +234,137 @@
              */
 
 
-            /*
+			/*
             Sort and page in Lucerne (best performance)
             */
 
-            try
-            {
-                searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-            }
-            catch (Lucene.Net.QueryParsers.ParseException)
-            {
-                // exception, try without the search term.
+			try
+			{
+				searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+			}
+			catch (Lucene.Net.QueryParsers.ParseException)
+			{
+				// exception, try without the search term.
 
-                // only the available products
-                rawQuery = "+available:true";
+				// only the available products
+				rawQuery = "+available:true";
 
-                if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
-                {
+				if (ProductsProperty.DataValue != null && !string.IsNullOrEmpty(ProductsProperty.DataValue.ToString()))
+				{
 
-                    // in the selected collection
-                    rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
-                    try
-                    {
-                        AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
-                    }
-                    catch (Exception)
-                    {
-                        // ignore, in some cases the datavalue is no valid guid string.
-                    }
+					// in the selected collection
+					rawQuery += " +staticCollectionKeys:(" + ProductsProperty.DataValue.ToString();
+					try
+					{
+						AddCollectionsToQuery(new Guid(ProductsProperty.DataValue.ToString()), ref rawQuery);
+					}
+					catch (Exception)
+					{
+						// ignore, in some cases the datavalue is no valid guid string.
+					}
 
-                    rawQuery += ")";
-                }
-                if (CurrentCustomer.IsAnonymous)
-                {
-                    // exclude service items and strbr collections
-                    rawQuery += " -staticCollectionKeys:ecfa2964-c513-4527-8453-1c8611fe2900 0f4d5320-4823-4c4a-85c3-993bb094b94a";
-                }
+					rawQuery += ")";
+				}
+				if (CurrentCustomer.IsAnonymous)
+				{
+					// exclude service items and strbr collections
+					rawQuery += " -staticCollectionKeys:ecfa2964-c513-4527-8453-1c8611fe2900 0f4d5320-4823-4c4a-85c3-993bb094b94a";
+				}
 
-                searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
-            }
-
-
-            total = searchResults.Count();
+				searchResults = searcher.Search(searchCriteria.RawQuery(rawQuery));
+			}
 
 
-            // calculate pager
-            paging.CalculatePages(total);
-
-            IOrderedEnumerable<SearchResult> ordererd = null;
-
-            // sorting
-            switch (paging.SortTerm.ToLower())
-            {
-                case "priceasc":
-                    ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
-                    {
-                        decimal price;
-                        decimal.TryParse(a.Fields["price"], out price);
-                        return price;
-                    });
-                    break;
-                case "pricedesc":
-                    ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
-                    {
-                        decimal price;
-                        decimal.TryParse(a.Fields["price"], out price);
-                        return price;
-                    });
-                    break;
-
-                case "skudesc":
-                    ordererd = searchResults.OrderByDescending<SearchResult, string>(a =>
-                    {
-                        return a.Fields["sku"].ToString();
-                    });
-                    break;
-                case "stockdate":
-                    ordererd = searchResults.OrderBy<SearchResult, string>(a =>
-                    {
-                        int inventory = 0;
-                        int.TryParse(a.Fields["totalInventoryCount"], out inventory);
-                        return inventory > 0 ? "00" : (a.Fields.ContainsKey("stockDate") ? a.Fields["stockDate"] : "01");
-                    }).ThenByDescending<SearchResult, string>(a =>
-                    {
-                        return a.Fields["sku"].ToString();
-                    });
-                    break;
-                default: //	case "skuasc":
-                    ordererd = searchResults.OrderBy<SearchResult, string>(a =>
-                    {
-                        return a.Fields["sku"].ToString();
-                    });
-                    break;
-            }
+			total = searchResults.Count();
 
 
-            products = query.Execute(b =>
-            {
-                return new Umbraco.Core.Persistence.Page<Guid>()
-                {
-                    CurrentPage = paging.CurrentPage,
+			// calculate pager
+			paging.CalculatePages(total);
 
-            // Check if products are active/available (stock/price etc)
-            Items = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
-                    {
-                        return new Guid(a.Fields["productKey"]);
-                    }).Where(a => a != null).ToList()
-                            ,
-                    ItemsPerPage = paging.ItemsPerPage,
-                    TotalItems = total,
-                    TotalPages = paging.TotalPages
-                };
-            }).Items;
+			IOrderedEnumerable<SearchResult> ordererd = null;
+
+			// sorting
+			switch (paging.SortTerm.ToLower())
+			{
+				case "priceasc":
+					ordererd = searchResults.OrderBy<SearchResult, decimal>(a =>
+					{
+						decimal price;
+						decimal.TryParse(a.Fields["price"], out price);
+						return price;
+					});
+					break;
+				case "pricedesc":
+					ordererd = searchResults.OrderByDescending<SearchResult, decimal>(a =>
+					{
+						decimal price;
+						decimal.TryParse(a.Fields["price"], out price);
+						return price;
+					});
+					break;
+
+				case "skudesc":
+					ordererd = searchResults.OrderByDescending<SearchResult, string>(a =>
+					{
+						return a.Fields["sku"].ToString();
+					});
+					break;
+				case "stockdate":
+					ordererd = searchResults.OrderBy<SearchResult, string>(a =>
+					{
+						int inventory = 0;
+						int.TryParse(a.Fields["totalInventoryCount"], out inventory);
+						return inventory > 0 ? "00" : (a.Fields.ContainsKey("stockDate") ? a.Fields["stockDate"] : "01");
+					}).ThenByDescending<SearchResult, string>(a =>
+					{
+						return a.Fields["sku"].ToString();
+					});
+					break;
+				default: //	case "skuasc":
+					ordererd = searchResults.OrderBy<SearchResult, string>(a =>
+					{
+						return a.Fields["sku"].ToString();
+					});
+					break;
+			}
 
 
-        }
-        catch (Exception ex)
-        {
-            LogHelper.Error(this.GetType(), "Error trying to use searcher", ex);
-        }
+			products = query.Execute(b =>
+			{
+				return new Umbraco.Core.Persistence.Page<Guid>()
+				{
+					CurrentPage = paging.CurrentPage,
+
+					// Check if products are active/available (stock/price etc)
+					Items = ordererd.Skip((int)((paging.CurrentPage - 1) * paging.ItemsPerPage)).Take(paging.ItemsPerPage).Select(a =>
+					{
+						return new Guid(a.Fields["productKey"]);
+					}).Where(a => a != null).ToList()
+							,
+					ItemsPerPage = paging.ItemsPerPage,
+					TotalItems = total,
+					TotalPages = paging.TotalPages
+				};
+			}).Items;
 
 
-    }
+		}
+		catch (Exception ex)
+		{
+			LogHelper.Error(this.GetType(), "Error trying to use searcher", ex);
+		}
 
 
-    if (products == null)
-    {
-        // create empty list
-        products = new List<Merchello.Web.Models.VirtualContent.IProductContent>();
-    }
+	}
 
-    var currentPageId = UmbracoContext.Current.PageId;
+
+	if (products == null)
+	{
+		// create empty list
+		products = new List<Merchello.Web.Models.VirtualContent.IProductContent>();
+	}
+
+	var currentPageId = UmbracoContext.Current.PageId;
 
 
 }
