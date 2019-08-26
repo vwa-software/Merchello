@@ -360,6 +360,8 @@
 			var customer = (ICustomer)CurrentCustomer;
 			var caddress = customer.DefaultCustomerAddress(AddressType.Billing);
 
+			//var allAddresses = customer.Addresses;
+
 			var model = caddress != null ?
 				this.BillingAddressFactory.Create(customer, caddress) :
 				this.BillingAddressFactory.Create(new Address { AddressType = AddressType.Billing });
@@ -381,13 +383,51 @@
 		public virtual ActionResult CustomerShippingAddress(string view = "")
 		{
 			var customer = (ICustomer)CurrentCustomer;
-			var caddress = customer.DefaultCustomerAddress(AddressType.Billing);
+			var caddress = customer.DefaultCustomerAddress(AddressType.Shipping);
 
 			var model = caddress != null ?
 				this.ShippingAddressFactory.Create(customer, caddress) :
 				this.ShippingAddressFactory.Create(new Address { AddressType = AddressType.Shipping });
 
 			return view.IsNullOrWhiteSpace() ? PartialView(model) : PartialView(view, model);
+		}
+
+		/// <summary>
+		/// Responsible for rendering the Billing Address form.
+		/// </summary>
+		/// <param name="view">
+		/// The optional view.
+		/// </param>
+		/// <returns>
+		/// The <see cref="ActionResult"/>.
+		/// </returns>
+		[ChildActionOnly]
+		[Authorize]
+		public virtual ActionResult GetAllBillingAddresses(string view = "")
+		{
+			var customer = (ICustomer)CurrentCustomer;
+			var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Billing).ToList().Select(a => BillingAddressFactory.Create(customer, a));
+
+			return view.IsNullOrWhiteSpace() ? PartialView(addresses) : PartialView(view, addresses);
+		}
+
+		/// <summary>
+		/// Responsible for rendering the Shipping Address form.
+		/// </summary>
+		/// <param name="view">
+		/// The optional view.
+		/// </param>
+		/// <returns>
+		/// The <see cref="ActionResult"/>.
+		/// </returns>
+		[ChildActionOnly]
+		[Authorize]
+		public virtual ActionResult GetAllShippingAddresses(string view = "")
+		{
+			var customer = (ICustomer)CurrentCustomer;
+			var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Shipping).ToList().Select(a => ShippingAddressFactory.Create(customer, a));
+
+			return view.IsNullOrWhiteSpace() ? PartialView(addresses) : PartialView(view, addresses);
 		}
 
 		/// <summary>

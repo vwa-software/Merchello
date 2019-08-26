@@ -56,14 +56,30 @@
         public int RemoveAnonymousCustomers()
         {
             int maxDays = MerchelloConfiguration.Current.AnonymousCustomersMaxDays;
+			int count = 0;
+						
+			DateTime dateFrom = ApplicationContext.DatabaseContext.Database.ExecuteScalar<DateTime>("SELECT MIN(createdate), max(createdate) from [merchAnonymousCustomer]");
+			DateTime dateTo = DateTime.Today.AddDays(-maxDays);
 
-            var anonymousCustomers = _anonymousCustomerService.GetAnonymousCustomersCreatedBefore(DateTime.Today.AddDays(-maxDays)).ToArray();
+			LogHelper.Info<string>(string.Format("RemoveAnonymousCustomers - Remove {0} till {1}", dateFrom.ToShortDateString(), dateTo.ToShortDateString()));
 
-            _anonymousCustomerService.Delete(anonymousCustomers);
+			while (dateFrom < dateTo)
+			{
 
-            LogHelper.Info<string>(string.Format("RemoveAnonymousCustomers - Removed Count {0}", anonymousCustomers.Count()));
+				var anonymousCustomers = _anonymousCustomerService.GetAnonymousCustomersCreatedBefore(dateFrom).ToArray();
+				_anonymousCustomerService.Delete(anonymousCustomers);
+				count += anonymousCustomers.Count();
 
-            return anonymousCustomers.Count();
+				LogHelper.Info<string>(string.Format("RemoveAnonymousCustomers - Removed Count {0} from day {1}", count, dateFrom.ToShortDateString()));
+
+				// Force garbage collection
+				GC.Collect();
+				System.Threading.Thread.Sleep(1000);
+
+				dateFrom = dateFrom.AddDays(1);
+			}
+
+			return count;
         }
     }
 }
