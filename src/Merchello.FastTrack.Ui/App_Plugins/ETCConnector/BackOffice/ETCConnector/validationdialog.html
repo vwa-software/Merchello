@@ -1,0 +1,54 @@
+﻿<div class="umb-panel" ng-controller="ETC.Connector.ValiationDialogController as vm">
+	<div class="umb-overlay umb-overlay-right">
+		<div class="umb-overlay__form">
+
+			<div class="umb-overlay-header">
+				<h4>Validation Message</h4>
+			</div>
+
+
+			<div class="umb-overlay-container">
+				<div class="control-group">
+					<label class="control-label">
+						Product guid
+					</label>
+					<div class="controls">
+						{{vm.item.productId}}
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">
+						Product name
+					</label>
+					<div class="controls">
+						{{vm.item.name}}
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">
+						Message
+					</label>
+					<div class="controls">
+						<ul>
+							<li ng-repeat="message in vm.messages">{{message}}</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="umb-overlay-drawer">
+				<div class="umb-overlay-drawer__align-right">
+
+					<div class="umb-button">
+						<a href data-ng-click="close()" class="btn btn-link">
+							<localize key="general_close"></localize>
+						</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

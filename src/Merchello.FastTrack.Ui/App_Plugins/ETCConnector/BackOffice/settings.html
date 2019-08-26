@@ -25,6 +25,16 @@
 					</div>
 				</div>
 			</div>
+			<div class="log">
+				<h3>Validation messages</h3>
+				<umb-table ng-if="logitems"
+						   items="logitems"
+						    on-click="openDialog"
+						   item-properties="options.includeProperties">
+				</umb-table>
+				<div ng-hide="logitems">No messages</div>
+
+			</div>
 		</umb-editor-container>
 		<div class="umb-tab-buttons umb-editor-drawer">
 			<div class="umb-editor-drawer-content">
@@ -35,6 +45,8 @@
 				</div>
 			</div>
 		</div>
+
+
 
 	</umb-editor-view>
 </form>
