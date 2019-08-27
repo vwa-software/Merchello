@@ -709,7 +709,7 @@ Type: VWA Style CSS
 
 .footer .container .row .col-md-4 {
 	width: 100%;
-	margin: auto;
+	/*margin: auto;*/
 	text-align: center;
 }
 

@@ -28,7 +28,7 @@
     IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> products = null;
 
     // url to navigate to when searching
-    paging.SearchUrl = Model.Url;
+    paging.SearchUrl = "/collections/all-products/";
     // initialize merchello product searcher
     var searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
 
@@ -181,12 +181,52 @@
 
 <div class="container-fluid hk_collections hk_category" id="hk_cat_@currentPageId">
     <div class="row">
-		<div class="col-4 col-xl-3 col-md-3">
+        
+		<div class="col-4 col-xl-3 col-md-3 r-catalog-left">
+		    @* left side of catalog *@
             @RenderSearchForm(paging)
             @Html.Partial("hkCategories")
         </div>
-        <div class="col-8 col-xl-9 col-md-9">
-            @*col-12 col-xl-12 col-md-12 col-sm-12*@
+
+		@* left side catalog button to open left side menu *@
+		<div class="r-catalog-left-button">
+		    <div class="r-catalog-left-button-inner">
+		        <div class="r-catalog-left-button-icon">
+    		        &nbsp;
+    		    </div> 
+		    </div>
+		</div>
+
+        <div class="col-8 col-xl-9 col-md-9 r-catalog-right">
+            
+			@*fix for broken search on CategoryLP *@
+			
+			@{	
+			string strQ = Request.QueryString["q"];
+			if (!String.IsNullOrEmpty(strQ)) {
+				
+			<div class="row">
+				<div class="col-md-6 hk_sort">
+					@RenderSortingDropDown(paging)
+				</div>
+				<div class="col-md-6 text-right hk_sort">
+					@RenderItemsDropDown(paging)
+				</div>
+			</div>
+			@Html.Partial("_ProductBoxList", products)
+			<div class="row col-12 pagination">
+				<nav aria-label="Page navigation" class="hk_pagination">
+					<ul class="pagination">
+						@RenderPaging(paging, paging.CurrentPage)
+					</ul>
+				</nav>
+			</div>		
+			
+			}	
+			}	
+			@* end fix *@
+			
+			
             <div class="row">
                 <div class="col-12 hk_categorie_media_LP hk_categorie_media_top">
                     @Html.GetGridHtml(Umbraco.TypedContent(currentPageId), "collectionGridTop")
@@ -194,25 +234,7 @@
                 </div></div>
                 @if (hideProducts.Count() > 0)
                 {
-                    <div class="col-9 col-xl-9 col-md-9 col-sm-9">
-                        @*col-12 col-xl-12 col-md-12 col-sm-12*@
-                        <div class="row">
-                            <div class="col-md-6 hk_sort">
-                                @RenderSortingDropDown(paging)
-                            </div>
-                            <div class="col-md-6 text-right hk_sort">
-                                @RenderItemsDropDown(paging)
-                            </div>
-                        </div>
-                        @Html.Partial("_ProductBoxList", products)
-                        <div class="row col-12 pagination">
-                            <nav aria-label="Page navigation" class="hk_pagination">
-                                <ul class="pagination">
-                                    @RenderPaging(paging, paging.CurrentPage)
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
+                    
                 }
             </div>
         </div>
@@ -221,25 +243,43 @@
         </div>
 
 
-
 <div class="col-12 hk_categorie_featured">
 
-    @{
-        // http://projecten.vwa.nu:888/redmine/issues/5329
-        // Featured products..
-        // Products are rendered in partial view _productboxlist
-        // @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
-        // Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
+	@{
+		// http://projecten.vwa.nu:888/redmine/issues/5329
+		// Featured products..
+		// Products are rendered in partial view _productboxlist
+		// @Niels, kan gestijld worden door bv. hk_categorie_featured te gebruiken.
+		// Eventueel kan je van _productBoxList een kopie maken om de rendering aan te passen.
 
 
-        // List of featured Products
-        // Filter op null values (product may be disabled, this results in a null value)
+		// List of featured Products
+		// Filter op null values (product may be disabled, this results in a null value)
 
+        
 
+		if (Model.FeaturedProducts != null)
+		{
 
-    }
+			IEnumerable<Merchello.Web.Models.VirtualContent.IProductContent> featuredProducts = Model.FeaturedProducts.Where(a => a != null);
+
+			if (featuredProducts != null && featuredProducts.Count() > 0)
+			{
+				<div class="col-12 hk_categorie_media">
+
+					<div class="hk_category_name_list hk_highlighted">
+						<h1 class="hk_category_name"><span>@Umbraco.Field("featuredCategoryName")</span></h1>
+						<h2 class="hk_category_name">highlighted</h2>
+					</div>
+					@Html.Partial("_ProductBoxList", featuredProducts)
+				</div>
+
+			}
+		}
+	}
 
 </div>
+
 
         @helper RenderPaging(Paging paging, long currentId)
         {
@@ -292,7 +332,7 @@ if (paging.EndPageToShow < paging.TotalPages)
                             break;
 
                         case "pricedesc":
-                            sortname = "Price descanding";
+                            sortname = "Price descending";
                             break;
                         default:
                             sortname = "sort products";
@@ -306,7 +346,7 @@ if (paging.EndPageToShow < paging.TotalPages)
             <ul class="dropdown-menu">
                 <li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
                 <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
-                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descanding</a></li>
+                <li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descending</a></li>
             </ul>
         </div>
 }
@@ -363,23 +403,33 @@ if (paging.EndPageToShow < paging.TotalPages)
 
 @section Scripts {
 
-                <script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
-                <script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
-                
-                <script>
-				$('.hk_media_display_list').each(function (i, e) {
-					var id = 'adaptive';
-					$(e).attr('id', id + i);
-					var selector = '#' + id + i;
-					$(selector).lightSlider({
-						autoWidth: false,
-						loop: true,
-						keyPress: true
-					});
-				});
+	<script src="~/Scripts/lity/lity.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://sachinchoolur.github.io/lightslider/src/js/lightslider.js"></script>
 
-                </script>
+	<script type="text/javascript">
+             $(function () {
+                    $('.hk_media_display_list').each(function (i, e) {
+                           var id = 'adaptive';
+                           $(e).attr('id', id + i);
+                           var selector = '#' + id + i;
+                           $(selector).lightSlider({
+                                  autoWidth: false,
+                                  loop: true,
+                                  keyPress: true
+                           });
+                    });
+
+                    $('.parent_list a.collapsable').click(function () {
+                           $(this).siblings('ul').toggle('toggle');
+                           $(this).next().toggleClass('fa-plus fa-minus');
+                           return false;
+                    });
+             });          
+       </script>
+
+
 }
+
 @section Breadcrumbs {
 
     @{

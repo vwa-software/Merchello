@@ -11,6 +11,11 @@
 <!DOCTYPE html>
 <html lang="nl-nl">
 <head>
+    
+    <script>
+        dataLayer = [];
+    </script>
+
 	<!-- Google Tag Manager -->
 	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -148,13 +153,11 @@
 				@RenderSection("Breadcrumbs", false)
 				@RenderBody()
 			</div>
-		</div>
+		</div> <!-- /container -->
 	</div>
-
-
-	<!-- Grid
+    @* Grid
 		todo: Check if currentpage has gridFooter, if not use fallback value of content node 3885
-	 -->
+	 *@
 	<footer class="footer">@Html.GetGridHtml(Umbraco.TypedContent(3885), "gridFooter")</footer>
 	<div id="scrollTop"><i class="fas fa-long-arrow-alt-up"></i></div>
 

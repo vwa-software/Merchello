@@ -126,3 +126,14 @@ if (paging.EndPageToShow < paging.TotalPages)
     <li class="page-item"><a class="@(paging.CurrentPage < paging.TotalPages ? "" : "disabled") fas fa-step-forward" @(paging.CurrentPage < paging.TotalPages ? "" : "disabled") href="?page=@paging.NextPage">&nbsp;</a></li>
 
 }
+@section Breadcrumbs {
+
+    @{
+       
+    
+				@Html.Partial("Breadcrumb")
+        
+    }
+
+
+}

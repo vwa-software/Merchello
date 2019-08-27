@@ -28,14 +28,14 @@ $.fn.euCookieLawPopup = (function() {
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// PARAMETERS (MODIFY THIS PART) //////////////////////////////////////////////////////////////
 	_self.params = {
-		cookiePolicyUrl : '/cookieverklaring',
+		cookiePolicyUrl : '/cookie-statement',
 		popupPosition : 'top',
 		colorStyle : 'default',
 		compactStyle : false,
 		popupTitle : '$kop',
 		popupText : 'We use cookies to ensure that we give you the best experience on our website. If you continue without changing your settings, we\'ll assume that you are happy to receive all cookies on this website.',
-		buttonContinueTitle : 'Accepteren',
-		buttonLearnmoreTitle : 'Lees meer',
+		buttonContinueTitle : 'Accept',
+		buttonLearnmoreTitle : 'Read more',
 		buttonLearnmoreOpenInNewWindow : true,
 		agreementExpiresInDays : 30,
 		autoAcceptCookiePolicy : false,
@@ -255,8 +255,8 @@ $(document).ready( function() {
 	if ($(".eupopup").length > 0) {
 		$(document).euCookieLawPopup().init({
 			'info' : 'YOU_CAN_ADD_MORE_SETTINGS_HERE',
-			'popupTitle' : "COOKIES",
-			'popupText' : 'Voor een volledige werking van deze website wordt gebruik gemaakt van cookies.'
+			'popupTitle' : "COOKIE INFORMATION",
+			'popupText' : 'This website uses cookies, some of which are essential to the operation of our site.'
 		});
 	}
 });

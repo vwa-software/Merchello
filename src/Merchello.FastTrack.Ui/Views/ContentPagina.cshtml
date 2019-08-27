@@ -4,9 +4,10 @@
                         
 }
 <!-- Grid -->
+<div class="hk_grid">
 @Html.GetGridHtml(Model.Content, "grid")
+</div>
 <!-- /Grid -->
-
 
 @section Breadcrumbs {
 
@@ -22,13 +23,13 @@
                     <div class="row">
                         <div class="col-xl-12">
                             <ol class="breadcrumb">
-                                @**@<li class="first-bc"><a href="/">Home</a></li>
-                                <li>
-                                    <a href="@CurrentPage.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Parent.Name </a>
-                                </li>
-                                <li>
-                                    <a href="@CurrentPage.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Name </a>
-                                </li>
+                                <li><a href="/">Home</a></li>
+                                    <li class="first-bc">
+                                        <a href="@CurrentPage.Parent.Url" class="hk_link_@CurrentPage.Parent.Name">@CurrentPage.Parent.Name </a>
+                                    </li>
+                                    <li>
+                                        <a href="@CurrentPage.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Name </a>
+                                    </li>
 </ol>
                     </div>
                 </div>
@@ -40,4 +41,9 @@
     }
 
 
+}
+
+
+@section Scripts {
+<script type="text/javascript" src="//e.issuu.com/embed.js" async="true"></script>
 }

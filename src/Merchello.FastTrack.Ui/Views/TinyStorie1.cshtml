@@ -1,14 +1,16 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.TinyStorie>
+@using System.Web.Mvc.Html
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{	Layout = "Master.cshtml";
 	
 }
-
-
 <div class="hk_news_page">
 		<div class="container hk_news_item">
 			<div class="row">
-					<div class="col-md-4 col-xs-12">
+                <div class="col-12">
+                    @Model.Content.GetGridHtml("collectionGridTop")
+                </div>
+				@*	<div class="col-md-4 col-xs-12">
 
                         <ul id="image-gallery" class="gallery list-unstyled">
                             @foreach (var image in CurrentPage.afbeelding)
@@ -24,7 +26,7 @@
                         <h1>@CurrentPage.Name</h1>
                         <h3>@CurrentPage.subtitel</h3>
                         <p>@CurrentPage.bericht</p>
-                    </div>
+                    </div>*@
                     @*<div class="col-md-4">
                 <h4>Alle nieuwsberichten</h4>
                 @{  var selection = Model.Content.Site().FirstChild("nieuws").Children("nieuwsArtikel").OrderBy("CreateDate desc")
@@ -40,6 +42,7 @@
             </div>*@
                 </div>
 		</div>
+		<div><a href="/collections/stories/" class="btn btn-primary">All stories</a></div>
 </div>
 
 
@@ -71,6 +74,7 @@
 
 
 }
+
 @section Breadcrumbs {
 
     @{

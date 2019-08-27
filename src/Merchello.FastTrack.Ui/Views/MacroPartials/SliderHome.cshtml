@@ -14,16 +14,29 @@
 }
 
 @{
-    var headermedia = Model.MacroParameters["Header Slider"].ToString();
-    var subheadermedia = Model.MacroParameters["Subheader Slider"].ToString();
+    string header = Model.MacroParameters["Header Slider"].ToString();
+    string subHeader = Model.MacroParameters["Subheader Slider"].ToString();
+    string headerSize = Model.MacroParameters["headerSize"].ToString() + "px";
+    string subHeaderSize = Model.MacroParameters["subHeaderSize"].ToString() + "px";
+    string headerPosition = Model.MacroParameters["headerPosition"].ToString();
+    string linkButtonTxt = Model.MacroParameters["linkButtonTxt"].ToString();
+    string linkButtonId = Model.MacroParameters["linkButtonId"].ToString();
+    string linkButtonUrl = "";
+    IPublishedContent linkTarget = Umbraco.TypedContent(linkButtonId);
+    if (linkTarget != null) {
+        linkButtonUrl = linkTarget.Url;
+    }
 }
 
 <div class="hk_homepage_slider_headers">
     <div class="container">
         <div class="row">
-            <div class="col-md-12 column">
-                <h1><text>@headermedia</text></h1>
-                <h2><text>@subheadermedia</text></h2>
+            <div class="col-md-12 column" style="text-align:@(headerPosition);">
+                <h1 style="font-size:@(headerSize);">@Html.Raw(header)</h1>
+                <h2 style="font-size:@(subHeaderSize);">@Html.Raw(subHeader)</h2>
+                @if (!String.IsNullOrEmpty(linkButtonTxt) && !String.IsNullOrEmpty(linkButtonUrl)) {
+                    <a class="btn btn-grid" href="@(linkButtonUrl)">@(linkButtonTxt)</a>
+                }
             </div>
         </div>
     </div>
@@ -99,14 +112,7 @@
 
 
     <div class="img" style="list-style-type:none; padding:0px; margin:0px;">
-
-        @*
-            @if (item.HasProperty("headermedia"))
-            {
-                <h2 class='slider titel'>@(item.GetPropertyValue<string>("headermedia"))</h2>
-            }
-        *@
-        <img src="@item.GetCropUrl(width:1280, height:620)" data-lazy="@item.GetCropUrl(width:1280, height:620)" alt="" title="" />
+        <img src="@item.GetCropUrl(width:1920, height:930)" data-lazy="@item.GetCropUrl(width:1920, height:930)" alt="" title="" />
     </div>
 }
 

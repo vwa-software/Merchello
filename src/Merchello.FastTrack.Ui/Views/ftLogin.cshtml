@@ -37,12 +37,8 @@
 	</div>
 	<div class="col-md-6">
 		<h2 class="hk_shop" style="padding:0px 0px 0px 12px;">NO DEALER ACCOUNT YET?</h2>
-		@try
-		{
-			Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "fec8604c-96a5-4201-bc91-21e544d8c926", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "0" });
-		} catch (Exception ex) {
-			<div></div>
-		}</div>
+		@Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "fec8604c-96a5-4201-bc91-21e544d8c926", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "0" })
+	</div>
 </div>
 @section Breadcrumbs {
 
@@ -54,4 +50,8 @@
 	}
 
 
+}
+@section Scripts {
+	<script src="~/Scripts/underscore.min.js"></script>
+	<script src="~/Scripts/bootstrap.min.js"></script>
 }

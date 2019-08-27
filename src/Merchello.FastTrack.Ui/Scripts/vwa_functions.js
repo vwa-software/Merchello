@@ -52,7 +52,6 @@ $('#scrollTop').on('click', function () {
 
 
 
-
 /*!
  *
  * Sell theme v1.0.0
@@ -139,10 +138,13 @@ $(function () {
     // ------------------------------------------------------ //
     $('[data-toggle="search"]').on('click', function () {
         $('.search-area-wrapper').show();
+		$('.fa-search').css("visibility", "hidden" );
+		$('#q.search-area-input').focus();
     });
 
     $('.search-area-wrapper .close-btn').on('click', function () {
         $('.search-area-wrapper').hide();
+		$('.fa-search').css("visibility", "visible" );
     });
     //$(window).scroll(function(){$('.search-area-wrapper').fadeOut();});
 
@@ -420,4 +422,132 @@ $('body').css('overflow', 'auto');
 });
 
 });
+
+
+function vdbg(sinput) {
+    var on = false;
+    if (on) {
+        console.log(sinput);
+    }
+}
+
+$(window).on("load", function(){
+    $('.mobile-hamburger').click(function () {
+        $('.r-catalog-left').toggleClass("cshow");
+        $('.r-catalog-right').toggleClass("cfull")
+    });
+    $('.r-catalog-left-button').click(function () {
+        $('.r-catalog-left').toggleClass("cshow");
+        $('.r-catalog-right').toggleClass("cfull")
+        $('.r-catalog-left-button-inner').toggleClass("r-catalog-left-button-inner-open");
+    });  
+    
+});
+$(window).on('scroll', function () {
+    var scrollpos = $(window).scrollTop();
+    
+    // always remove button before it hits the footer area
+    if ($(document).height() - scrollpos < 1550) {
+        vdbg('reached footer');
+        $('.r-catalog-left-button-inner').css("visibility", "hidden");
+        return;
+    }
+    
+    
+    // remove button after reaching end of product list, wto prevent overlap on featured grid
+    if ($('.hk_collections') !== null ) {
+        vdbg('scrollpos: '+scrollpos+', height: '+ $('.hk_collections').height());
+        if ($('.hk_collections').height() < (scrollpos + 900)) {
+            vdbg('reached end of product list');
+            $('.r-catalog-left-button-inner').css("visibility", "hidden");
+            return;            
+        }   
+    }
+    
+    /*
+    // active button stays untill footer area
+    if (scrollpos > 1700) {
+        if (!$('.r-catalog-left-button-inner').hasClass("r-catalog-left-button-inner-open")) {
+            vdbg('active button reached footer');
+            $('.r-catalog-left-button-inner').css("visibility", "hidden");
+            return;
+        }
+    } 
+    */
+    
+    //activate button
+    if (scrollpos < 1700 || (($(document).height() - scrollpos > 1550) && $('.r-catalog-left-button-inner').hasClass("r-catalog-left-button-inner-open"))) {
+        $('.r-catalog-left-button-inner').css("visibility", "visible");        
+        return;
+    }
+    
+    
+});
+
+
+/* fix for IE lightgallery */
+$(window).on("load", function(){
+    var userAgent, ieReg, ie;
+    userAgent = window.navigator.userAgent;
+    ieReg = /msie|Trident.*rv[ :]*11\./gi;
+    ie = ieReg.test(userAgent);
+
+    if(ie) {
+      $(".lSSlideOuter .lSGallery li").each(function () {
+
+        var img = $(this).find('img');
+        var imgUrl = img.prop('src');
+
+        if (imgUrl) {
+            img.addClass('ieFix-lightgal-image');
+            $(this).css("backgroundImage", 'url(' + imgUrl + ')');
+            $(this).addClass("ieFix-lightgal-container");  
+        } 
+        
+      });
+      /*
+      $(".lg-thumb-outer .lg-thumb-item").each(function () {
+        var img = $(this).find('img');
+        var imgUrl = img.prop('src');
+
+        if (imgUrl) {
+            img.addClass('ieFix-lightgal-image');
+            $(this).css("backgroundImage", 'url(' + imgUrl + ')');
+            $(this).addClass("ieFix-lightgal-container");  
+        } 
+        
+      });
+      */
+    }
+});
+
+
+// video header macro scripts
+$(window).on("load", function(){
+    if ($(".hk_homepage_slider_headers video").length) {
+        // remove default controls after page load, so mobile devices still have autoplay?
+        $(".hk_homepage_slider_headers video").removeAttr("controls");
+        $(".hk_homepage_slider_headers video")[0].play();
+    }    
+    
+    $(".hk_homepage_slider_headers .btn-audio .btn.btn-grid").on("click", function(){
+        var icon = $(this);
+        if (icon.hasClass("volume-up")) {
+            icon.removeClass("volume-up")
+            icon.addClass("volume-down")
+            icon.closest(".hk_homepage_slider_headers").find("video")[0].volume = 0;
+            icon.closest(".hk_homepage_slider_headers").find("video")[0].muted = true
+        } else {
+            icon.removeClass("volume-down")
+            icon.addClass("volume-up")   
+            icon.closest(".hk_homepage_slider_headers").find("video")[0].volume = 1;
+            icon.closest(".hk_homepage_slider_headers").find("video")[0].muted = false
+        }
+    });
+     
+});
+
+
+
+
 

@@ -33,10 +33,10 @@
                 <div class="">
                     <div class="row">
                         <div class="col-xl-12">
-                            <ol class="breadcrumb cat">
+                            <ol class="breadcrumb">
                             
                                 <li><a href="/">Home</a></li>
-                                   @{ if (CurrentPage.Descendants.Id == 1099)
+                                   @{ if (CurrentPage.Parent.Id == 1099)
                                         {
 
                                             <li><a href="@CurrentPage.Parent.Url" class="hk_link_@CurrentPage.Name">@CurrentPage.Parent.Name</a></li>

@@ -10,6 +10,10 @@
 
     var homeNodeSel = Umbraco.TypedContent(3885).Children()
              .Where(x => x.IsVisible());
+    @*         
+    IPublishedContent pressroomNode = Umbraco.TypedContent(20123);   
+    string pressroomUrl = (pressroomNode != null ? pressroomNode.Url : "#");
+    *@
 
     @*
     var hkLivingCollectSel = Umbraco.TypedContent(1098).Children()
@@ -72,7 +76,7 @@
 										// Keep user on same page if posible, check if currentpage is protected
 										var redirectId = Umbraco.IsProtected(this.CurrentPage.Path) ? 3885 : 0;
 										
-										<span class="dropdown-toggle"></span>
+										<span class="dropdown-toggle">@accountPage.Name</span>
 										<ul class="dropdown-menu smallmenu">
 											<li class="nav-link 12">@Html.ActionLink("Logout", "Logout", "CustomerMembership", new { area = "FastTrack", redirectId = redirectId, path = this.Model.Content.Url }, null)</li>
 										</ul>

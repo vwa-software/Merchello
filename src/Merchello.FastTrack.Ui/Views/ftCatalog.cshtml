@@ -29,20 +29,31 @@
                 </div>
             </div>
 *@
-            <div class="container-fluid hk_collections hk_catalog">
-
+            <div class="container-fluid hk_collections hk_category hk_catalog">
                 <div class="row">
+                    <div class="col-4 col-xl-3 col-md-3">
+                        @*@Html.Partial("hkSearch")
+                        @RenderSearchForm(paging)*@
+                        <form action="/collections/@Umbraco.TypedContent(1119).Name.Replace(" " ,"-" )" class="form-inline search" id="hk_search-input" method="get" novalidate="novalidate" style="border-bottom: solid 1px #e9e9e9;">
 
-                    <div class="col-3 col-xl-3 col-md-3">
-                        @Html.Partial("hkSearch")
-                        @Html.Partial("hkCategories")
-
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" id="etc-search-term" value="" name="q">
+                        <span class="input-group-addon">
+                            <button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
+                        </span>
                     </div>
+                </div>
 
-                    <div class="col-9 col-xl-9 col-md-9 col-sm-9">
+
+                
+            </form>
+                        @Html.Partial("hkCategories")
+                    </div>
+                    <div class="col-8 col-xl-9 col-md-9">
 
                         @*  @Html.GetGridHtml(Umbraco.TypedContent(1099), "catalogGrid") *@
-                        @Html.GetGridHtml(Umbraco.TypedContent(1099), "collectionGrid")
+                        @Html.GetGridHtml(Umbraco.TypedContent(1099), "collectionGridTop")
 
                         @* @foreach (var cat in categories.OrderBy(x => x.Name))
                             {
@@ -126,6 +137,7 @@ else
 
 
                 }
+
 @section Breadcrumbs {
 
     @{

@@ -6,25 +6,35 @@
 	Layout = "Master.cshtml";
 
 
-	string mapsSettings = "{ZoomToGeoLocation : ";
-	if (this.Model.Content.HasProperty("zoomInOpEigenLocatie") && this.Model.Content.GetPropertyValue<bool>("zoomInOpEigenLocatie"))
+	string search = Request["q"] ?? string.Empty;
+	bool searchResultIsEmpty = false;
+
+	// Beschikbare tankstations
+	var Dealers = Model.Content.Children<ContentModels.Dealer>()
+					.Where(x => x.IsVisible());
+
+	if (!string.IsNullOrEmpty(search))
 	{
-		mapsSettings += "true";
+		// search opdracht in dropdown?
+		search = search.ToLower();
+
+		Dealers = Dealers.Where(x => x.Name.ToLower().Contains(search)
+			|| (x.Adres ?? string.Empty).ToLower().Contains(search)
+			|| (x.Plaats ?? string.Empty).ToLower().Contains(search)
+			|| (x.Land ?? string.Empty).ToLower().Contains(search));
+
+		if (Dealers.Count() == 0)
+		{
+			// geen resultaten, alles tonen.
+			searchResultIsEmpty = true;
+
+			Dealers = Model.Content.Children<ContentModels.Dealer>()
+				   .Where(x => x.IsVisible())
+					   .OrderBy(x=> x.Name);
+
+		}
 	}
-	else
-	{
-		mapsSettings += "false";
-	}
-	mapsSettings += ",ZoomToGeoLocationLevel : ";
-	if (this.Model.Content.HasValue("zoomLevel"))
-	{
-		mapsSettings += this.Model.Content.GetPropertyValue<int>("zoomLevel").ToString();
-	}
-	else
-	{
-		mapsSettings += 10;
-	}
-	mapsSettings += "}";
+
 }
 
 @section StyleSheets{
@@ -47,47 +57,52 @@
 		background-color: black;
 		color: #FFF;
 	}
-
-	.btn-primary {
-		background: #0094ff;
-	}
 </style>
-<div class="vwa_map_dealers" id="vwa_map_dealers">
+<div class="vwa_map_dealers">
 	<div id="map" style="height:480px;"></div>
 </div>
-<div class="container-fluid hk_dealers" id="hk_dealers">
+<div class="container-fluid hk_dealers">
 	<div class="row">
 
 		<div class="container">
+			<div class="row">
+				<div class="col">
 
-        testfsdf
-
-			<form action="@(Model.Content.Url())#vwa_map_dealers" class="form-inline search" id="hk_search-input" method="get" novalidate="novalidate" _lpchecked="1">
-				<div class="row">
-
-					<div class="col-md-12">
-						<span class="hk_lbl-TypeStore">Type of store:</span>
-						<input type="hidden" id="isWebStore" name="isWebStore" value="@(isWebStore ? "1" : "0")" />
-						<input type="hidden" id="isStore" name="isStore" value="@(isStore ? "1" : "0")" />
-						<div class="btn-group btn-stores" role="group" aria-label="Select the store type">
-							<div>
-								<button type="button" id="btnIsWebStore" class="btn @(isWebStore ? "btn-primary" : "btn-default" )"><i class="fas fa-shopping-cart"></i> Webstore</button>
-								<button type="button" id="btnIsStore" class="btn @(isStore ? "btn-primary" : "btn-default" )"><i class="fas fa-store-alt"></i> Store</button>
+					<form action="@(Model.Content.Url())" class="form-inline search" id="hk_search-input" method="get" novalidate="novalidate" _lpchecked="1">
+						<div class="form-group">
+							<div class="input-group">
+								<input type="text" class="form-control" value="@search" placeholder="Search" id="etc-search-term" name="q">
+								<span class="input-group-addon">
+									<button class="" type="submit"><i class="glyphicon fa fa-search "></i></button>
+								</span>
 							</div>
 						</div>
-					</div>
-					<div class="form-group col-md-12">
-						<div class="input-group">
-							<input type="text" class="form-control" value="@search" placeholder="Search" id="etc-search-term" name="q">
-							<span class="input-group-addon">
-								<button class="" id="btnSubmit" type="submit"><i class="glyphicon fa fa-search "></i></button>
-							</span>
-						</div>
-					</div>
+					</form>
+
+					@*
+							<ul class="vwa_search_dealers">
+								<li>
+									<!-- Split button -->
+									<div class="btn-group">
+										<button class="form-control form-sort" type="button" data-toggle="dropdown">
+											filter dealers
+											<i class="fa fa-caret-down"></i>
+										</button>
+
+										<ul class="dropdown-menu">
+											@foreach (var station in Dealers)
+											{
+						<li><a href="@station.Url">@station.Name</a></li>
+											}
+										</ul>
+
+									</div>
+								</li>
+							</ul>
+					*@
 				</div>
-			</form>
 
-
+			</div>
 			@if (searchResultIsEmpty)
 			{
 				<div class="row">
@@ -99,37 +114,20 @@
 			<div class="hk_dealers_list">
 				<div class="row">
 					@foreach (var listdealer in Dealers)
-
 					{
-						var Postalcode = listdealer.Postcode;
-						var Comma = ",";
-
 						<div class="col-md-4 col-sm-6 col-xl-3">
 							<div class="wrapper_dealer">
-								<h2>@(listdealer.GetPropertyValue<string>("titleMain"))</h2>
+								<h2>@listdealer.Name</h2>
 								<p>@listdealer.Adres</p>
-								<p>
-									@Postalcode@if (Postalcode.Count() > 0)
-									{@Comma} @listdealer.Plaats
-								</p>
+								<p>@listdealer.Postcode, @listdealer.Plaats</p>
 								<p>@listdealer.Land</p>
-
+								
 								@{
-
 									string websiteAdress = listdealer.GetPropertyValue<string>("Website");
-
 									string name = System.Text.RegularExpressions.Regex.Replace(websiteAdress, @"https?://(www\.)?", "");
-
-									if (!websiteAdress.StartsWith("http"))
-									{
-										websiteAdress = "http://" + websiteAdress;
-									}
-
 									if (!string.IsNullOrWhiteSpace(websiteAdress))
 									{
-
 										<p><a target="_blank" href="@Html.Raw(websiteAdress)">@(name)</a></p>
-
 									}
 								}
 								@* <p><a href="#" class="dealer_website">hkliving.nl</a></p>*@
@@ -142,49 +140,51 @@
 
 	</div>
 </div>
+<script>
 
+    // Data for the markers consisting of a name, a LatLng and a zIndex for the
+    // order in which these markers should display on top of each other.
+    var alldealers = [
+        // add markers
+        @foreach (IPublishedContent infodealer in Dealers.Where( x => !string.IsNullOrWhiteSpace(x.GetPropertyValue<string>("latitude")) && !string.IsNullOrWhiteSpace(x.GetPropertyValue<string>("longitude"))))
+		{
+			string websiteAdress = infodealer.GetPropertyValue<string>("Website");
+			string name = System.Text.RegularExpressions.Regex.Replace(websiteAdress, @"https?://(www\.)?", "");
+
+            <text>
+            {
+                "Name" : "@(Html.Raw(Html.AttributeEncode(infodealer.Name)))",
+                "Latitude" : @(infodealer.GetPropertyValue("latitude").ToString().Replace(",", ".")),
+                "Longitude" : @(infodealer.GetPropertyValue("longitude").ToString().Replace(",", ".")),
+                "Image" : "@(infodealer.GetPropertyValue<IPublishedContent>("FotoVestiging") == null ? "" : infodealer.GetPropertyValue<IPublishedContent>("FotoVestiging").Url)",
+                @*"Adres" : "@(System.Web.Helpers.Json.Encode(infodealer.GetPropertyValue("Adres") + "<br/>" + infodealer.GetPropertyValue("Postcode") + "<br/>"))",*@
+                "Adres" : "@(Html.Raw(Html.AttributeEncode(infodealer.GetPropertyValue("Adres"))))",
+                "Postcode" : "@(Html.Raw(Html.AttributeEncode(infodealer.GetPropertyValue("Postcode"))))",
+                "Tel" : "@(Html.Raw(Html.AttributeEncode(infodealer.GetPropertyValue("TelefoonNummer"))))",
+                "Land" : "@(Html.Raw(Html.AttributeEncode(infodealer.GetPropertyValue("Land"))))",
+                "Plaats" : "@(Html.Raw(Html.AttributeEncode(infodealer.GetPropertyValue("Plaats"))))",
+				"Website": "@(Html.Raw(Html.AttributeEncode(websiteAdress)))",
+				"WebsiteNaam" : "@(name)",
+                "Url" : "@(infodealer.Url)",
+            },
+		 </text>
+        }
+    {}
+    ];
+
+
+    function initMap(){
+        //  call to vwa_maps.js
+        window.setTimeout( function(){ initMapjs( @(string.IsNullOrEmpty(search) ? "false" : "true" ) ); }, 1);
+    }
+
+    //  initMap();
+
+</script>
 @section Scripts {
 	<!-- Custom JS maps -->
 	<script src="~/Scripts/vwa_maps.js"></script>
 	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaGmDGmRqjM4K-YEm_zJQ4KKT44OAKPO4&callback=initMap&libraries=geometry" async defer></script>
 
-
-	<script>
-
-		var data = null;
-		var gsLoaded = false;
-		var markersLoaded = false;
-		var _markers = null;
-
-		function initMap() {
-			gsLoaded = true;
-			if (markersLoaded)
-				loadMarkers(_markers)
-		}
-
-		function loadMarkers(markers) {
-			if (gsLoaded)	
-				initMapjs( @(string.IsNullOrEmpty(search) ? "false" : "true" ), @(mapsSettings), _markers ); 
-		}
-
-		// Data for the markers consisting of a name, a LatLng and a zIndex for the
-		// order in which these markers should display on top of each other.
-		var alldealers = $.ajax({
-			dataType: "json",
-			url: '@Url.Action("GetStoresAsJson","StoreLocator")',
-			data: { 'id': @(this.Model.Content.Id) },
-			success: function (result) {
-				markersLoaded = true;
-				_markers = result;
-				loadMarkers();
-			}
-		});
-
-
-
-
-    //  initMap();
-
-	</script>
 }

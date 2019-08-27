@@ -11,14 +11,14 @@
 
 @{
 
-	string productsHomeId = "24396";
-	IPublishedContent productsHomeNode = Umbraco.TypedContent(productsHomeId);
-	string seasonHomeId = "24457";
+	string productsHomeId = "20130";
+	IPublishedContent productsHomeNode = Umbraco.TypedContent(productsHomeId);	
+	int categoryHomeId = 20124;
+	string seasonHomeId = "20125";
 	string seasonFirstFilter = Umbraco.TypedContent(seasonHomeId).Children.Any() ? Umbraco.TypedContent(seasonHomeId).FirstChild().Id.ToString() : "";
-	string logosHomeId = "24472";
+	@*string logosHomeId = "20204";*@
 	string curPageId = Request["page"];
 
-	//string categoryId = Request["category"] ?? productsHomeId;
 	string categoryId = Request["category"];
 	if (String.IsNullOrEmpty(categoryId))
 	{
@@ -30,36 +30,40 @@
 	{
 		seasonId = seasonFirstFilter;
 	}
+	@*
 	string logoBool = Request["logo"] ?? "";
-	string documentsBool = Request["docs"] ?? "";
+	*@
 
 	IPublishedContent productsHome = Umbraco.TypedContent(productsHomeId);
 	IEnumerable<IPublishedContent> productsQuery = null;
 
-	if (String.IsNullOrEmpty(logoBool) && String.IsNullOrEmpty(documentsBool))
-	{
-		if (!String.IsNullOrEmpty(categoryId) && !String.IsNullOrEmpty(seasonId))
-		{
-			productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
-				.Where(x => x.GetPropertyValue<IEnumerable<IPublishedContent>>("filter").Any(a => a.Id.ToString() == seasonId) && x.GetPropertyValue<bool>("enable"));
-		}
-		else if (!String.IsNullOrEmpty(categoryId) && String.IsNullOrEmpty(seasonId))
-		{
-			productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
-						.Where(x => x.GetPropertyValue<bool>("enable"));
-		}
 
+	if (!String.IsNullOrEmpty(categoryId) && !String.IsNullOrEmpty(seasonId))
+	{
+		@*productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
+			.Where(x => x.GetPropertyValue<IEnumerable<IPublishedContent>>("filter").Any(a => a.Id.ToString() == seasonId) && x.GetPropertyValue<bool>("enable"));*@
+		if (Umbraco.TypedContent(categoryId).AncestorsOrSelf().Where(x => x.Id == 25630).Any()) {
+    		productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product");
+		}
+		else {
+    		productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
+    			.Where(x => x.GetPropertyValue<IEnumerable<IPublishedContent>>("filter").Any(a => a.Id.ToString() == seasonId));		
+		}
 	}
+	else if (!String.IsNullOrEmpty(categoryId) && String.IsNullOrEmpty(seasonId))
+	{
+		@*productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
+					.Where(x => x.GetPropertyValue<bool>("enable"));*@
+		productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product");						
+	}
+
+	@*
 	else if (logoBool == "1")
 	{
-		productsQuery = Umbraco.TypedContent(logosHomeId).Descendants("pressroom_Logo");
+		productsQuery = Umbraco.TypedContent(logosHomeId).Descendants("pressroom_Product");
 	}
-	else if (documentsBool == "1")
-	{
-		productsQuery = Umbraco.TypedContent(logosHomeId).Descendants("pressroom_Logo");
-	}
-
-	//IEnumerable<IPublishedContent> products = (productsQuery.Count() > 0) ? productsQuery : productsHome.Descendants("pressroom_Product");
+	*@
+	
 	IEnumerable<IPublishedContent> products = productsQuery;
 
 }
@@ -81,15 +85,13 @@
 	}
 	paging.CalculatePages(total);
 	int productListStartIndex = curPageInt * pageSize - pageSize;
+
+	string guid = Guid.NewGuid().ToString();
+	Session["hk_download_id"] = guid;
+
 }
 
-@*
-	<p>paging @paging</p>
-	<p>curpage @curPageId</p>
-	<p>productListStartIndex @productListStartIndex</p>
-*@
-
-
+<input id="guid" type="hidden" value="@guid" />
 <iframe id="pres-dwnldframe"></iframe>
 
 @* fullpage front image viewer *@
@@ -153,21 +155,19 @@
 									break;
 								}
 
-
 								string productName = product.GetPropertyValue<string>("prName") ?? "";
 								string productSku = product.HasProperty("sKU") ? product.GetPropertyValue<string>("sKU") : "";
 								string productUrl = product.Url;
 
 
-								IPublishedContent image = null;
-								if (!String.IsNullOrEmpty(logoBool))
-								{
-									image = product.GetPropertyValue<IPublishedContent>("highResolution");
+								bool hasDocuments = product.HasValue("documents");
+								bool hasMedia = false;
+								
+								if (product.HasProperty("highResolution") && product.HasValue("highResolution")) {
+								    hasMedia = true;
 								}
-								else
-								{
-									image = product.GetPropertyValue<IPublishedContent>("imageFront");
-								}
+								
+								IPublishedContent image = product.GetPropertyValue<IPublishedContent>("imageFront");
 
 								string imageUrl = (image != null) ? image.Url : "";
 
@@ -184,15 +184,9 @@
 										<h3 style="width:80%;border-bottom:2px solid #e9e9e9;margin:auto;"> </h3>
 										<div class="press-productbox-controls">
 
-											@{
-												string ctrlVers = "";
-												if (logoBool == "1" || documentsBool == "1")
-												{
-													ctrlVers = "pres-ctrl-logo";
-												}
-											}
 											@* send to mail *@
-											<div class="press-productbox-control-inner @ctrlVers">
+											
+											<div class="press-productbox-control-inner @((hasMedia || hasDocuments) ? "" : "crl-disabled")">
 
 												<div class="press-productbox-control-inner-img"></div>
 
@@ -215,9 +209,7 @@
 													</div>
 													<div class="producuctbox-control-enter-email-right">
 														<div class="producuctbox-control-enter-email-right-inner">
-															@*
-																<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "sendMail"})" >
-															*@
+																@*<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "sendMail"})"></a>*@
 															<p>Send</p>
 														</div>
 													</div>
@@ -225,33 +217,26 @@
 											</div>
 
 											@* direct download all *@
-											<div class="press-productbox-control-inner @ctrlVers">
-												@*<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "downloadAll"})" >*@
+											<div class="press-productbox-control-inner @((hasMedia || hasDocuments) ? "" : "crl-disabled")">
 												<div class="press-productbox-control-inner-img productbox-download-zip-all"></div>
-												@*</a>*@
 												<div class="productbox-control-inner-label">
 													<p>Download as zip</p>
 												</div>
 											</div>
 
 											@* download only documents *@
-
-											@if (logoBool != "1" && documentsBool != "1")
-											{
-												<div class="press-productbox-control-inner @ctrlVers">
-													@*<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "downloadDocs"})" >*@
-													<div class="press-productbox-control-inner-img productbox-download-docs-only"></div>
-													@*</a>*@
-													<div class="productbox-control-inner-label">
-														<p>Download documents</p>
-													</div>
+											<div class="press-productbox-control-inner @((hasDocuments) ? "" : "crl-disabled")">
+												<div class="press-productbox-control-inner-img productbox-download-docs-only"></div>
+												<div class="productbox-control-inner-label">
+													<p>Download documents</p>
 												</div>
-											}
+											</div>
+											
 
 											@* select product*@
 
-											<div class="press-productbox-control-inner" @ctrlVers>
-												<input type="checkbox" name="selectProduct">
+											<div class="press-productbox-control-inner">
+												<input type="checkbox" name="selectProduct" @(!hasMedia && !hasDocuments ? "disabled" : "")>
 
 												<div style="visibility:hidden" class="productbox-control-inner-label">
 													<p>Select</p>
@@ -292,15 +277,11 @@
 		string categoryName = " ";
 		if (category != null)
 		{
-
-			int maxCount = 0;
-			IPublishedContent _parent = category.Parent;
-			//while (_parent != null && category.Ancestors().Where(x => x.Id.ToString() == productsHomeId).Any() && maxCount != 20) {
-			for (int i=0; i < 2; i++) {
-				if (_parent != null && _parent.Ancestors().Where(x => x.Id.ToString() == productsHomeId).Any()) {
+			IPublishedContent _parent = category;
+			for (int i=0; i < 10; i++) {
+				if (_parent != null && _parent.Ancestors().Where(x => x.Id == categoryHomeId).Any()) {
 					categoryName = _parent.Name + " \\ " + categoryName;
 					_parent = _parent.Parent;
-					maxCount++;
 				} else {
 					break;
 				}

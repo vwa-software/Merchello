@@ -6,7 +6,7 @@
 	bool selected = false;
 }
 @functions {
-	public string GetChildHtml(int productsHomeId, IPublishedContent category, int marginLeft, int level, int count, string seasonId, IPublishedContent categoryHome, int selectedCategory, out bool selected)
+	public string GetChildHtml(IPublishedContent category, int level, string seasonId, int selectedCategory, out bool selected)
 	{
 		System.Text.StringBuilder html = new System.Text.StringBuilder();
 		selected = false;
@@ -17,19 +17,18 @@
 			string ulClass = "";
 
 			/* disable the products root */
-			if (item.Id == 24396)
+			if (item.Id == 20130) // make non existing Id to restore the product tab
 			{
 				bool childSelected = false;
-				string childHtml = GetChildHtml(productsHomeId, item, marginLeft, level, count, seasonId, categoryHome, selectedCategory, out childSelected);
+				string childHtml = GetChildHtml(item, level, seasonId, selectedCategory, out childSelected);
 				selected = selected || childSelected;
 				html.Append(childHtml);
 			}
 			else if (item.Children("pressroom_category").Any())
 			{
-				count++;
 				string dropdownClass = "";
 				bool childSelected = false;
-				string childHtml = GetChildHtml(productsHomeId, item, marginLeft, level + 1, count, seasonId, categoryHome, selectedCategory, out childSelected);
+				string childHtml = GetChildHtml(item, level + 1, seasonId, selectedCategory, out childSelected);
 				itemSelected = itemSelected || childSelected;
 
 				if (itemSelected)
@@ -38,24 +37,26 @@
 					dropdownClass = "pres-dropdown-open";
 				}
 
-				html.AppendFormat("<li class='lvl{1}'><ul class='{0}'>", ulClass, level);
-				html.AppendFormat("<li class='pres-cat-link lvl{0}'>", level);
-				html.AppendFormat("<div class='cat-link-inner-left'><a href='?category={0}&se={1}' class='pres-cat-head'>{2}</a></div>", item.Id, seasonId, item.Name);
-				html.AppendFormat("<div class='cat-link-inner-right'>");
+				string marginTop = "";
+				if (item.Parent.Id != 20130 && level == 0)
+				{
+					marginTop = "style='margin-top:1rem;'";
+				}
 
-				html.AppendFormat("<p id='pres_prdct_drpdwn_{0}' class='pres-cat-dropdown {1}'>&nbsp;</p>", count, dropdownClass);
-				//}
-				//else
-				//{
-				//	html.AppendFormat("<p id='pres_prdct_drpdwn_{0}' class='pres-cat-dropdown'>&nbsp;</p>", count);
-				//}
-				html.AppendFormat("</div>");
+                string logoHideContent = "";
+                if (item.Id == 26475) {
+                    logoHideContent = "LogoHideDrpdwnContent";
+                }
+
+				html.AppendFormat("<li class='pres-cat-link lvl{0} {1}'>", level, logoHideContent);
+				html.AppendFormat("<div class='cat-link-inner-left' {3}><a href='?category={0}&se={1}' class='pres-cat-head'>{2}</a></div>", item.Id, seasonId, item.Name, marginTop);
+				html.AppendFormat("<div class='cat-link-inner-right' {1}><p class='pres-cat-dropdown {0}'>&nbsp;</p></div>", dropdownClass, marginTop);
+
+				html.AppendFormat("<ul class='{0}'>", ulClass);
 				html.Append(childHtml);
-
+				html.AppendFormat("</ul>");
 
 				html.AppendFormat("</li>");
-				html.AppendFormat("</ul></li>");
-
 			}
 			else
 			{
@@ -63,7 +64,6 @@
 				{
 					ulClass = "cat-link-open";
 				}
-
 				html.AppendFormat("<li class='pres-cat-link pres-cat-link-endpoint {3} lvl{4}'><a href='?category={0}&se={1}'>{2}</a></li>", item.Id, seasonId, item.Name, ulClass, level);
 			}
 
@@ -80,10 +80,10 @@
 	Html.RequiresCss("~/Css/vwa_pressroom.css", 20);
 	Html.RequiresJs("~/Scripts/vwa_pressroom.js", 20);
 
-	IPublishedContent categoryHome = Umbraco.TypedContent(24415);
-	IPublishedContent filterHome = Umbraco.TypedContent(24457);
-	int productsHomeId = 24396;
-	string seasonHomeId = "24457";
+	IPublishedContent categoryHome = Umbraco.TypedContent(20124);
+	IPublishedContent filterHome = Umbraco.TypedContent(20125);
+	int productsHomeId = 20130;
+	string seasonHomeId = "20125";
 	string seasonFirstFilter = Umbraco.TypedContent(seasonHomeId).Children.Any() ? Umbraco.TypedContent(seasonHomeId).FirstChild().Id.ToString() : "";
 	string seasonId = Request["se"] ?? seasonFirstFilter;
 
@@ -101,28 +101,24 @@
 	string logoBool = Request["logo"] ?? "";
 	string documentsBool = Request["docs"] ?? "";
 
-	int marginLeft = 0;
-	int count = 0;
 }
 
-<ul>
-
-
-	@Html.Raw(GetChildHtml(productsHomeId, categoryHome, marginLeft, 0, count, seasonId, categoryHome, ctgryInt, out selected))
+<ul class="cat-link-open-force">
+	@Html.Raw(GetChildHtml(categoryHome, 0, seasonId, ctgryInt, out selected))
 </ul>
 
 @* END Category navigation *@
 
 @* Style navigation*@
 @*
-	<ul>
+	<ul class="cat-link-open-force">
 		<li class="pres-cat-link">
 
 			<div class="cat-link-inner-left">
 				<p class="pres-cat-head">Style</p>
 			</div>
 			<div class="cat-link-inner-right">
-				<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+				<p class="pres-cat-dropdown pres-drpdwn-toggle pres-dropdown-open">&nbsp;</p>
 			</div>
 
 			<ul class="cat-link-open">
@@ -146,57 +142,47 @@
 @* END Style navigation*@
 
 @* Logo navigation *@
-<ul>
+@*<ul class="cat-link-open-force">
 	<li class="pres-cat-link">
+
 		<div class="cat-link-inner-left">
 			@{
-				string logoUrl = "/pressroom/?category=" + ctgryInt.ToString() + "&se=" + seasonId + "&logo=1";
+				string logoUrl = "?category=" + ctgryInt.ToString() + "&se=" + seasonId + "&logo=1";
 			}
 			<a href="@logoUrl" class="pres-cat-head">Logo</a>
 		</div>
 		<div class="cat-link-inner-right">
-			<p class="pres-cat-dropdown" style="visibility:hidden">&nbsp;</p>
+			<p class="pres-cat-dropdown pres-drpdwn-toggle" style="visibility:hidden">&nbsp;</p>
 		</div>
 	</li>
-</ul>
+
+</ul>*@
 @* END Logo navigation *@
 
-@* Documents navigation*@
-@*
-	<ul>
-		<li class="pres-cat-link">
-			<div class="cat-link-inner-left">
-				<a href = "/pressroom/?docs=1" class="pres-cat-head">Documents</a>
-			</div>
-			<div class="cat-link-inner-right">
-				<p class="pres-cat-dropdown" style="visibility:hidden">&nbsp;</p>
-			</div>
-		</li>
-	</ul>
-*@
-@* END Documents navigation *@
 
 @* Quality navigation*@
-<ul>
+<ul class="cat-link-open-force">
 	<li class="pres-cat-link">
+
 		<div class="cat-link-inner-left">
 			<p class="pres-cat-head">Quality</p>
 		</div>
 		<div class="cat-link-inner-right">
-			<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+			<p class="pres-cat-dropdown pres-drpdwn-toggle pres-dropdown-open">&nbsp;</p>
 		</div>
 		<ul class="cat-link-open">
 			<li>
 				<form action="">
-					< input id="quality-form-quality1" type="radio" name="quality" value="highResolution" style="margin-right:8px;" checked>
+					<input id="quality-form-quality1" type="radio" name="quality" value="highResolution" style="margin-right:8px;" checked>
 					<label for="quality-form-quality1">High quality</label>
 					<br>
 					<input id="quality-form-quality2" type="radio" name="quality" value="webResolution" style="margin-right:8px;">
-					< label for="quality-form-quality2">Web quality</label>
+					<label for="quality-form-quality2">Web quality</label>
 					<br>
 				</form>
 			</li>
 		</ul>
+
 	</li>
 </ul>
 @* END Quality navigation*@
@@ -204,13 +190,14 @@
 @* Season navigation *@
 @if (filterHome.Children().Any())
 {
-	<ul>
-		<li class="pres-cat-link" )">
+	<ul class="cat-link-open-force">
+		<li class="pres-cat-link">
+
 			<div class="cat-link-inner-left">
 				<p class="pres-cat-head">Season</p>
 			</div>
 			<div class="cat-link-inner-right">
-				<p class="pres-cat-dropdown pres-dropdown-open">&nbsp;</p>
+				<p class="pres-cat-dropdown pres-drpdwn-toggle pres-dropdown-open">&nbsp;</p>
 			</div>
 			<ul class="cat-link-open">
 				<li>
@@ -223,7 +210,7 @@
 						@foreach (IPublishedContent filter in filterHome.Children())
 						{
 							string filterName = filter.GetPropertyValue<string>("filterName");
-							string radioUrl = "/pressroom/?category=" + ctgryInt.ToString() + "&se=" + filter.Id.ToString();
+							string radioUrl = "?category=" + ctgryInt.ToString() + "&se=" + filter.Id.ToString();
 							string strChecked = "false";
 
 							if (filter.Id.ToString() == seasonId || (String.IsNullOrEmpty(seasonId) && frstRun == true))
@@ -239,6 +226,7 @@
 				</li>
 			</ul>
 		</li>
+
 	</ul>
 }
 @* END Season navigation *@
