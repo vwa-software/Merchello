@@ -4,14 +4,13 @@
 @using Merchello.FastTrack.Ui
 @using Merchello.Web.Models.Ui
 
-
 @using Umbraco.Web
 @{
     Model.SuccessRedirectUrl = ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.PaymentMethod).Url;
 }
 
 <div class="hk_account_forms hk_shipping">
-    @*<h2 class="hk_shop">Shipping Rate Quote</h2>*@
+    <h2 class="hk_shop">Shipping Rate Quote</h2>
     @using (Html.BeginUmbracoForm<CheckoutShipRateQuoteController>("SaveShipRateQuote", new { area = "FastTrack" }))
     {
         <div class="row">

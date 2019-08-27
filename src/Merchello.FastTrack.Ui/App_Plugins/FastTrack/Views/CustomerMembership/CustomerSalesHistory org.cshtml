@@ -1,4 +1,4 @@
-﻿@inherits UmbracoViewPage<Merchello.Web.Models.Ui.Rendering.ICustomerSalesHistory>
+﻿@model Merchello.Web.Models.Ui.Rendering.ICustomerSalesHistory
 @using System.Web.Mvc.Html
 @using Merchello.Core
 @using Merchello.FastTrack.Ui
@@ -17,7 +17,7 @@
 		<h2 class="hk_shop">my web order history</h2>
 	</div>*@
 	<div class="panel-body">
-		<table class="table table-striped mui-basket mui-default" style="margin-bottom: 1rem;">
+		<table class="table table-striped mui-basket mui-default">
 			<thead>
 				<tr>
 					<th>web order</th>
@@ -41,40 +41,33 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="2" class="text-right"  style="width: 68.8888%;">
+					<td colspan="2" class="text-right">
 						total purchases:
 					</td>
 					<td class="text-right"><strong>@Model.TotalPurchases.AsFormattedCurrency(currencyCode)</strong></td>
 				</tr>
+				@if (Model.TotalOutstanding > 0)
+				{
+					@*<tr>
+						<td colspan="2" class="text-right">
+							total paid:
+						</td>
+						<td class="text-right">@Model.TotalPaid.AsFormattedCurrency(currencyCode)</td>
+					</tr>*@
+
+					<tr>
+						<td colspan="2" class="text-right">
+							outstanding balance:
+						</td>
+						<td class="text-right"><strong>@Model.TotalOutstanding.AsFormattedCurrency(currencyCode)</strong></td>
+					</tr>
+				}
+
 			</tfoot>
 		</table>
 
 	</div>
 </div>
-<div class="panel panel-default hk_shop_forms">
-		<div class="panel-body">
-			  <table class="table table-striped mui-basket mui-default">
-					<tfoot>
-						@{
-							var member = (IPublishedContent)Members.GetCurrentMember();
-							if (Members.IsLoggedIn() && member != null) {
-							<tr>
-							   <td class="text-right" style="width: 68.8888%;">
-								outstanding balance:
-								</td>
-								<td class="text-right">
-									<strong>
-									   @(member.GetPropertyValue<decimal>("OutstandingBalance").AsFormattedCurrency(currencyCode))
-									</strong>
-								</td>
-							</tr>
-							}
-						}
-					</tfoot>
-			   </table>
-		</div>
-	</div>
-
 
 @functions {
 

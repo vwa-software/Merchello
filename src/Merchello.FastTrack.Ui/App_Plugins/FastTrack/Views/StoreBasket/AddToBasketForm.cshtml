@@ -79,9 +79,10 @@
                     </div>
                 }
 
-                @Html.HiddenFor(x => x.ProductKey)
-                @Html.HiddenFor(x => x.SuccessRedirectUrl)
-                @Html.AntiForgeryToken()
+                <input name="ProductKey" type="hidden" value="@Model.ProductKey" />
+				<input name="SuccessRedirectUrl" type="hidden" value="@Model.SuccessRedirectUrl" />
+                
+				@Html.AntiForgeryToken()
                 // Determine if the add to cart button should be displayed in case item is out of stock
                 if (product.ProductVariants.Any() || (!product.ProductVariants.Any() && product.TrackInventory && product.TotalInventoryCount > 0) || !product.TrackInventory || product.OutOfStockPurchase)
                 {

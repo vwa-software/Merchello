@@ -38,12 +38,12 @@
                     {
                         // This is a property reference to a content type on the default starter kit
                         // and may need to change for site specific implementations.  Example!
-                        if (product.HasValue("image"))
+                        if (product.HasValue("ftProduct_Afbeelding"))
                         {
-                            var mediaId = product.GetPropertyValue<string>("image");
+                            var mediaId = product.GetPropertyValue<string>("ftProduct_Afbeelding");
                             var image = Umbraco.TypedMedia(mediaId);
 
-                            <a href="@product.Url"><img src="@image.GetCropUrl(width: 20)" alt="@product.Name" width="20"/></a>
+                            <a href="@product.Url"><img src="@image.GetCropUrl(width: 75)" alt="@product.Name" width="75"/></a>
                         }
                         <a href="@product.Url">
                             <span>EAN: @Html.Raw(product.GetPropertyValue<string>("ftProduct_EAN"))  @hasdevider @(product.GetPropertyValue<string>("ftProduct_Artikelnummer"))  @hasdevider @product.Name @hasdevider @Html.Raw(product.GetPropertyValue<string>("ftProduct_afmetingen"))</span>

@@ -6,18 +6,12 @@
 @using Merchello.Web.Models.Ui
 @using Umbraco.Core.Models
 @using Umbraco.Web
-@{ 
-	// ticket http://projecten.vwa.nu:888/redmine/issues/6275
-	// blokade psk klanten
-	bool isPskApproved = false;
 
-	var member = Members.GetCurrentMember();
-	if (member != null)
-	{
-		isPskApproved = VWA.PSKHelper.CheckPSKOrderMinimum(Model.Total, member);
-	}
-}
+
+
 <div class="container-fluid hk_order_summary hk_order hk_checkout hk_shop_forms">
+
+
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
@@ -38,7 +32,7 @@
 						{
 							<tr>
 								<td>
-									@if (item.LineItemType == LineItemType.Product && item.Product != null && item.Product.HasValue("ftProduct_Afbeelding"))
+									@if (item.LineItemType == LineItemType.Product && item.Product.HasValue("ftProduct_Afbeelding"))
 									{
 										var mediaId = item.Product.GetPropertyValue<string>("ftProduct_Afbeelding");
 										var image = Umbraco.TypedMedia(mediaId);
@@ -98,19 +92,13 @@
 		</div>
 	</div>
 
-	@if (isPskApproved)
-	{
-		@Html.Action("ResolvePayment", "CheckoutPaymentMethod", new { area = "FastTrack" })
-	}
-	else {
-		<ul>
-			<li>@Umbraco.GetDictionaryValue("PskUnapproved")</li>
-		</ul>		
-	}
+	@Html.Action("ResolvePayment", "CheckoutPaymentMethod", new { area = "FastTrack" })
+
 
 	<div class="hk_account_forms hk_shipping ">
 		<div class="row">
 			<div class="col-12 basket-summary col-sm-6">
+
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h2 class="hk_shop">Billing Address @RenderEdit(Model, "billing")</h2>
@@ -119,22 +107,27 @@
 						@Html.Partial("_Address", Model.BillingAddress)
 					</div>
 				</div>
+
 			</div>
 			<div class="col-12 basket-summary col-sm-6" style="text-align: right; margin: 20px 0px 0px 0px;">
+
+
 				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/contact/subscribe-to-the-newsletter/" title="Terms of condition" class="btn btn-primary" target="_blank">subscribe to the newsletter</a></p>
 				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/terms-and-conditions/" title="Terms of condition" class="btn btn-primary" target="_blank">terms and conditions</a></p>
 				<p><a data-udi="umb://document/a49e82184e2643d1b87ccea10e5e9183" href="/privacy-statement/" title="Privacy statement" class="btn btn-primary" target="_blank">privacy statement</a></p>
+
+
 			</div>
 		</div>
 	</div>
-</div>
 
-@helper RenderEdit(FastTrackCheckoutSummaryModel model, string buttonFor)
-{
-    // We are far along in process that we can display the edit buttons for both billing and shipping
-    var url = buttonFor == "billing" ?
-        ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.BillingAddress).Url :
-        ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.ShippingAddress).Url;
 
-    <a href="@url"><span class="glyphicon glyphicon-edit pull-right"></span></a>
+	@helper RenderEdit(FastTrackCheckoutSummaryModel model, string buttonFor)
+		{
+			// We are far along in process that we can display the edit buttons for both billing and shipping
+			var url = buttonFor == "billing" ?
+				ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.BillingAddress).Url :
+				ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.ShippingAddress).Url;
+
+			<a href="@url"><span class="glyphicon glyphicon-edit pull-right"></span></a>
 }
