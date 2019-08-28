@@ -1,7 +1,8 @@
 /* Login */
 
 .Login h4.umbraco-forms-caption {
-display:none;
+    /*display:none;*/
+    margin-left: 0 !important;
 }
 
 /* /Login */
@@ -38,10 +39,10 @@ display:none;
             position:absolute;
         }
 
-    body.Login .hk_category_name {
-     font-weight: 500;
-     text-transform:lowercase;
-    }
+body.Login .hk_category_name {
+    font-weight: 500;
+    text-transform: lowercase;
+}
     body.Login .hk_category_name span:before {
      font-weight: 500;
      content: "/ ";
@@ -57,9 +58,9 @@ display:none;
     /**/
     .hk_Checkout label,
     .hk_content.hk_Login label {
-        display: none;
+        /*display: none;
         position: absolute;
-        visibility: hidden;
+        visibility: hidden;*/
     }
 
     .hk_content.hk_Login .dataconsent .umbraco-forms-field-wrapper label {
@@ -71,7 +72,7 @@ display:none;
     
     .hk_content.hk_Complete > .container > .row .col-md-6:first-child,
     .hk_content.hk_Login > .container > .row .col-md-6:first-child {
-        border-right:1px solid #ebebeb;
+        /*border-right:1px solid #ebebeb;*/
     }
     
     .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6:first-child,
@@ -98,7 +99,7 @@ display:none;
     .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6,   
     .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-12,
     .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6 {
-        padding-left:0px;
+        padding-left: 5px;
         float:left;
     }
 
@@ -123,16 +124,35 @@ display:none;
     }
     
     .hk_content.hk_Login input[type="submit"] {
-        margin:0px 0px -21px 20px;
+        /*margin:0px 0px -21px 20px;*/
+    }
+.hk_account_forms .panel-body .row {
+    padding-top: 20px; /*push the login fields lower*/
+}
+
+.hk_order_summary {
+    /*display:none;*/
+}
+    .hk_checkout .col-md-12 .row {
+        margin:0px 0px 10px 0px;
     }
 
-    .hk_order_summary {
-        /*display:none;*/
-    }
-    .hk_checkout .col-md-12 .row {
-        margin:0px 0px 20px 0px;
-    }
-    
+.defaultRow {
+    background-color: rgb(235, 235, 235);
+}
+
+    /*.defaultRow::after {
+        content: "";
+        display: block;
+        height: 9px;
+        width: 9px;
+        right: 0;
+        float: right;
+        border-top: 2px solid black;
+        border-right: 2px solid black;
+        transform: rotateZ(45deg);
+    }*/
+
     .hk_checkout .col-md-12 .col-md-2{
 
     }
@@ -155,13 +175,24 @@ display:none;
         content: "/" ;
         padding:0px 10px 0px 10px;
     }
-    
-    /* Complete order */
-    
-    .hk_Complete.order .col-md-6:first-child {
-        padding-right:24px;
 
+.cancelBtn {
+    margin-top: -40px;
+    float: right;
+    display: none;
+}
+    .cancelBtn.cancelAcc {
+        margin-top: -60px;
     }
+
+    .mdb-select {
+        width: 59%;
+    }
+
+/* Complete order */
+.hk_Complete.order .col-md-6:first-child {
+    padding-right: 24px;
+}
     .hk_Complete.order .col-md-6:last-child {
         padding-left:24px;
 
@@ -216,9 +247,9 @@ display:none;
     display: block;
     width: 100%;
 }
-.tab-content .col-md-12 {
-    padding: 0px;
-}
+    .tab-content .col-md-12 {
+        /*padding: 0px;*/
+    }
 
 .table th {
     border-top: 0px solid #fff!important;
@@ -228,12 +259,17 @@ display:none;
     border-bottom: 0px solid #dee2e6;
 }
 
+.h-card .p-street-address {
+    padding-right: 0.2em;
+    padding-left: 0.2em;
+}
+
 .nav-tabs .nav-link {
     color: #444444;
     background-color: #fff;
     border-color: #dee2e6 #dee2e6 #fff;
     border-radius: 2px 2px 0px 0px;
-    border: 1px solid #c6c6c6;
+    border: 2px solid #c6c6c6;
     border-bottom: 0px;
     margin: 0px 10px 0px 0px;
 }
@@ -245,22 +281,53 @@ display:none;
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-    background-color: #efefef;
+    background-color: #efefefa6;
+}
+
+.address-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.address-two {
+    padding-left: 0;
+    list-style: none;
 }
 
 .hk_shop_forms .row,
-.hk_shop_forms .invoiceitemswrapper{
-font-size:11px!important;}
+.hk_shop_forms .invoiceitemswrapper {
+    font-size: 11px !important;
+}
 
-.row.invoice/*,
-.row.invoiceitem*/{
-	font-size:11px!important;
-	font-weight:700;
+.clickable-row {
+    cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+}
+
+.arrow-position {
+    padding-top: 0.6%;
+    font-size: 20px;
+}
+
+.arrow-position-down {
+    padding-top: 4.6%;
+}
+
+.arrow-position-lower {
+    padding-top: 8.6%;
+}
+
+.row.invoice /*,
+.row.invoiceitem*/ {
+    font-size: 11px !important;
+    font-weight: 700;
     padding: .75rem 0rem .75rem 0rem;
     vertical-align: top;
     /*border-top: 1px solid #e9ecef;*/
-	color:#929292;
-	margin:0px!important;
+    color: #929292;
+    margin: 0px !important;
 }
 
 .row.invoiceitem{
@@ -354,45 +421,186 @@ font-size:11px!important;}
         border-left: 0px!important;
     }
 
+.extra-info-row {
+    border-left: 1px solid grey;
+    padding-left: 2%;
+}
 
-/***********************************************************************************************************************
+.row .col-xs-3 {
+    width: 50%;
+}
+
+.tab-content {
+    padding: 2%;
+}
+
+.custom-padding {
+    padding-top: 1%;
+}
+
+.arrow-custom-width {
+    max-width: 3%;
+}
+
+@media only screen and (max-width: 1200px) {
+    .nav-tabs {
+        white-space: nowrap;
+        overflow-y: scroll;
+        display: -webkit-box;
+    }
+
+}
+
+@media only screen and (max-width: 990px) {
+    .hide-mobile {
+        display: none;
+    }
+
+    .tab-content {
+        padding: 5%;
+    }
+    .custom-width {
+        width: 95%;
+    }
+
+    .arrow-custom-width {
+        width: 5%;
+    }
+
+    .h-card .p-street-address {
+        padding: 0;
+    }
+
+    .arrow-position-down {
+        padding-top: 13.6%;
+    }
+
+    .extra-info-row {
+        border: 0;
+    }
+}
+
+.editAccount {
+    display: none;
+}
+
+.hk_order.hk_checkout .edit-form,
+.hk_order.hk_checkout .new-form {
+    border-left: 1px solid grey;
+    padding-left: 2%;
+}
+
+@media only screen and (max-width: 700px) {
+    .arrow-position-down {
+        padding-top: 6.6%;
+    }
+    .complaintformmissingorwrong .umbraco-forms-container .complaint {
+        min-width: 100%;
+    }
+}
+
+@media only screen and (max-width: 710px) {
+    .arrow-position-down {
+        padding-top: 7.6%;
+    }
+    .complaintformmissingorwrong .umbraco-forms-container .complaint {
+        min-width: 100%;
+    }
+}
+
+@media only screen and (max-width: 440px) {
+    .arrow-position-down {
+        padding-top: 9.6%;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .arrow-position-down {
+        padding-top: 14.6%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .arrow-position-down {
+        padding-top: 21.6%;
+    }
+}
+
+    @media only screen and (min-width: 990px) {
+        .hide-desktop {
+            display: none;
+        }
+    }
+
+    /***********************************************************************************************************************
  EXTRA STYLES ADDED FOR MOUSEOVER / ACTIVE EVENTS
 ************************************************************************************************************************/
- .on {
-    background: #fff;
+    .on {
+        background: #fff;
+    }
+
+    .over {
+        background: #EBEBEB;
+    }
+
+
+    blockquote,
+    .umbraco-forms-submitmessage {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        margin: 1.5em 10px;
+        padding: 0.5em 10px;
+        quotes: "\201C""\201D""\2018""\2019";
+    }
+
+    .umbraco-forms-submitmessage {
+        margin: 0px;
+        ;
+    }
+
+    .fa-sort-up:before {
+        line-height: initial;
+    }
+
+    .fa-file-pdf {
+        font-size: 20px;
+    }
+
+    .fas.sort {
+        float: right;
+        font-size: 18px;
+        line-height: 8px;
+    }
+
+    /*16 07 2019*/
+.requestedit .umbraco-forms-container.col-md-4 .col-sm-2.control-label.umbraco-forms-label,
+.requestnewaddress .umbraco-forms-container.col-md-4 .col-sm-2.control-label.umbraco-forms-label,
+.requesteditaccount .control-label.umbraco-forms-label {
+    display: unset;
+    visibility: unset;
+    max-width: 100%;
+    position: inherit;
 }
-.over {
-    background: #EBEBEB;
+
+
+.hk_order.hk_checkout .tab-content.tabContentTop .tab-pane {
+    display: none;
 }
 
-
-blockquote,
-.umbraco-forms-submitmessage{
-    background: #f9f9f9;
-    border-left: 10px solid #ccc;
-    margin: 1.5em 10px;
-    padding: 0.5em 10px;
-    quotes: "\201C""\201D""\2018""\2019";
-  }
-
-.umbraco-forms-submitmessage{
-    margin: 0px;;
-  }
-
-.fa-sort-up:before {
-    line-height: initial;
+#complaint > .col-md-12:last-child {
+    display: none;
 }
 
-.fa-file-pdf{
-	font-size:20px;
+.newFormBtn {
+    display: none;
 }
 
-.fas.sort {
-	float: right;
-	font-size: 18px;
-	line-height: 8px;
+.requesteditaccount .dataconsent .radiobuttonlist.dataconsent label,
+.requestnewaddress .dataconsent .radiobuttonlist.dataconsent label,
+.requestedit .dataconsent .radiobuttonlist.dataconsent label {
+    visibility: unset;
 }
-/* /Accordion - account */
 
-
-/* WEBORDER / ORDERS */
+.col-sm-6.hide-desktop .btn.editFormBtn {
+    float: right;
+}

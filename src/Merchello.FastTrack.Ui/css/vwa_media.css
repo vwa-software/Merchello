@@ -16,7 +16,11 @@ Type: VWA Style CSS
     }
 	
 	.hk_collections.hk_product > div > div > div.row > div.col-md-6.column:nth-child(2) {
-	padding-left:40px;}
+	padding-left:40px;
+	}
+    .panel-body .h-card .offset-md-0 {
+        margin-left: 50px;
+    }
 }
 
 
@@ -65,11 +69,11 @@ Type: VWA Style CSS
 	.navbar-brand.navbar-cart {
 		display:none;
 	}
-	
 
     .mt-lg-0, .my-lg-0 {
     margin-top: -15px !important;
     }
+
 }
 
 @media (max-width: 991.98px) {
@@ -92,7 +96,10 @@ Type: VWA Style CSS
 		padding:10px 20px 10px 20px;
     	margin: 0px -35px 0px 0px;
 	}
-	
+
+    .panel-body .h-card .offset-md-0 {
+        margin-left: 65px;
+    }
 	/* /Search */
 
     
@@ -263,12 +270,16 @@ Type: VWA Style CSS
 	.navbar-brand.navbar-cart {
     right: 17.5%;
 	}
-	
-	.row.hk_megamenu_dropdown .row.p-3 .col-lg-3 {
-	    padding: 0px 10px 0px 14px;
-		min-width: 50%;
-    	border-right: 0px solid #ebebeb;
-	}
+
+    .mdb-select {
+        width: 79%;
+    }
+
+    .row.hk_megamenu_dropdown .row.p-3 .col-lg-3 {
+        padding: 0px 10px 0px 14px;
+        min-width: 50%;
+        border-right: 0px solid #ebebeb;
+    }
 	
 	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(3), 
 	.hk_megamenu_dropdown .col-lg-9 .row .col-lg-3:nth-child(5),
@@ -299,10 +310,14 @@ Type: VWA Style CSS
 		width: 100%!important;
 		height: auto!important;
 	}
-	
-	
-	.hk_collections.hk_product > div > div > div.row > div.col-md-6.column:nth-child(2) {
-	padding-left:0px;}
+
+    .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6 {
+        padding: 0;
+    }
+
+    .hk_collections.hk_product > div > div > div.row > div.col-md-6.column:nth-child(2) {
+        padding-left: 0px;
+    }
 	
 	.hk_Login form .row {
       height: 60px;}
@@ -318,12 +333,12 @@ Type: VWA Style CSS
 		float:none!important;
 		display:block!important;
 	}
-	.hk_content.hk_Login > .container > .row .col-md-6:first-child,
-	.hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6:first-child,
-	.hk_content .row.clearfix > .grid-section:first-child {
-		margin-bottom:75px;
-		border-right:0px solid #ebebeb;
-	}
+        .hk_content.hk_Login > .container > .row .col-md-6:first-child,
+        .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6:first-child,
+        .hk_content .row.clearfix > .grid-section:first-child {
+            /*margin-bottom:75px;*/
+            border-right: 0px solid #ebebeb;
+        }
 	.hk_content.hk_Login > .container > .row .col-md-6,
 	.hk_content .row.clearfix > .grid-section > .column {
 		-webkit-box-flex: 0!important;
@@ -335,10 +350,13 @@ Type: VWA Style CSS
 		float:left!important;
 		display:inline-block!important;
 	}
-	
-	.hk_content.hk_Login > .container > .row .col-md-6:last-child {
-	padding:0px;
-	}
+    .hk_content.hk_Login .hk_forgot-password {
+        padding-top: 40px;
+    }
+
+    .hk_content.hk_Login > .container > .row .col-md-6:last-child {
+        /*padding:0px;*/
+    }
 
 	.hk_content .row.clearfix > .grid-section:last-child > .column {
 	   margin-left:0%;
@@ -526,6 +544,14 @@ Type: VWA Style CSS
 	body.Home .hk_content .umb-grid .grid-section .container {
     margin: 0px 0px 0px -6px;
 	}
+    .mdb-select {
+        width: 95%;
+    }
+    .requestnewaddress .umbraco-forms-navigation .btn.btn-primary,
+    .requestedit .umbraco-forms-navigation .btn.btn-primary,
+    .requesteditaccount .umbraco-forms-navigation .btn.btn-primary {
+        float: right;
+    }
 }
 
 
@@ -536,7 +562,7 @@ Type: VWA Style CSS
 
 	.nav-tabs .nav-item,
 	.nav-tabs .nav-item a {
-	    width:100%;
+	    /*width:100%;*/
 	}
 
 	.hk_collections.hk_category .hk_sort {
@@ -556,6 +582,9 @@ Type: VWA Style CSS
 	.hk_Shopping.cart .row .col-xs-6 {
 			width:50%;
 	}
+    .mdb-select {
+        width: 95%;
+    }
 }
 
 @media (max-width: 440px) {
@@ -566,10 +595,14 @@ Type: VWA Style CSS
 		overflow-x: hidden!important;
 	}
 
-	#hk_search-input span.input-group-addon {
-		/*position:absolute!important;
+    .mdb-select {
+        width: 93%;
+    }
+
+    #hk_search-input span.input-group-addon {
+        /*position:absolute!important;
 		margin:0px 0px 0px 80px!important;*/
-		}
+    }
 
 	/*	
 	.hk_collections.hk_category .col-4 {
@@ -624,7 +657,7 @@ Type: VWA Style CSS
 	/* Login */
 	
 	.hk_content.hk_Login input[type="submit"] {
-		margin: -34px 0px -21px 20px;
+		/*margin: -34px 0px -21px 20px;*/
 	}
 
 	/* /Login */
@@ -709,7 +742,7 @@ Type: VWA Style CSS
 
 .footer .container .row .col-md-4 {
 	width: 100%;
-	/*margin: auto;*/
+	margin: auto;
 	text-align: center;
 }
 
@@ -917,31 +950,46 @@ Type: VWA Style CSS
 	}		
 }
 @media only screen and (max-width: 767px) {
-	.r-catalog-left {
-		-webkit-box-flex: 0;
-		-ms-flex: 0 0 0px;
-		flex: 0 0 0px;
-		max-width: 0px;
-		overflow: hidden;
-		max-height: 0px;
-		-webkit-transition: max-width 0.2s;
-		-o-transition: max-width 0.2s;
-		transition: max-width 0.2s;
-	}
-	.r-catalog-left.cshow {
-		-webkit-box-flex: 0;
-		-ms-flex: 0 0 43%;
-		flex: 0 0 43%;
-/*
+
+    .cancelBtn {
+        float: left;
+    }
+    .panel-body .h-card .offset-md-0 {
+        margin-left: -23px;
+    }
+    .hk_order.hk_checkout .edit-form, .hk_order.hk_checkout .new-form {
+        border-left: unset;
+        padding-left: 0;
+    }
+
+    .r-catalog-left {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 0px;
+        flex: 0 0 0px;
+        max-width: 0px;
+        overflow: hidden;
+        max-height: 0px;
+        -webkit-transition: max-width 0.2s;
+        -o-transition: max-width 0.2s;
+        transition: max-width 0.2s;
+    }
+    .complaintformmissingorwrong .umbraco-forms-container .complaint {
+        min-width: 100%;
+        }
+    .r-catalog-left.cshow {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 43%;
+        flex: 0 0 43%;
+        /*
 		-ms-flex: 0 0 50%;
 		flex: 0 0 50%;
 */
-		max-width: 300px;
-		max-height: 100%;
-		-webkit-transition: max-width 0.2s;
-		-o-transition: max-width 0.2s;
-		transition: max-width 0.2s;
-	}
+        max-width: 300px;
+        max-height: 100%;
+        -webkit-transition: max-width 0.2s;
+        -o-transition: max-width 0.2s;
+        transition: max-width 0.2s;
+    }
 	
 	.r-catalog-left-button {
 		-webkit-box-flex: 0;

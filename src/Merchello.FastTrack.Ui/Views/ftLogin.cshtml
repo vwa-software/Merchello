@@ -5,53 +5,56 @@
 @using Merchello.FastTrack.Ui
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
-	Layout = "Master.cshtml";
-	var mediaImagesList = Model.GetPropertyValue<string>("loginAfbeelding").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
-	var mediaImagesCollection = Umbraco.TypedMedia(mediaImagesList).Where(x => x != null);
+    Layout = "Master.cshtml";
+    var mediaImagesList = Model.GetPropertyValue<string>("loginAfbeelding").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+    var mediaImagesCollection = Umbraco.TypedMedia(mediaImagesList).Where(x => x != null);
 
-	if (!CurrentCustomer.IsAnonymous)
-	{
-		string redirect = ExampleUiHelper.Content.GetAccount().Url;
-		<script type="text/javascript">
+    if (!CurrentCustomer.IsAnonymous)
+    {
+        string redirect = ExampleUiHelper.Content.GetAccount().Url;
+        <script type="text/javascript">
 			document.location = '@redirect';
-		</script>
-	}
+        </script>
+    }
 }
 
+<h2 class="hk_shop">Login</h2>
+
 <div class="row hk_account_forms">
-	<div class="col-md-6">
-		@if (Model.HasValue("loginAfbeelding"))
-		{
-			foreach (var mediaImage in mediaImagesCollection)
-			{
-				<img src="@mediaImage.Url.GetCropUrl(width:260, height:170)" />
-			}
-		}
-		@Html.Action("LoginForm", "CustomerMembership", new { area = "FastTrack" })
-		<div class="hk_login_message" style="margin:20px 0px 0px 0px; display: table;">
-			<div style="padding:10px; max-width:250px; background:#EDEBEC; color:#838182;">
-				NOTIFICATION!<br /><br />
-				Welcome to our new website. <br /><br />When you login for the first time, <br />please reset your password using the <br />“forgot your password?” link.
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<h2 class="hk_shop" style="padding:0px 0px 0px 12px;">NO DEALER ACCOUNT YET?</h2>
-		@Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "fec8604c-96a5-4201-bc91-21e544d8c926", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "0" })
-	</div>
+
+    <div class="col-md-6">
+        @if (Model.HasValue("loginAfbeelding"))
+        {
+            foreach (var mediaImage in mediaImagesCollection)
+            {
+                <img src="@mediaImage.Url.GetCropUrl(width:260, height:170)" />
+            }
+        }
+        @Html.Action("LoginForm", "CustomerMembership", new { area = "FastTrack" })
+        <div class="hk_login_message" style="margin:20px 0px 0px 0px; display: table;">
+            <div style="padding:10px; max-width:250px; background:#EDEBEC; color:#838182;">
+                NOTIFICATION!<br /><br />
+                Welcome to our new website. <br /><br />When you login for the first time, <br />please reset your password using the <br />“forgot your password?” link.
+            </div>
+        </div>
+        <div>
+                @Umbraco.RenderMacro("renderUmbracoForm", new {FormGuid="9c071964-927f-49a1-bf7e-180818a2b05f", FormTheme="bootstrap3-horizontal", ExcludeScripts="0"})    
+        </div>
+    </div>
+    <div class="col-md-6">
+        @Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "fec8604c-96a5-4201-bc91-21e544d8c926", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "0" })
+    </div>
 </div>
+
 @section Breadcrumbs {
 
-	@{
+    @{
 
-
-		@Html.Partial("Breadcrumb")
-
-	}
-
+        @Html.Partial("Breadcrumb")
+    }
 
 }
 @section Scripts {
-	<script src="~/Scripts/underscore.min.js"></script>
-	<script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/underscore.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
 }

@@ -1,0 +1,112 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<IEnumerable<Merchello.Core.Models.IAddress>>
+
+@{
+
+    int index = 0;
+}
+
+<div class="h-card">
+    <span class="p-name"></span>
+
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-10 custom-width">
+            <ul class="address-list">
+                @foreach (var address in Model)
+                {
+                    index++;
+                    string uniqueId = address.AddressType + "_" + index;
+
+                <li class="clearfix clickable-row ids_@(uniqueId)" data-id="@(uniqueId)" >
+                    <div class="row p-adr h-adr" >
+                        <span class="p-company"> @(address.Organization)</span> |
+                        <span class="p-street-address"> @address.Address1 @address.Address2</span>  |
+                        @if (!address.Address2.IsNullOrWhiteSpace())
+                        {<span class="p-extended-address"></span>}
+
+                        @if (!address.Region.IsNullOrWhiteSpace())
+                        {<span class="p-region">@address.Region</span>}
+
+                        @if (!address.PostalCode.IsNullOrWhiteSpace())
+                        {<span class="p-postal-code">@address.PostalCode @address.Locality</span>}
+                    </div>
+                    <div class="liArrowContainer"></div>
+                </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-md-6 extra-info-row">
+            <ul class="address-two">
+
+                @{
+                    index = 0;
+
+                    foreach (var address in Model)
+                    {
+                        index++;
+                        string uniqueId = address.AddressType + "_" + index;
+
+                        <li class="find_ids">
+                            <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>company name</strong>
+                                    <br />
+                                    <span class="company" data-company="@(address.Organization)"> @(address.Organization)</span>
+                                </div>
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>city</strong>
+                                    <br />
+                                    <span class="p-locallity" data-city="@(address.Locality)"> @(address.Locality)</span>
+                                </div>
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>phone</strong>
+                                    <br />
+                                    <span class="p-phone" data-phone="@(address.Phone)"> @(address.Phone)</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>steet + nr.</strong>
+                                    <br />
+                                    <span class="p-street-num" data-addresses="@(address.Address1) @(address.Address2)"> @(address.Address1) @(address.Address2)</span>
+                                </div>
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>province</strong>
+                                    <br />
+                                    <span class="p-region" data-region="@(address.Region)"> @(address.Region)</span>
+                                </div>
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>e-mail address</strong>
+                                    <br />
+                                    <span class="p-email" data-mail=" @(address.Email)"> @(address.Email)</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>zipcode</strong>
+                                    <br />
+                                    <span class="p-postcode" data-postalcode=" @(address.PostalCode)"> @(address.PostalCode)</span>
+                                </div>
+                                <div class="col-xs-3 col-md-4">
+                                    <strong>country</strong>
+                                    <br />
+                                    <span class="p-country" data-country="@(address.CountryCode)"> @(address.CountryCode)</span>
+                                </div>
+                            </div>
+
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="col-md-6 new-form">
+            @Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "e3a8bd1a-f9f0-4848-a72f-b7c9f1a32ce2", FormTheme = "new-theme", ExcludeScripts = "1" })
+        </div>
+        <div class="col-md-6 edit-form">
+            @Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "8311c3e9-f9ce-4db7-9ec4-21a0982dc20d", FormTheme = "new-theme", ExcludeScripts = "1" })
+        </div>
+        <div class="col-md-6 offset-md-0">
+            <button id="cancelBtn" class="btn cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>

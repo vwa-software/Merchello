@@ -51,7 +51,6 @@ $('#scrollTop').on('click', function () {
 });
 
 
-
 /*!
  *
  * Sell theme v1.0.0
@@ -520,6 +519,35 @@ $(window).on("load", function(){
       */
     }
 });
+
+
+
+
+/* dynamic search control */
+/*
+$(window).on("load", function(){
+	$('#q.search-area-input').on('change', function(){
+		
+		console.log('input changed');
+		
+		var url = "/umbraco/Surface/HkDynSearchController/UpdateSearchResults";
+		var searchInput = $(this).val();
+		
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: {searchInput:searchInput},
+			success: function (data) {
+				$('#hk-DynSearch').html(data);
+			},
+		});
+			
+		
+	});	
+});
+*/
+
+//UpdateSearchResults
 
 
 // video header macro scripts

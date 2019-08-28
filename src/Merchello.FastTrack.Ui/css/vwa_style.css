@@ -194,7 +194,7 @@ margin:0px;
     margin: 0px 0px 0px 0px!important;
     color:#fff;
     font-size:30px;
-    letter-spacing: 2px;
+     letter-spacing: 2px;
     text-shadow: 0 1px 12px rgba(0, 0, 0, .25);
 }
 .hk_homepage_slider_headers h2 {
@@ -226,7 +226,10 @@ margin:0px;
 	.hk_homepage_slider_headers h2 {
 		font-size: 20px !important;
 		font-weight: 300;
-	}	
+	}
+    .panel-body .h-card .offset-md-0 {
+        margin-left: 70px;
+    }
 }
 @media only screen and (max-width: 500px) {
 	.hk_homepage_slider_headers h1 {
@@ -442,8 +445,13 @@ label.umbraco-forms-label {
 }
 
 .umbraco-forms-container textarea {
-    min-height: 148px;
+    /*min-height: 121px;*/
 }
+
+.complaintformmissingorwrong .umbraco-forms-container .complaint {
+    min-width: 147%;
+}
+
 .field-validation-error {
     display: block;
     width: 100%;
@@ -461,7 +469,7 @@ label.umbraco-forms-label {
 }
 
 .umbraco-forms-form textarea {
-    height: 150px!important;
+    /*height: 150px!important;*/
 }
 
 .umbraco-forms-form legend {
@@ -469,7 +477,7 @@ label.umbraco-forms-label {
 }
 
 body.Contact .umbraco-forms-field label{
-    display:none!important;
+    display:none !important;
 }
 
     /* Data Consent */
@@ -1011,7 +1019,7 @@ button,
 .button,
 .btn {
     font-family: "Muli", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #005ca9;
+    /*color: #005ca9;*/
     border-color: #aaaaaa;
 }
 
@@ -1712,6 +1720,29 @@ footer .container {
 
 /* /Footer */
 
+
+
+/* search suggestions (ticket zoekbalk verbeteringen 08 05 2019) */
+
+#search-area-suggestions {
+	top: 208px;
+	position: fixed;
+	z-index: 99999;
+	background-color: #fff;
+	width: 100%;
+}
+#search-area-suggestions .product-box-list {
+	width: 50%;
+	margin: auto;
+}
+#search-area-suggestions .product-box-list .row {
+	display: none;	
+}
+#search-area-suggestions .product-box-list .row:first-child {
+	display: block;	
+}
+
+
 .hk_homepage_slider_headers .btn.btn-grid {
 	font-size: 13px !important;
 	padding-bottom: 10px !important;
@@ -1742,15 +1773,68 @@ footer .container {
 	color: #7a7a7a;
 	letter-spacing: 1.2px;	
 }
+.hk_homepage .grid-section h3.editor {
+	
+}
 
-@media only screen and (max-width: 600px) {
-	.hk_homepage_slider_headers .btn.btn-grid {
-		font-size: 10px !important;
-		padding-bottom: 8px !important;
-		padding-top: 8px !important;
-		margin-top: 0px !important;
-		border-radius: 50px;
-	}
+ /* 16 07 2019 */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .hk_order.hk_checkout .umbraco-forms-page.form-horizontal .umbraco-forms-container {
+        max-width: 100%;
+    }
+    .hk_order.hk_checkout .col-md-6.extra-info-row {
+        max-width: 100%;
+    }
+
+    .hk_order.hk_checkout .complaintformmissingorwrong .umbraco-forms-container .complaint {
+        min-width: 100%;
+    }
+
+
+    .hk_order.hk_checkout .address-two > li > .row > div {
+        min-width: 100%;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+}
+
+
+.clickable-row {
+    position: relative;
+    overflow: hidden;
+}
+.clickable-row > div:first-child {
+    width: 94%;
+    max-width: 94%;
+    float: left;
+}
+
+.clickable-row .liArrowContainer {
+    display: none;
+}
+    .clickable-row .liArrowContainer {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        width: 6%;
+        /*background-image: url(https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-arrow-24.png); */
+        background-image: url("/arrow.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 10px;
+        top: 0;
+        background-color: white;
+    }
+    .clickable-row.defaultRow .liArrowContainer {
+        display: block;
+    }
+
+.panel-body .h-card .offset-md-0 {
+    margin-left: 40px;
+}
+
+.h-card .p-extended-address {
+    padding-right: 0;
 }
 
 
@@ -1787,11 +1871,18 @@ footer .container {
 }
 
 @media only screen and (max-width: 600px) {
-  .hk_homepage_slider_headers .btn-audio {
-    position: relative;
-  }
+	.hk_homepage_slider_headers .btn.btn-grid {
+		font-size: 10px !important;
+		padding-bottom: 8px !important;
+		padding-top: 8px !important;
+		margin-top: 0px !important;
+		border-radius: 50px;
+	}	
+	.hk_homepage_slider_headers .btn-audio {
+		position: relative;
+	}
 	.hk_homepage_slider_headers .btn-audio .btn.btn-grid {
-    	left: 5px;
+		left: 5px;
 	}
 	.hk_homepage_slider_headers .btn-audio .btn.btn-grid {
 		padding-left: 11px !important;

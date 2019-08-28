@@ -10,11 +10,16 @@
 	// ticket http://projecten.vwa.nu:888/redmine/issues/6275
 	// blokade psk klanten
 	bool isPskApproved = false;
+	bool isPassive = false;
 
 	var member = Members.GetCurrentMember();
 	if (member != null)
 	{
 		isPskApproved = VWA.PSKHelper.CheckPSKOrderMinimum(Model.Total, member);
+
+		//http://projecten.vwa.nu:888/redmine/issues/6274
+		// 0=Blocked, 1=Active, 2=Passive.
+		isPassive = member.HasProperty("status") && member.HasValue("status") && member.GetPropertyValue<int>("status") == 2;
 	}
 }
 <div class="container-fluid hk_order_summary hk_order hk_checkout hk_shop_forms">
@@ -98,14 +103,21 @@
 		</div>
 	</div>
 
-	@if (isPskApproved)
+	@if (isPskApproved && !isPassive)
 	{
 		@Html.Action("ResolvePayment", "CheckoutPaymentMethod", new { area = "FastTrack" })
 	}
-	else {
+	else if (!isPskApproved)
+	{
 		<ul>
 			<li>@Umbraco.GetDictionaryValue("PskUnapproved")</li>
-		</ul>		
+		</ul>
+	}
+	else if (isPassive)
+	{
+		<ul>
+			<li>@Umbraco.GetDictionaryValue("MemberIsPassive")</li>
+		</ul>
 	}
 
 	<div class="hk_account_forms hk_shipping ">

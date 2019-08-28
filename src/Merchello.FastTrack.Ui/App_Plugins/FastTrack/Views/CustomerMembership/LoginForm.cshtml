@@ -4,62 +4,62 @@
 @using Merchello.FastTrack.Ui
 @using Umbraco.Web
 @{
-  	
-		Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetAccount().Url;
 
-		IEnumerable<string> messages = null;
+    Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetAccount().Url;
 
-		if (ViewBag.MerchelloViewData != null)
-		{
-			messages = (ViewBag.MerchelloViewData as Merchello.Web.Store.Models.StoreViewData).Messages;
-		}
-	
+    IEnumerable<string> messages = null;
+
+    if (ViewBag.MerchelloViewData != null)
+    {
+        messages = (ViewBag.MerchelloViewData as Merchello.Web.Store.Models.StoreViewData).Messages;
+    }
+
 }
 <div class="panel panel-default hk_account_forms">
-    <h2 class="hk_shop">Login</h2>
     <div class="panel-body">
 
-		@if(messages != null && messages.Count() > 0)
-		{
-		<ul class="error">
-			@foreach (var message in messages)
-			{
-			<li>@Html.Raw(message)</li>
-			}
-		</ul>
-		}
+        @if (messages != null && messages.Count() > 0)
+        {
+            <ul class="error">
+                @foreach (var message in messages)
+                {
+                    <li>@Html.Raw(message)</li>
+                }
+            </ul>
+        }
 
 
         @using (Html.BeginUmbracoForm<CustomerMembershipController>("Login", new { area = "FastTrack" }))
         {
             @Html.AntiForgeryToken()
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        @Html.LabelFor(x => x.Username)
-                        @Html.TextBoxFor(x => x.Username, new { @placeholder = "email address", @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Username)
-                    </div>
-                    <div class="col-md-6 form-group"></div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    @Html.LabelFor(x => x.Username)
+                    @Html.TextBoxFor(x => x.Username, new { @placeholder = "email address", @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Username)
                 </div>
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        @Html.LabelFor(x => x.Password)
-                        @Html.PasswordFor(x => x.Password, new { @placeholder = "password", @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Password)
-                    </div>
-                    <div class="col-md-6 form-group"><input type="submit" value="Login" class="btn btn-default pull-right" /></div>
+                <div class="col-md-6 form-group">
+                    @Html.LabelFor(x => x.Password)
+                    @Html.PasswordFor(x => x.Password, new { @placeholder = "password", @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Password)
                 </div>
+            </div>
+
             <div class="form-group checkbox">
                 <label>
                     @Html.CheckBoxFor(x => x.RememberMe) Remember Me
                 </label>
                 @Html.HiddenFor(x => x.SuccessRedirectUrl)
-                
+
             </div>
             <div class="form-group hk_forgot-password">
-                <a href="/forgot-password"> @* this should be softcoded via ExampleUIHelper *@
+                <a href="/forgot-password">
+                    @* this should be softcoded via ExampleUIHelper *@
                     Forgot your password?
                 </a>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group"><input type="submit" value="Login" class="btn btn-default" /></div>
             </div>
         }
     </div>
