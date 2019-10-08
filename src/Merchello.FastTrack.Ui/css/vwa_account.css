@@ -1,7 +1,8 @@
 /* Login */
 
 .Login h4.umbraco-forms-caption {
-display:none;
+    /*display:none;*/
+    margin-left: 0 !important;
 }
 
 /* /Login */
@@ -38,10 +39,10 @@ display:none;
             position:absolute;
         }
 
-    body.Login .hk_category_name {
-     font-weight: 500;
-     text-transform:lowercase;
-    }
+body.Login .hk_category_name {
+    font-weight: 500;
+    text-transform: lowercase;
+}
     body.Login .hk_category_name span:before {
      font-weight: 500;
      content: "/ ";
@@ -57,9 +58,9 @@ display:none;
     /**/
     .hk_Checkout label,
     .hk_content.hk_Login label {
-        display: none;
+        /*display: none;
         position: absolute;
-        visibility: hidden;
+        visibility: hidden;*/
     }
 
     .hk_content.hk_Login .dataconsent .umbraco-forms-field-wrapper label {
@@ -71,7 +72,7 @@ display:none;
     
     .hk_content.hk_Complete > .container > .row .col-md-6:first-child,
     .hk_content.hk_Login > .container > .row .col-md-6:first-child {
-        border-right:1px solid #ebebeb;
+        /*border-right:1px solid #ebebeb;*/
     }
     
     .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6:first-child,
@@ -98,7 +99,7 @@ display:none;
     .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6,   
     .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-12,
     .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6 {
-        padding-left:0px;
+        padding-left: 5px;
         float:left;
     }
 
@@ -123,15 +124,35 @@ display:none;
     }
     
     .hk_content.hk_Login input[type="submit"] {
-        margin:0px 0px -21px 20px;
+        /*margin:0px 0px -21px 20px;*/
     }
+.hk_account_forms .panel-body .row {
+    padding-top: 20px; /*push the login fields lower*/
+}
 
-    .hk_order_summary {
-        /*display:none;*/
-    }
+.hk_order_summary {
+    /*display:none;*/
+}
     .hk_checkout .col-md-12 .row {
         margin:0px 0px 10px 0px;
     }
+
+.defaultRow {
+    background-color: rgb(235, 235, 235);
+}
+
+    /*.defaultRow::after {
+        content: "";
+        display: block;
+        height: 9px;
+        width: 9px;
+        right: 0;
+        float: right;
+        border-top: 2px solid black;
+        border-right: 2px solid black;
+        transform: rotateZ(45deg);
+    }*/
+
 
 .defaultRow {
     background-color: rgb(235, 235, 235);
@@ -158,13 +179,24 @@ display:none;
         content: "/" ;
         padding:0px 10px 0px 10px;
     }
-    
-    /* Complete order */
-    
-    .hk_Complete.order .col-md-6:first-child {
-        padding-right:24px;
 
+.cancelBtn {
+    margin-top: -40px;
+    float: right;
+    display: none;
+}
+    .cancelBtn.cancelAcc {
+        margin-top: -60px;
     }
+
+    .mdb-select {
+        width: 59%;
+    }
+
+/* Complete order */
+.hk_Complete.order .col-md-6:first-child {
+    padding-right: 24px;
+}
     .hk_Complete.order .col-md-6:last-child {
         padding-left:24px;
 

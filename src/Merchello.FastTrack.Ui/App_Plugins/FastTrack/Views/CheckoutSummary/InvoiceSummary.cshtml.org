@@ -1,0 +1,133 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<Merchello.FastTrack.Models.FastTrackCheckoutSummaryModel>
+@using System.Web.Mvc.Html
+@using Merchello.Core
+@using Merchello.FastTrack.Models
+@using Merchello.FastTrack.Ui
+@using Merchello.Web.Models.Ui
+@using Umbraco.Core.Models
+@using Umbraco.Web
+
+
+
+<div class="container-fluid hk_order_summary hk_order hk_checkout hk_shop_forms">
+
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="hk_shop">articles summary</h2>
+				</div>
+				<div class="panel-body">
+					<table class="table mui-basket mui-default">
+						<thead>
+							<tr>
+								<th colspan="2">article</th>
+								<th class="th_right">unit price</th>
+								<th class="th_right">amount</th>
+								<th class="th_right">price</th>
+							</tr>
+						</thead>
+						@foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
+						{
+							<tr>
+								<td>
+									@if (item.LineItemType == LineItemType.Product && item.Product.HasValue("ftProduct_Afbeelding"))
+									{
+										var mediaId = item.Product.GetPropertyValue<string>("ftProduct_Afbeelding");
+										var image = Umbraco.TypedMedia(mediaId);
+										<img src="@image.GetCropUrl(75, 75)" alt="@item.Product.Name" />
+									}
+								</td>
+								<td>@item.Name</td>
+								<td class="text-right">@item.Amount.AsFormattedCurrency()</td>
+								<td class="text-center">@item.Quantity</td>
+								<td class="text-right">@item.Total().AsFormattedCurrency()</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="4" class="text-right"><strong>Sub Total:</strong></td>
+							<td class="text-right"><strong>@Model.Items.Where(x => x.LineItemType == LineItemType.Product).Sum(x => x.Total()).AsFormattedCurrency()</strong></td>
+						</tr>
+						@foreach (var item in Model.Items.Where(x => x.LineItemType != LineItemType.Product && x.LineItemType != LineItemType.Shipping))
+						{
+							<tr>
+								<td>
+									@switch (item.LineItemType)
+									{
+										case LineItemType.Shipping:
+											@("Shipping:")
+											break;
+										case LineItemType.Discount:
+											@("Discount:")
+											break;
+										case LineItemType.Tax:
+											@("Vat:")
+											break;
+									}
+								</td>
+								<td>@(item.LineItemType != LineItemType.Discount ? item.Name : item.Sku)</td>
+
+								@if (item.LineItemType != LineItemType.Discount)
+								{
+									<td colspan="3" class="text-right">@item.Total().AsFormattedCurrency()</td>
+								}
+								else
+								{
+									<td></td>
+									<td class="text-center"><a href="@Url.Action("RemoveDiscount", "CheckoutDiscount", new { area = "Merchello", sku = item.Sku, redirectId = UmbracoContext.PageId })" title="Remove Discount"><span class="glyphicon glyphicon-trash"></span></a></td>
+									<td class="text-right">(@item.Total().AsFormattedCurrency())</td>
+								}
+							</tr>
+						}
+						<tfoot>
+							<tr>
+								<td colspan="4" class="text-right"><strong>total:</strong></td>
+								<td class="text-right"><strong>@Model.Total.AsFormattedCurrency()</strong></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@Html.Action("ResolvePayment", "CheckoutPaymentMethod", new { area = "FastTrack" })
+
+
+	<div class="hk_account_forms hk_shipping ">
+		<div class="row">
+			<div class="col-12 basket-summary col-sm-6">
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 class="hk_shop">Billing Address @RenderEdit(Model, "billing")</h2>
+					</div>
+					<div class="panel-body">
+						@Html.Partial("_Address", Model.BillingAddress)
+					</div>
+				</div>
+
+			</div>
+			<div class="col-12 basket-summary col-sm-6" style="text-align: right; margin: 20px 0px 0px 0px;">
+
+
+				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/contact/subscribe-to-the-newsletter/" title="Terms of condition" class="btn btn-primary" target="_blank">subscribe to the newsletter</a></p>
+				<p><a data-udi="umb://document/38f05829bc8f4e7091a077d9a4f9c0b4" href="/terms-and-conditions/" title="Terms of condition" class="btn btn-primary" target="_blank">terms and conditions</a></p>
+				<p><a data-udi="umb://document/a49e82184e2643d1b87ccea10e5e9183" href="/privacy-statement/" title="Privacy statement" class="btn btn-primary" target="_blank">privacy statement</a></p>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	@helper RenderEdit(FastTrackCheckoutSummaryModel model, string buttonFor)
+		{
+			// We are far along in process that we can display the edit buttons for both billing and shipping
+			var url = buttonFor == "billing" ?
+				ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.BillingAddress).Url :
+				ExampleUiHelper.CheckoutWorkflow.GetPageForStage(CheckoutStage.ShippingAddress).Url;
+
+			<a href="@url"><span class="glyphicon glyphicon-edit pull-right"></span></a>
+}

@@ -1,0 +1,7 @@
+﻿@inherits Merchello.Web.Mvc.MerchelloViewPage<IPublishedContent>
+
+@{
+    Layout = "Master.cshtml";
+}
+   
+ @Umbraco.RenderMacro("renderUmbracoForm", new { FormGuid = "6e9a532e-2a7c-4226-b2a2-505ed56e2a6d", FormTheme = "bootstrap3-horizontal", ExcludeScripts = "1" })

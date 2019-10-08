@@ -1,0 +1,61 @@
+﻿@inherits UmbracoViewPage<Lecoati.LeBlender.Extension.Models.LeBlenderModel>
+@using System.Web.Mvc.Html;
+@using Lecoati.LeBlender.Extension
+
+@foreach (var item in Model.Items)
+{
+	if (item.HasProperty("productPicker"))
+	{
+		var products = item.GetValue<IEnumerable<IPublishedContent>>("productPicker").ToList();
+
+		if (!Helper.IsFrontEnd())
+		{
+			<div style="padding:5px;">
+			<h3>Choose products</h3>
+
+			@if (products != null)
+			{
+
+				<ul>
+					@foreach (var product in products)
+					{
+						if (product != null)
+						{
+							<li>@product.Name</li>
+						}
+						else
+						{
+							<li>Not active</li>
+						}
+					}
+				</ul>
+			}
+			</div>
+		}
+		else
+		{
+
+			if (products != null)
+			{
+				products = products.Where(a => a != null).ToList();
+				if (products.Count > 0)
+				{
+					<div class="hk_row_specs related-products">
+						<h1 class="hk_category_name" style="font-weight:600;"><span>&nbsp;</span></h1>
+						<div class="row">
+
+							@foreach (var product in products.Where(a => a != null))
+							{
+								<div class="col-6 col-xl-3 col-md-6 col-lg-3">
+									@Html.Partial("_ProductBox", product)
+								</div>
+							}
+						</div>
+					</div>
+				}
+			}
+		}
+	}
+
+
+}

@@ -188,13 +188,11 @@
 				@RenderSection("Breadcrumbs", false)
 				@RenderBody()
 			</div>
-		</div>
+		</div> <!-- /container -->
 	</div>
-
-
-	<!-- Grid
+    @* Grid
 		todo: Check if currentpage has gridFooter, if not use fallback value of content node 3885
-	 -->
+	 *@
 	<footer class="footer">@Html.GetGridHtml(Umbraco.TypedContent(3885), "gridFooter")</footer>
 	<div id="scrollTop"><i class="fas fa-long-arrow-alt-up"></i></div>
 
@@ -240,6 +238,17 @@
 
 	@RenderSection("Scripts", false)
 	@Html.RenderJsHere()
+
+	<script type="text/javascript">
+	@{
+		if(Merchello.Core.CurrencyContext.HasCurrent && Merchello.Core.CurrencyContext.Current is ETC.B2B.PriceGroup.CurrencyContext)
+		{
+			@:document.CurrencyCode = '@(((ETC.B2B.PriceGroup.CurrencyContext)Merchello.Core.CurrencyContext.Current).LocalizedCurrency.CurrencyCode)';
+		}
+	}
+	</script>
+	
+
 </body>
 
 <!-- Google Tag Manager (noscript) -->

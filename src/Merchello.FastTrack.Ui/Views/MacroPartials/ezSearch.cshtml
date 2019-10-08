@@ -4,6 +4,11 @@
 @using Examine
 @using Umbraco.Core.Logging
 @using Umbraco.Web.Models
+@using Merchello.FastTrack.Ui
+@using Merchello.Web
+@using Merchello.Web.Models
+@using Merchello.Web.Models.Ui.Rendering
+@using Merchello.Web.Models.VirtualContent
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     int parsedInt;
@@ -55,23 +60,24 @@
     {
         model.SearchFields.Add("umbracoFileName");
     }
-    
+
     // Check the search term isn't empty
     if(!string.IsNullOrWhiteSpace(model.SearchTerm))
     {
         // Tokenize the search term
         model.SearchTerms = Tokenize(model.SearchTerm);
-        
+
         // Perform the search
+        // var searcher = ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
         var searcher = ExamineManager.Instance.SearchProviderCollection["MerchelloProductSearcher"];
         var criteria = searcher.CreateSearchCriteria();
         var query = new StringBuilder();
         query.AppendFormat("-{0}:1 ", model.HideFromSearchField);
-        
+
         // Set search path
         var contentPathFilter = model.RootContentNodeId > 0
-            ? string.Format("__IndexType:{0} +searchPath:{1} -template:0", UmbracoExamine.IndexTypes.Content, model.RootContentNodeId)
-            : string.Format("__IndexType:{0} -template:0", UmbracoExamine.IndexTypes.Content);
+            ? string.Format("__IndexType:{0} +searchPath:{1} -template:0", UmbracoExamine.IndexTypes.Productvariant, model.RootContentNodeId)
+            : string.Format("__IndexType:{0} -template:0", UmbracoExamine.IndexTypes.Productvariant);
 
         var mediaPathFilter = model.RootMediaNodeId > 0
             ? string.Format("__IndexType:{0} +searchPath:{1}", UmbracoExamine.IndexTypes.Media, model.RootMediaNodeId)
@@ -89,7 +95,7 @@
                 query.AppendFormat("+(({0}) ({1})) ", contentPathFilter, mediaPathFilter);
                 break;
         }
-        
+
         // Ensure page contains all search terms in some way
         foreach (var term in model.SearchTerms)
         {
@@ -111,7 +117,7 @@
         }
 
         var criteria2 = criteria.RawQuery(query.ToString());
-        
+
         var results = searcher.Search(criteria2)
            .Where(x => (
                 !Umbraco.IsProtected(int.Parse(x.Fields["id"]), x.Fields["path"]) ||
@@ -129,12 +135,12 @@
         model.TotalResults = results.Count;
         model.TotalPages = (int)Math.Ceiling((decimal)model.TotalResults / model.PageSize);
         model.CurrentPage = Math.Max(1, Math.Min(model.TotalPages, model.CurrentPage));
-        
+
         // Page the results
         model.PagedResults = model.AllResults.Skip(model.PageSize * (model.CurrentPage - 1)).Take(model.PageSize);
 
         LogHelper.Debug<string>("[ezSearch] Searching Lucene with the following query: " + query.ToString());
-        
+
         if (!model.PagedResults.Any())
         {
             // No results found, so render no results view

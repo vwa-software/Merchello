@@ -54,23 +54,32 @@
                     }
                 </td>
                 <td>
-                    <a href="@product.Url">
-                        <span>EAN: @Html.Raw(product.GetPropertyValue<string>("ftProduct_EAN"))  @hasdevider @(product.GetPropertyValue<string>("ftProduct_Artikelnummer"))  @hasdevider @product.Name @hasdevider @Html.Raw(product.GetPropertyValue<string>("ftProduct_afmetingen"))</span>
-                        @foreach (var choice in Model.Items[i].CustomerOptionChoices)
-                        {
-                            <span class="option-choice">@choice.Key - @choice.Value</span>
-                        }
-                    </a></td>
+                    @if (isProduct)
+                    {
+                        <a href="@product.Url">
+                            <span>EAN: @Html.Raw(product.GetPropertyValue<string>("ftProduct_EAN"))  @hasdevider @(product.GetPropertyValue<string>("ftProduct_Artikelnummer"))  @hasdevider @product.Name @hasdevider @Html.Raw(product.GetPropertyValue<string>("ftProduct_afmetingen"))</span>
+                            @foreach (var choice in Model.Items[i].CustomerOptionChoices)
+                            {
+                                <span class="option-choice">@choice.Key - @choice.Value</span>
+                            }
+                        </a>
+                    }
+                    else
+                    {
+                        // not a product (custom implementation) so just put the name here
+                        <span>This product is no longer available, please remove from shopping cart.</span>
+                    }
+                </td>
                 <td>
-					@if (isProduct)
+				  @if (isProduct)
 					{
 						int step = 1;
 						if(product.GetPropertyValue<int>("ftProduct_PackingUnit") > 1)
 						{
 							step = product.GetPropertyValue<int>("ftProduct_PackingUnit");
 						}
-						
-						@Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", value = step.ToString(), min = step.ToString(), step = step.ToString(), data_muiaction = "updatequantity" })
+
+						@Html.TextBoxFor(model => Model.Items[i].Quantity, new { @type = "number", min = step.ToString(), step = step.ToString(), data_muiaction = "updatequantity" })
                     }
                     else
                     {

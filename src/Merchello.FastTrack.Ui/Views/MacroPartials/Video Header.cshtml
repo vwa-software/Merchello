@@ -1,0 +1,38 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    string mp4 = Model.MacroParameters["mp4Source"].ToString();
+    
+    string header = Model.MacroParameters["headerSlider"].ToString();
+    string subHeader = Model.MacroParameters["subheaderSlider"].ToString();
+    string headerSize = Model.MacroParameters["headerSize"].ToString() + "px";
+    string subHeaderSize = Model.MacroParameters["subHeaderSize"].ToString() + "px";
+    string headerPosition = Model.MacroParameters["headerPosition"].ToString();
+    string linkButtonTxt = Model.MacroParameters["linkButtonTxt"].ToString();
+    string linkButtonId = Model.MacroParameters["linkButtonId"].ToString();
+    string linkButtonUrl = "";
+    IPublishedContent linkTarget = Umbraco.TypedContent(linkButtonId);
+    if (linkTarget != null) {
+        linkButtonUrl = linkTarget.Url;
+    }    
+}
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 hk_homepage_slider_headers" style="position:relative!important;">
+    <video controls playsinline autoplay loop muted style="width:100%;max-width:100%;padding-left:13px;padding-right:13px;padding-top:15px;">
+        <source src="@(mp4)" type="video/mp4">
+    </video>
+    
+    <div class="col-md-12 column" style="text-align:@(headerPosition);position:absolute;bottom:30px;">
+        <h1 style="font-size:@(headerSize);">@Html.Raw(header)</h1>
+        <h2 style="font-size:@(subHeaderSize);">@Html.Raw(subHeader)</h2>
+        @if (!String.IsNullOrEmpty(linkButtonTxt) && !String.IsNullOrEmpty(linkButtonUrl)) {
+            <a class="btn btn-grid" style="margin-bottom:0;" href="@(linkButtonUrl)">@(linkButtonTxt)</a>
+        }
+        
+        <span class="btn-audio">
+          <p style="margin-bottom:0;" class="btn btn-grid volume-down"></p>
+        </span>            
+        
+    </div>    
+    
+</div>

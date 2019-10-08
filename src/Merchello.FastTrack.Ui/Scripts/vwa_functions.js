@@ -51,8 +51,6 @@ $('#scrollTop').on('click', function () {
 });
 
 
-
-
 /*!
  *
  * Sell theme v1.0.0
@@ -139,10 +137,13 @@ $(function () {
     // ------------------------------------------------------ //
     $('[data-toggle="search"]').on('click', function () {
         $('.search-area-wrapper').show();
+		$('.fa-search').css("visibility", "hidden" );
+		$('#q.search-area-input').focus();
     });
 
     $('.search-area-wrapper .close-btn').on('click', function () {
         $('.search-area-wrapper').hide();
+		$('.fa-search').css("visibility", "visible" );
     });
     //$(window).scroll(function(){$('.search-area-wrapper').fadeOut();});
 

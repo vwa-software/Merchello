@@ -37,7 +37,7 @@
 
             @foreach (var c in fs.Containers)
             {
-                <div class="umbraco-forms-container @("col-md-" + c.Width)">
+                <div class="umbraco-forms-container hk_form_vertical" >  @*@("col-md-" + c.Width)*@
 
                     @foreach (FieldViewModel f in c.Fields)
                     {
@@ -47,16 +47,16 @@
 
                             @if (!f.HideLabel)
                             {
-                                <label for="@f.Id" class="col-sm-2 control-label umbraco-forms-label">
+                              @*  <label for="@f.Id" class="col-sm-2 control-label umbraco-forms-label">
                                     @f.Caption 
                                     @if (f.ShowIndicator)
                                     {
                                         <span class="umbracoForms-Indicator">@Model.Indicator</span>
                                     }
-                                </label>
+                                </label> *@
                             }
 
-                            <div class="col-sm-10 umbraco-forms-field-wrapper">
+                            <div class="col-sm-12 col umbraco-forms-field-wrapper">
 
                                 @Html.Partial(FormThemeResolver.GetFieldView(Model, f), f)
 
@@ -89,9 +89,9 @@
         <input type="text" name="@Model.FormId.ToString().Replace("-", "")" />
     </div>
 
-		
+        
     <div class="umbraco-forms-navigation row-fluid">
-		
+        
         <div class="col-sm-10 col-sm-offset-2">
             @if (Model.IsMultiPage)
             {

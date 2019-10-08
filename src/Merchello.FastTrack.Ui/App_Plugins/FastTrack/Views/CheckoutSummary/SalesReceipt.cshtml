@@ -1,17 +1,18 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<Merchello.FastTrack.Models.FastTrackCheckoutSummaryModel>
+﻿@inherits Merchello.Web.Mvc.MerchelloViewPage<Merchello.FastTrack.Models.FastTrackCheckoutSummaryModel>
 @using System.Web.Mvc.Html
 @using Merchello.Core
 @using Merchello.Web.Models.Ui
 @using Umbraco.Core.Models
 @using Umbraco.Web
+@using Merchello.Web
 
 @{
 
-	http://projecten.vwa.nu:888/redmine/issues/5523
+	// http://projecten.vwa.nu:888/redmine/issues/5523
 
 	string notes = string.Empty;
 
-	var invoice = Merchello.Core.MerchelloContext.Current.Services.InvoiceService.GetByKey(Model.InvoiceKey);
+	var invoice = MerchelloContext.Current.Services.InvoiceService.GetByKey(Model.InvoiceKey);
 	if(invoice.Notes != null)
 	{
 		foreach(var note in invoice.Notes)
@@ -48,13 +49,42 @@
 		"transactionProducts": [
 			@foreach (var item in Model.Items.Where(x => x.LineItemType == LineItemType.Product))
 			{
+				// http://projecten.vwa.nu:888/redmine/issues/6410
+				string categoryName = "root";
+				if(item.ExtendedData != null)
+				{
+					var collectionKey = item.ExtendedData.FirstOrDefault(a => a.Key == "collectionKey");
+
+					if (collectionKey.Key != null)
+					{
+						var collection = Merchello.Collections.Product.GetByKey(new Guid(collectionKey.Value));
+
+						if (collection != null)
+						{
+							categoryName = collection.Name;
+
+							while (collection.ParentKey.HasValue)
+							{
+								collection = collection.Parent();
+
+								// skip the root 
+								if (collection != null && collection.ParentKey.HasValue)
+								{
+									categoryName = collection.Name + "/" + categoryName;
+								}
+							}
+						}
+					}
+				}
+				
 				if (!first){
 					@:,
 				}
 				<text>{
 					"sku": @Html.Raw(System.Web.Helpers.Json.Encode(item.Sku)) ,
 				"name": @Html.Raw(System.Web.Helpers.Json.Encode(item.Name)) ,
-				"price": @item.Amount.ToString("F2",System.Globalization.CultureInfo.InvariantCulture),
+				"price": @item.Amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+				"category" : @Html.Raw(System.Web.Helpers.Json.Encode(categoryName)), 
 				"quantity": @item.Quantity
 				}</text>
 				first = false;

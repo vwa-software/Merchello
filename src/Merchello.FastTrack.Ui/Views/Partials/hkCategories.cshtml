@@ -12,22 +12,6 @@
 }
 
 
-@*<div>
-
-	// NIels: Deze is aangepast doordat de indeling anders werd (Living, Dining etc.).
-
-		@if (categories.Count() > 0)
-		{
-			<h3><a href="/">Categories</a></h3>
-
-			<ul class="hk_categories_list">
-				@foreach (var item in categories)
-				{
-					@RenderLink(item)
-				}
-			</ul>
-		}
-	</div>*@
 <style>
 	.Collections #hk_search-input input {
 		max-width: 160px !important;
@@ -42,25 +26,46 @@
 	<ul class="hk_categories_list parent_list">
 		<li><a class="cat-link " href="/collections/all-products/">All products</a></li>
 	</ul>
-	
-		<ul class="hk_categories_list parent_list">
-			<li><a class="cat-link " href="/collections/pre-sale-additions/">Pre sale additions</a></li>
-		</ul>
+	@*
+	@{
+	 var additionsItem = Umbraco.TypedContent(1099).Children()
+	.FirstOrDefault(x => x.IsVisible() && x.Id == 14061);
 
-	@*@if (Members.IsLoggedIn())
+	if (additionsItem != null)
 	{
+		
+			<ul class="hk_categories_list parent_list list_icon">
+				@RenderLink(additionsItem)
+			</ul>
+		}
+	}
 	
-		<ul class="hk_categories_list parent_list">
-			<li><a class="cat-link " href="/collections/pre-sale-additions/">Pre sale additions</a></li>
-		</ul>
-	
-	}*@
-	
-	<ul class="hk_categories_list parent_list">
-		<li><a class="cat-link " href="/collections/new-collection/">New collection</a></li>
-	</ul>
+	@{
+	 var newcollectionItem = Umbraco.TypedContent(1099).Children()
+	.FirstOrDefault(x => x.IsVisible() && x.Id == 13584);
 
+	if (newcollectionItem != null)
+	{
+		
+			<ul class="hk_categories_list parent_list list_icon">
+				@RenderLink(newcollectionItem)
+			</ul>
+		}
+	}
+	*@
+	@* collection 2020 *@
+	@{
+    	IPublishedContent collection2020 = Umbraco.TypedContent("28679");
+    	if (collection2020 != null && collection2020.IsVisible()) {
+    		<ul class="hk_categories_list parent_list list_icon collection-2020">
+    			@RenderLink(collection2020)
+    		</ul>	    
+    	}
+	}	
+    
 </div>
+
+
 
 @{
 	var arrivalsItem = Umbraco.TypedContent(1099).Children()
@@ -141,7 +146,7 @@
 	}
 
 
-@{
+    @{
 	var serviceItem = Umbraco.TypedContent(1099).Children()
 						.FirstOrDefault(x => x.IsVisible() && x.Name.Contains("Service") && Umbraco.MemberHasAccess(x.Path));
 
@@ -185,7 +190,7 @@
                                                             .Where(x => x.IsVisible());
         if (furniture != null)
         {
-            <div class="hk_featured_cat hk_landingspage_cat">
+            <div class="hk_featured_cat hk_landingspage_cat" style="width: 100%;display: inline-block;">
                 <h3 class="h3living"><a href="/collections/furniture/">Furniture</a></h3>
                 <ul class="hk_categories_list parent_list">
                     @foreach (var item in furniture)

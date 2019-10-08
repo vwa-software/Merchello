@@ -133,7 +133,7 @@ namespace VWA.Storelocator
 				}
 			}
 			
-			storeModels = storeModels.OrderBy(a => a.CalculatedDistance).ToList();
+			storeModels = storeModels.OrderBy(a => a.CalculatedDistance).Take(20).ToList();
 			
 			return storeModels;
 		}

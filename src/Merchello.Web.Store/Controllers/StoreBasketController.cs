@@ -9,6 +9,7 @@
 	using Merchello.Core.Logging;
 	using Merchello.Web.Controllers;
     using Merchello.Web.Factories;
+	using Merchello.Web.Models;
 	using Merchello.Web.Models.ContentEditing;
 	using Merchello.Web.Store.Factories;
     using Merchello.Web.Store.Models;
@@ -111,6 +112,23 @@
 
 				extendedData.SetValue("etcPackingUnit", packingUnit.ToString());
 
+				// determine the sellected colection
+				IProductCollection collection = null;
+
+				// Selected category is stored in the optionchoices
+				if (model.OptionChoices != null &&  model.OptionChoices.Count() >0)
+				{
+					collection = merchello.Collections.Product.GetByKey(model.OptionChoices[0]);
+				}
+				if(collection == null)
+				{
+					collection = merchProduct.Collections().FirstOrDefault();
+				}
+				if(collection != null)
+				{
+					extendedData.SetValue("collectionKey", collection.Key.ToString());
+				}
+
 				// ensure the quantity on the model
 				var quantity = Math.Max(packingUnit, model.Quantity);
 
@@ -123,32 +141,71 @@
 				// -- If a product that has variants is defined, the FIRST variant will be added to the cart. 
 				// -- This was done so that we did not have to throw an error since the Master variant is no
 				// -- longer valid for sale.
-				if (model.OptionChoices != null && model.OptionChoices.Any())
-				{
-					var variant = product.GetProductVariantDisplayWithAttributes(model.OptionChoices);
+				//if (model.OptionChoices != null && model.OptionChoices.Any())
+				//{
+				//	var variant = product.GetProductVariantDisplayWithAttributes(model.OptionChoices);
 
-					// Log the option choice for this variant in the extend data collection
-					var choiceExplainations = new Dictionary<string, string>();
-					foreach (var choice in variant.Attributes)
+				//	// Log the option choice for this variant in the extend data collection
+				//	var choiceExplainations = new Dictionary<string, string>();
+				//	foreach (var choice in variant.Attributes)
+				//	{
+				//		var option = product.ProductOptions.FirstOrDefault(x => x.Key == choice.OptionKey);
+				//		if (option != null)
+				//		{
+				//			choiceExplainations.Add(option.Name, choice.Name);
+				//		}
+				//	}
+
+				//	// store the choice explainations in the extended data collection
+				//	extendedData.SetValue(Core.Constants.ExtendedDataKeys.BasketItemCustomerChoice, JsonConvert.SerializeObject(choiceExplainations));
+
+				//	this.Basket.AddItem(variant, variant.Name, quantity, extendedData);
+				//}
+				//else
+				//{
+					
+				//}
+
+				this.Basket.AddItem(product, product.Name, quantity, extendedData);
+				this.Basket.Save();
+
+				if (Request.IsAjaxRequest())
+				{
+					// Construct the response object to return
+					var resp = new AddItemAsyncResponse
 					{
-						var option = product.ProductOptions.FirstOrDefault(x => x.Key == choice.OptionKey);
-						if (option != null)
+						Success = true,
+						ItemCount = this.GetBasketItemCountForDisplay()
+					};
+
+					resp.Name = product.Name;
+					resp.Id = product.Key.ToString();
+					resp.Price = product.Price;
+
+					if(collection != null)
+					{
+						resp.Category = collection.Name;
+						
+						while (collection.ParentKey.HasValue)
 						{
-							choiceExplainations.Add(option.Name, choice.Name);
+							collection = collection.Parent();
+							// skip the root 
+							if(collection != null && collection.ParentKey.HasValue)
+							{
+								resp.Category = collection.Name + "/" + resp.Category;
+							}
 						}
 					}
-
-					// store the choice explainations in the extended data collection
-					extendedData.SetValue(Core.Constants.ExtendedDataKeys.BasketItemCustomerChoice, JsonConvert.SerializeObject(choiceExplainations));
-
-					this.Basket.AddItem(variant, variant.Name, quantity, extendedData);
+					else
+					{
+						resp.Category = "root";
+					}
+					
+					resp.Quantity = quantity;
+										
+					return this.Json(resp);
 				}
-				else
-				{
-					this.Basket.AddItem(product, product.Name, quantity, extendedData);
-				}
 
-				this.Basket.Save();
 
 				// If this request is not an AJAX request return the redirect
 				return this.HandleAddItemSuccess(model);
@@ -164,6 +221,7 @@
 
 
 		}
+
 
 
 		/// <summary>
@@ -210,7 +268,6 @@
 
 			return this.HandleUpdateBasketSuccess(model);
 		}
-
 
 
 		/// <summary>

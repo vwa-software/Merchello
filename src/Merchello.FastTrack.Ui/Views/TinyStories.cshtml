@@ -1,4 +1,5 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage<ContentModels.TinyStories>
+@using System.Web.Mvc.Html
 @*@inherits Umbraco.Web.Mvc.UmbracoTemplatePage*@
 @using ContentModels = Umbraco.Web.PublishedContentModels;
 @{
@@ -10,6 +11,16 @@
 
 <div class="hk_news_page">
 	<div class="container hk_news_items">
+	    <div class="row">
+            <div class="col-12">
+                @Model.Content.GetGridHtml("collectionGridTop")
+            </div>
+        </div>
+    </div>
+	
+	@* Deze dynamische code is uitgezet omdat grid implementatie was gewenst. Neemt met zich mee dat de paginatie dan niet standaard ook werkt.
+	
+	    
     @{
     var pageSize = 5;
     if (Model.Content.HasValue("numberOfItemsPerPage"))
@@ -49,8 +60,9 @@
         <div class="col-sm-9 col-md-9">
             <h2>
                 <a href="@article.Url">@Umbraco.StripHtml(article.Name)</a>
-                <span>@Umbraco.StripHtml(article.subTitel)</span>
+                
             </h2>
+            <h3><span>@Umbraco.StripHtml(article.subTitel)</span></h3>
             <p>@Umbraco.Truncate(article.bericht, 300)</p>
             <a href="@article.Url" class="btn vwa_btn_blue_border">@Umbraco.StripHtml(article.verderKnop)</a>
         </div>
@@ -84,7 +96,7 @@
         }
     }
 
-	</div>
+	</div>*@
 
 </div>
 
@@ -116,6 +128,7 @@
 
 
 }
+
 @section Breadcrumbs {
 
     @{
