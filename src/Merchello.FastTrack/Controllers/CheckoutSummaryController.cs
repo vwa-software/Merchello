@@ -39,9 +39,12 @@
 			FastTrackBillingAddressModel model = null;
 			var BillingAddressFactory = new FastTrackBillingAddressModelFactory();
 
+            ////shipping address
+            //FastTrackBillingAddressModel model2 = null;
+            //var ShippingFactory = new FastTrackShippingAddressModelFactory();
 
-			// HKLiving, always use the default customer addres which comes from eTC.
-			if (!this.CurrentCustomer.IsAnonymous)
+            // HKLiving, always use the default customer addres which comes from eTC.
+            if (!this.CurrentCustomer.IsAnonymous)
 			{
 				ICustomerAddress defaultBilling = ((ICustomer)this.CurrentCustomer).DefaultCustomerAddress(AddressType.Billing);
 				
@@ -93,19 +96,19 @@
 
 				// we use the billing address factory here since we know the model FastTrackBillingAddressModel
 				// and only want Merchello's IAddress
-				var address2 = BillingAddressFactory.Create(model);
+				//var address2 = ShippingFactory.Create(model2);
 
-				address2.AddressType = AddressType.Shipping;
-				CheckoutManager.Customer.SaveShipToAddress(address2);
-				CheckoutManager.Shipping.ClearShipmentRateQuotes();
+				//address2.AddressType = AddressType.Shipping;
+				//CheckoutManager.Customer.SaveShipToAddress(address2);
+				//CheckoutManager.Shipping.ClearShipmentRateQuotes();
 
-				var factory = new CheckoutShipRateQuoteModelFactory<FastTrackShipRateQuoteModel>();
-				var quoteModel = factory.Create(Basket, address2);
-				if (quoteModel != null && quoteModel.ProviderQuotes.Count() > 0)
-				{
-					var accepted = quoteModel.ProviderQuotes.FirstOrDefault();
-					CheckoutManager.Shipping.SaveShipmentRateQuote(accepted);
-				}
+				//var factory = new CheckoutShipRateQuoteModelFactory<FastTrackShipRateQuoteModel>();
+				//var quoteModel = factory.Create(Basket, address2);
+				//if (quoteModel != null && quoteModel.ProviderQuotes.Count() > 0)
+				//{
+				//	var accepted = quoteModel.ProviderQuotes.FirstOrDefault();
+				//	CheckoutManager.Shipping.SaveShipmentRateQuote(accepted);
+				//}
 			}
 
 			return base.InvoiceSummary(view);

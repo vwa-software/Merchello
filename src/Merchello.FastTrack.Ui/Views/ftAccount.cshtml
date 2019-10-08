@@ -4,173 +4,295 @@
 @using Merchello.Web.Store.Localization
 
 @{
-	Layout = "Master.cshtml";
+    Layout = "Master.cshtml";
 
-	ICustomer customer = null;
-	if (CurrentCustomer is ICustomer)
-	{
-		customer = (ICustomer)CurrentCustomer;
-	}
+    ICustomer customer = null;
+    if (CurrentCustomer is ICustomer)
+    {
+        customer = (ICustomer)CurrentCustomer;
+    }
 
-	var umbracomember = Members.GetCurrentMember();
+    var umbracomember = Members.GetCurrentMember();
 
-	if (customer != null)
-	{
+    IPublishedContent account = Umbraco.TypedContent(1112);
 
-		<div class="hk_order hk_checkout">
-			@if (Model.HasProperty("brief") && Model.HasValue("brief"))
-			{
-				@Umbraco.Field("brief")
-			}
-			<div class="row">
+    IPublishedContent requestEditForm = Umbraco.TypedContent(29178);
 
-				<div class="col-md-12 ">
-					@if (!customer.WishList().IsEmpty)
-					{
-						<h2 class="hk_shop">@StoreFormsResource.LabelWishList</h2>
-						@Html.Action("WishListForm", "StoreWishList", new { area = "Merchello" })
-					}
-					<h2 class="hk_shop">Account</h2>
-					<div class="row">
-						<div class="col-md-2">
-							<strong>company name</strong>
-							<br />
-							@if (Members.IsLoggedIn())
-							{
-								@umbracomember.GetPropertyValue("company")
-							}
-							@*   @Html.Action("Invoices", "Account", new { area = "ETCConnector" })*@
-						</div>
-						<div class="col-md-2">
-							<strong>first name</strong>
-							<br />@string.Format("{0}", customer.FirstName)
-						</div>
-						@*<div class="col-md-2">
-								<strong>zipcode</strong>
-								<br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-							</div>*@
-						<div class="col-md-2">
-							<strong>phone</strong>
-							<br />
-							@umbracomember.GetPropertyValue("phoneHome")
-						</div>
-						@* <div class="col-md-2">
-								<input class="btn btn-hk-custom" type="button" value="edit" />
-							</div>*@
-					</div>
-					<div class="row">
-						<div class="col-md-2">
-						</div>
-						<div class="col-md-2">
-							<strong>last name</strong>
-							<br />@string.Format("{0}", customer.LastName)
-						</div>
-						<div class="col-md-2">
-							<strong>email adress</strong>
-							<br />
-							<a href="mailto:@customer.Email">@customer.Email</a>
-						</div>
-						<div class="col-md-2">
-						</div>
-						<div class="col-md-2">
+    if (customer != null)
+    {
 
-						</div>
-						<div class="col-md-2">
+        <div class="hk_order hk_checkout">
+            @if (Model.HasProperty("brief") && Model.HasValue("brief"))
+            {
+                @Umbraco.Field("brief")
+            }
+            <div class="row">
 
-						</div>
-						<div class="col-md-2">
-						</div>
-					</div>
-					@*    <div class="row">
-								 <div class="col-md-2">
-									 <strong>company name</strong>
-									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-								 </div>
-								 <div class="col-md-2">
-									 <strong>last name</strong>
-									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-								 </div>
-								 <div class="col-md-2">
-									 <strong>country</strong>
-									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-								 </div>
-								 <div class="col-md-2">
-									 <strong>postalcode</strong>
-									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-								 </div>
-								 <div class="col-md-2">
-									 <strong>phone</strong>
-									 <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
-								 </div>
-								 <div class="col-md-2">
-									 <input class="btn" type="button" value="edit" />
-								 </div>
-							 </div>
+                <div class="col-md-12 ">
+                    @if (!customer.WishList().IsEmpty)
+                    {
+                        <h2 class="hk_shop">@StoreFormsResource.LabelWishList</h2>
+                        @Html.Action("WishListForm", "StoreWishList", new { area = "Merchello" })
+                    }
 
-						</div> *@
+                    <div class="row">
+                        @if (account != null)
+                        {
+                            @account.GetGridHtml(Html, "gridLayout")
+                        }
+                    </div>
 
-					@* <div class="col-md-6">
-							<h2 class="hk_shop">@StoreFormsResource.LabelAddresses</h2>
-							@Html.Action("CustomerBillingAddress", "CustomerMembership", new { area = "FastTrack" })
+                    <h2 class="hk_shop">Account</h2>
 
-							@Html.Action("CustomerShippingAddress", "CustomerMembership", new { area = "FastTrack" })
-						</div>*@
-				</div>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-12">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" href="#account" role="tab" data-toggle="tab" aria-selected="true">my account</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#invoice_address" role="tab" data-toggle="tab">invoice address</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#shipping_address" role="tab" data-toggle="tab" aria-selected="true">shipping address</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#complaint" role="tab" data-toggle="tab" aria-selected="true">complaint form</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#productfeed" role="tab" data-toggle="tab" aria-selected="true">productfeed</a>
+                                </li>
+                            </ul>
 
-				<div class="row" style="margin:20px 0px 0px 0px">
-					<div class="col-md-12">
-						@* @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" }) *@
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<ul class="nav nav-tabs" role="tablist">
-							<li class="nav-item">
-								<a class="nav-link active show" href="#history" role="tab" data-toggle="tab" aria-selected="true">my web order history</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#orders" role="tab" data-toggle="tab">my order history</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#invoices" role="tab" data-toggle="tab" aria-selected="true">my invoices</a>
-							</li>
-						</ul>
+                        </div>
+                        <div class="col-md-3 col-lg-2 hide-mobile custom-padding">
+                            <a class="btn" href="/request-a-new-address-form/">Request new</a>
+                            @*  <a class="btn" href="@(account.Url)">Request new</a>*@
+                        </div>
+                        <div class="col-lg-2 col-md-3 hide-mobile custom-padding">
+                            <a class="btn" href="/request-edit-form/">Request edit</a>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div class="col-md-12 tab-pane fade in active show" role="tabpanel" id="account">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>company name</strong>
+                                    <br />
+                                    @if (Members.IsLoggedIn())
+                                    {
+                                        @umbracomember.GetPropertyValue("company")
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>last name</strong>
+                                    <br />@string.Format("{0}", customer.LastName)
+                                </div>
 
-						<div class="tab-content">
-							<div class="col-md-12 tab-pane fade in active show" role="tabpanel" id="history">
-								@* Maatwerk HKLiving Invoices
-									<h2 class="hk_shop">my web order history</h2>*@
-								@*Maatwerk HKLiving Invoices*@
-								@*Call to ETCConnector Account Controller*@
-								@Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
-							</div>
-							<div class="col-md-12 tab-pane fade in" role="tabpanel" id="invoices">
-								@* Maatwerk HKLiving Invoices
-									<h2 class="hk_shop">my invoices</h2>*@
-								@*Maatwerk HKLiving Invoices*@
-								@*Call to ETCConnector Account Controller*@
-								@Html.Action("Invoices", "Account", new { area = "ETCConnector" })
-							</div>
-							<div class="col-md-12 tab-pane fade" role="tabpanel" id="orders">
-								@*<h2 class="hk_shop">my orders</h2>*@
-								@*Maatwerk HKLiving Invoices*@
-								@*Call to ETCConnector Account Controller*@
-								@Html.Action("Orders", "Account", new { area = "ETCConnector" })
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	}
-	else
-	{
-		// customer == null, for some reasen.
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>country</strong>
+                                    <br />
+                                    @umbracomember.GetPropertyValue("phoneHome")
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>zipcode</strong>
+                                   
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>mobile</strong>
+                                    <br />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>first name</strong>
+                                    <br />@string.Format("{0}", customer.FirstName)
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>email adress</strong>
+                                    <br />
+                                    <a href="mailto:@customer.Email">@customer.Email</a>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>province</strong>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>city</strong>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>first letters</strong>
+                                    <br /> @umbracomember.GetPropertyValue("customerInitials")
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>gender</strong>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>street + nr.</strong>
+                                    <br />
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                    <strong>phone</strong>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 tab-pane fade in" role="tabpanel" id="invoice_address">
+                            @Html.Action("GetAllBillingAddresses", "CustomerMembership", new { area = "FastTrack" })
+                        </div>
 
-		<script type="text/javascript">
-			window.location = "/home";
-		</script>
+                        <div class="col-md-12 tab-pane fade" role="tabpanel" id="shipping_address">
+                            @Html.Action("GetAllShippingAddresses", "CustomerMembership", new { area = "FastTrack" })
+                        </div>
 
-	}
+                        <div class="col-md-12 tab-pane fade in" role="tabpanel" id="complaint">
+		                        @*@Umbraco.RenderMacro("renderUmbracoForm", new {FormGuid="a365a224-76b2-49c3-b11f-6e394a86a85c", FormTheme="bootstrap3-horizontal", ExcludeScripts="1"})					
+		                        
+		                        <br>
+		                        <p>--------</p>
+		                        <br>
+		                        @Umbraco.RenderMacro("renderUmbracoForm", new {FormGuid="ecf659d1-8224-4ddc-bb51-67974a162611", FormTheme="bootstrap3-horizontal", ExcludeScripts="1"})*@
+                        </div>
+                        <div class="col-md-12 tab-pane fade in" role="tabpanel" id="productfeed">
+                           @umbracomember.GetPropertyValue("productfeedUrlCsv")
+                        </div>
+                    </div>
+
+
+                    @*    <div class="row">
+                     <div class="col-md-2">
+                         <strong>company name</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>last name</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>country</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>postalcode</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <strong>phone</strong>
+                         <br />@string.Format("{0} {1}", customer.FirstName, customer.LastName)
+                     </div>
+                     <div class="col-md-2">
+                         <input class="btn" type="button" value="edit" />
+                     </div>
+                 </div>
+
+            </div> *@
+
+
+                    @* <div class="col-md-6">
+                <h2 class="hk_shop">@StoreFormsResource.LabelAddresses</h2>
+                @Html.Action("CustomerBillingAddress", "CustomerMembership", new { area = "FastTrack" })
+
+                @Html.Action("CustomerShippingAddress", "CustomerMembership", new { area = "FastTrack" })
+            </div>*@
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-3 col-sm-4 hide-desktop">
+                        <a class="btn" href="/request-edit-form/">Request edit</a>
+                    </div>
+                    <div class="col-xs-3 col-sm-4 hide-desktop">
+                        <a class="btn" href="/request-a-new-address-form/">Request new</a>
+                        @*  <a class="btn" href="@(account.Url)">Request new</a>*@
+                    </div>
+                </div>
+                
+                <div class="row" style="margin:20px 0px 0px 0px">
+                    <div class="col-md-12">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" href="#history" role="tab" data-toggle="tab" aria-selected="true">my web order history</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#orders" role="tab" data-toggle="tab">my order history</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#invoices" role="tab" data-toggle="tab" aria-selected="true">my invoices</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="col-md-12 tab-pane fade in active show" role="tabpanel" id="history">
+                                @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+                            </div>
+                            <div class="col-md-12 tab-pane fade in" role="tabpanel" id="invoices">
+                                @Html.Action("Invoices", "Account", new { area = "ETCConnector" })
+                            </div>
+                            <div class="col-md-12 tab-pane fade" role="tabpanel" id="orders">
+                                @Html.Action("Orders", "Account", new { area = "ETCConnector" })
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        // customer == null, for some reasen.
+
+        <script type="text/javascript">
+            window.location = "/home";
+        </script>
+
+    }
 
 }
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#find_ids').first().addClass('defaultRow');
+
+        $('ul.address-two li:nth-child(2)').hide();
+    });
+
+
+    $('#find_ids').each(function () {
+
+        $('.clickable-row').click(function () {
+
+            if ($('#find_ids').first().hasClass('defaultRow')) {
+
+                $('.h-card').find('.arrow-position').addClass('arrow-position-down');
+
+                $("ul.address-list li:nth-child(1)").removeClass('defaultRow');
+                $("ul.address-list li:nth-child(2)").addClass('defaultRow');
+
+                $('ul.address-two li:nth-child(1)').hide();
+                $('ul.address-two li:nth-child(2)').show();
+            }
+
+            else {
+                $('.h-card').find('.arrow-position').removeClass('arrow-position-down');
+
+                $("ul.address-list li:nth-child(1)").addClass('defaultRow');
+                $("ul.address-list li:nth-child(2)").removeClass('defaultRow');
+
+                $('ul.address-two li:nth-child(1)').show();
+                $('ul.address-two li:nth-child(2)').hide();
+            }
+        });
+
+    });
+</script>

@@ -998,6 +998,8 @@
     </Content>
     <Content Include="App_Plugins\Hotspots\editor.cshtml" />
     <Content Include="App_Plugins\Hotspots\GridEditors\editor.cshtml" />
+    <Content Include="App_Plugins\FastTrack\Views\CustomerMembership\GetAllBillingAddresses.cshtml" />
+    <Content Include="App_Plugins\FastTrack\Views\CustomerMembership\GetAllShippingAddresses.cshtml" />
     <None Include="App_Plugins\Hotspots\Views\web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -1010,8 +1012,6 @@
     <Content Include="App_Plugins\Merchello\client\css\merchello.ui.min.css.map" />
     <Content Include="App_Plugins\Merchello\client\js\merchello.ui.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\Productie .pubxml" />
-    <None Include="Properties\PublishProfiles\VWAServer Live.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.creditCardValidator.js" />
@@ -1019,7 +1019,9 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\searchingScript.js" />
     <Content Include="Scripts\underscore.min.js" />
+    <Content Include="Scripts\vwa_account.js" />
     <Content Include="Scripts\vwa_functions.js" />
     <Content Include="Scripts\vwa_maps.js" />
     <Content Include="Styles\css\bootstrap-theme.css" />
@@ -1131,6 +1133,9 @@
     <Content Include="Views\Partials\Forms\Themes\default\Render.cshtml" />
     <Content Include="Views\Partials\Forms\Themes\default\Script.cshtml" />
     <Content Include="Views\Partials\Forms\Themes\default\Submitted.cshtml" />
+    <Content Include="Views\Partials\hkPressroomCategories.cshtml" />
+    <Content Include="Views\Shared\_AddressShippingBilling.cshtml" />
+    <Content Include="Views\Shared\_paymentShippingAddress.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

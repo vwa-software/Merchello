@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Merchello.Core.Models.IAddress>
+@using Merchello.Core.Models
+
+<div class="h-card">
+    <span class="p-name"></span>
+
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-10 custom-width">
+            <ul class="address-list">
+                @foreach (var address in Model)
+                {
+                    <li id="find_ids" class="clickable-row">
+                        <div class="row p-adr h-adr">
+                            <span class="p-company"> @(address.Organization)</span> |
+
+                            <span class="p-street-address"> @address.Address1 @address.Address2</span> |
+                            @if (!address.Address2.IsNullOrWhiteSpace())
+                            {<span class="p-extended-address"></span>}
+
+                            @if (!address.Region.IsNullOrWhiteSpace())
+                            {<span class="p-region">@address.Region</span>}
+
+                            @if (!address.PostalCode.IsNullOrWhiteSpace())
+                            {<span class="p-postal-code">@address.PostalCode @address.Locality</span>}
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-1 arrow-position arrow-custom-width">
+            <i class="fas fa-angle-right"></i>
+        </div>
+        <div class="col-md-6 extra-info-row">
+            <ul class="address-two">
+                @foreach (var address in Model)
+                {
+                <li id="find_ids">
+                    <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                            <strong>company name</strong>
+                            <br />
+                            <span class="p-company"> @(address.Organization)</span>
+                        </div>
+                        <div class="col-xs-3 col-md-4">
+                            <strong>city</strong>
+                            <br />
+                            <span class="p-company"> @(address.Locality)</span>
+                        </div>
+                        <div class="col-xs-3 col-md-4">
+                            <strong>phone</strong>
+                            <br />
+                            <span class="p-company"> @(address.Phone)</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                            <strong>steet + nr.</strong>
+                            <br />
+                            <span class="p-company"> @(address.Address1) @(address.Address2)</span>
+                        </div>
+                        <div class="col-xs-3 col-md-4">
+                            <strong>province</strong>
+                            <br />
+                            <span class="p-company"> @(address.Region)</span>
+                        </div>
+                        <div class="col-xs-3 col-md-4">
+                            <strong>e-mail address</strong>
+                            <br />
+                            <span class="p-company"> @(address.Email)</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-md-4">
+                            <strong>zipcode</strong>
+                            <br />
+                            <span class="p-company"> @(address.PostalCode)</span>
+                        </div>
+                        <div class="col-xs-3 col-md-4">
+                            <strong>country</strong>
+                            <br />
+                            <span class="p-company"> @(address.CountryCode)</span>
+                        </div>
+                    </div>
+
+                </li>
+                }
+            </ul>
+        </div>
+        
+    </div>
+    
+</div>
+

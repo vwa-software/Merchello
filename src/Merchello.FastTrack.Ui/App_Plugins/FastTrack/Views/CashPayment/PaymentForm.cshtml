@@ -1,70 +1,66 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<Merchello.FastTrack.Models.Payment.FastTrackPaymentModel>
+
 @using System.Web.Mvc.Html
 @using Merchello.FastTrack.Controllers.Payment
 @using Merchello.FastTrack.Ui
 @using Merchello.Web.Models.Ui
 @using Umbraco.Web
 @{
-	Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetReceipt().Url;
-	Merchello.Web.Store.Models.StoreViewData errors = (Merchello.Web.Store.Models.StoreViewData)ViewBag.MerchelloViewData;
+    Model.SuccessRedirectUrl = ExampleUiHelper.Content.GetReceipt().Url;
+    Merchello.Web.Store.Models.StoreViewData errors = (Merchello.Web.Store.Models.StoreViewData)ViewBag.MerchelloViewData;
 
-	// check if member is approved
-	var member = Members.GetCurrentMember();
-	bool isApproved = member != null && member.GetPropertyValue<bool>("umbracomemberapproved") && !member.GetPropertyValue<bool>("umbracomemberlockedout");
+    // check if member is approved
+    var member = Members.GetCurrentMember();
+    bool isApproved = member != null && member.GetPropertyValue<bool>("umbracomemberapproved") && !member.GetPropertyValue<bool>("umbracomemberlockedout");
 
 
-	if (errors != null && errors.Messages != null && errors.Messages.Count() > 0)
-	{
-		<ul>
-			@foreach (var error in errors.Messages)
-			{
-				<li>@error</li>
-			}
-		</ul>
-	}
-	else
-	{
-		using (Html.BeginUmbracoForm<CashPaymentController>("Process", new { area = "FastTrack" }))
-		{
+    if (errors != null && errors.Messages != null && errors.Messages.Count() > 0)
+    {
+        <ul>
+            @foreach (var error in errors.Messages)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    }
+    else
+    {
+        using (Html.BeginUmbracoForm<CashPaymentController>("Process", new { area = "FastTrack" }))
+        {
 
-			@Html.AntiForgeryToken()
-			@Html.HiddenFor(x => x.SuccessRedirectUrl)
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.SuccessRedirectUrl)
 
-			<div class="row">
-				<div class="col-md-12">
-					<h2 class="hk_shop">Remarks</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-10">
-					@Html.EditorFor(m => m.Remarks2)
-				</div>
-				<div class="col-md-2">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-12">
-					<h2 class="hk_shop">Shipping address</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-10">
-					@Html.EditorFor(m => m.Remarks)
-				</div>
-				<div class="col-md-2">
-					@{
-						if (isApproved)
-						{
-							@Html.Partial("_RequireJsSubmitBtn", Model)
-						}
-						else
-						{
-							<div class="pull-right">@Umbraco.GetDictionaryValue("Account_disabled")</div>
-						}
-					}
-				</div>
-			</div>
-		}
-	}
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="hk_shop">Remarks</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    @Html.EditorFor(m => m.Remarks2)
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8 ">
+                    <h2 style="font-size: 14px;">Shipping Address</h2>
+                    @Html.Action("GetAllShippingAddresses", "CustomerMembership", new { area = "FastTrack" })
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 65px;">
+                    @{
+                        if (isApproved)
+                        {
+                            @Html.Partial("_RequireJsSubmitBtn", Model)
+                        }
+                        else
+                        {
+                            <div class="pull-right">@Umbraco.GetDictionaryValue("Account_disabled")</div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
 }

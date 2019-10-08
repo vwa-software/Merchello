@@ -28,7 +28,7 @@
         IAddress GetBillToAddress();
 
         /// <summary>
-        /// Gets the bill to address
+        /// Gets the shipping to address
         /// </summary>
         /// <returns>Return the billing <see cref="IAddress"/></returns>
         IAddress GetShipToAddress();

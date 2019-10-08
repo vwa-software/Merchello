@@ -1,10 +1,10 @@
-﻿@model Merchello.FastTrack.Models.FastTrackBillingAddressModel
+﻿@model IEnumerable<Merchello.FastTrack.Models.FastTrackBillingAddressModel>
 @using System.Web.Mvc.Html
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    @*<div class="panel-heading">
         <h4>Billing Address</h4>
-    </div>
+    </div>*@
     <div class="panel-body">
         @Html.Partial("_AddressShippingBilling", Model)
     </div>

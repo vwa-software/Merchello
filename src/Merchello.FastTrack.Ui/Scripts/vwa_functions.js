@@ -216,7 +216,6 @@ $(function () {
         }
     });
 
-
     $('#scrollTop').on('click', function () {
         $('html, body').animate({
             scrollTop: 0
@@ -394,6 +393,18 @@ $(document).ready(function () {
 	// CLOSES ALL S ON PAGE LOAD
     $('.accordionContent').hide();
 
+    //pressroom or collection search
+    $('input:radio[name="optradio"]').change(
+        function () {
+            if (this.checked && this.value == 'collection') {
+                $("form").attr("action", '/collections/All-products/');
+                $(".search-area-input").attr("name", "q");
+            } else if (this.checked && this.value == 'pressroom') {
+                $("form").attr("action", '/pressroom/');
+                $(".search-area-input").attr("name", "category");
+            }
+        });
+
 // /Accordion Account
 
 
@@ -421,3 +432,24 @@ $('body').css('overflow', 'auto');
 
 });
 
+$(document).ready(function () {
+
+    //$('.options').first().attr("selected", true); //selected always th first address
+    //var selected = false;
+
+    //$('.shipping-addresses').change( function () {
+
+    //    //change the selection if another option is selected
+    //});
+
+    //$('.options').each(function () {
+
+    //    var addressFound = $(this).data("id"); //id of the address
+    //    var selectedAddress = $(this).attr("selected");
+
+    //    if (selectedAddress === "selected" && typeof selectedAddress != "undefined") {
+    //        selected = true;
+    //    }
+    //});
+    
+});

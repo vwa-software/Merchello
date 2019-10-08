@@ -130,9 +130,12 @@ display:none;
         /*display:none;*/
     }
     .hk_checkout .col-md-12 .row {
-        margin:0px 0px 20px 0px;
+        margin:0px 0px 10px 0px;
     }
-    
+
+.defaultRow {
+    background-color: rgb(235, 235, 235);
+}
     .hk_checkout .col-md-12 .col-md-2{
 
     }
@@ -216,9 +219,9 @@ display:none;
     display: block;
     width: 100%;
 }
-.tab-content .col-md-12 {
-    padding: 0px;
-}
+    .tab-content .col-md-12 {
+        /*padding: 0px;*/
+    }
 
 .table th {
     border-top: 0px solid #fff!important;
@@ -228,12 +231,17 @@ display:none;
     border-bottom: 0px solid #dee2e6;
 }
 
+.h-card .p-street-address {
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+}
+
 .nav-tabs .nav-link {
     color: #444444;
     background-color: #fff;
     border-color: #dee2e6 #dee2e6 #fff;
     border-radius: 2px 2px 0px 0px;
-    border: 1px solid #c6c6c6;
+    border: 2px solid #c6c6c6;
     border-bottom: 0px;
     margin: 0px 10px 0px 0px;
 }
@@ -245,22 +253,49 @@ display:none;
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-    background-color: #efefef;
+    background-color: #efefefa6;
+}
+
+.address-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.address-two {
+    padding-left: 0;
+    list-style: none;
 }
 
 .hk_shop_forms .row,
-.hk_shop_forms .invoiceitemswrapper{
-font-size:11px!important;}
+.hk_shop_forms .invoiceitemswrapper {
+    font-size: 11px !important;
+}
 
-.row.invoice/*,
-.row.invoiceitem*/{
-	font-size:11px!important;
-	font-weight:700;
+.clickable-row {
+    cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 3px;
+    padding-left: 2%;
+}
+
+.arrow-position {
+    padding-top: 0.6%;
+    font-size: 20px;
+}
+
+.arrow-position-down {
+    padding-top: 4.6%;
+}
+
+.row.invoice /*,
+.row.invoiceitem*/ {
+    font-size: 11px !important;
+    font-weight: 700;
     padding: .75rem 0rem .75rem 0rem;
     vertical-align: top;
     /*border-top: 1px solid #e9ecef;*/
-	color:#929292;
-	margin:0px!important;
+    color: #929292;
+    margin: 0px !important;
 }
 
 .row.invoiceitem{
@@ -354,45 +389,136 @@ font-size:11px!important;}
         border-left: 0px!important;
     }
 
+.extra-info-row {
+    border-left: 1px solid grey;
+    padding-left: 2%;
+}
 
-/***********************************************************************************************************************
+.row .col-xs-3 {
+    width: 50%;
+}
+
+.tab-content {
+    padding: 2%;
+}
+.custom-padding {
+    padding-top: 1%;
+}
+
+@media only screen and (max-width: 1200px) {
+    .nav-tabs {
+        white-space: nowrap;
+        overflow-y: scroll;
+        display: -webkit-box;
+    }
+
+}
+
+@media only screen and (max-width: 990px) {
+    .hide-mobile {
+        display: none;
+    }
+
+    .tab-content {
+        padding: 5%;
+    }
+    .custom-width {
+        width: 95%;
+    }
+
+    .arrow-custom-width {
+        width: 5%;
+    }
+
+    .h-card .p-street-address {
+        padding: 0;
+    }
+
+    .arrow-position-down {
+        padding-top: 13.6%;
+    }
+
+    .extra-info-row {
+        border: 0;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .arrow-position-down {
+        padding-top: 6.6%;
+    }
+}
+
+@media only screen and (max-width: 710px) {
+    .arrow-position-down {
+        padding-top: 7.6%;
+    }
+}
+
+@media only screen and (max-width: 440px) {
+    .arrow-position-down {
+        padding-top: 9.6%;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .arrow-position-down {
+        padding-top: 14.6%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .arrow-position-down {
+        padding-top: 21.6%;
+    }
+}
+
+    @media only screen and (min-width: 990px) {
+        .hide-desktop {
+            display: none;
+        }
+    }
+
+    /***********************************************************************************************************************
  EXTRA STYLES ADDED FOR MOUSEOVER / ACTIVE EVENTS
 ************************************************************************************************************************/
- .on {
-    background: #fff;
-}
-.over {
-    background: #EBEBEB;
-}
+    .on {
+        background: #fff;
+    }
+
+    .over {
+        background: #EBEBEB;
+    }
 
 
-blockquote,
-.umbraco-forms-submitmessage{
-    background: #f9f9f9;
-    border-left: 10px solid #ccc;
-    margin: 1.5em 10px;
-    padding: 0.5em 10px;
-    quotes: "\201C""\201D""\2018""\2019";
-  }
+    blockquote,
+    .umbraco-forms-submitmessage {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        margin: 1.5em 10px;
+        padding: 0.5em 10px;
+        quotes: "\201C""\201D""\2018""\2019";
+    }
 
-.umbraco-forms-submitmessage{
-    margin: 0px;;
-  }
+    .umbraco-forms-submitmessage {
+        margin: 0px;
+        ;
+    }
 
-.fa-sort-up:before {
-    line-height: initial;
-}
+    .fa-sort-up:before {
+        line-height: initial;
+    }
 
-.fa-file-pdf{
-	font-size:20px;
-}
+    .fa-file-pdf {
+        font-size: 20px;
+    }
 
-.fas.sort {
-	float: right;
-	font-size: 18px;
-	line-height: 8px;
-}
-/* /Accordion - account */
+    .fas.sort {
+        float: right;
+        font-size: 18px;
+        line-height: 8px;
+    }
+    /* /Accordion - account */
 
 
-/* WEBORDER / ORDERS */
+    /* WEBORDER / ORDERS */

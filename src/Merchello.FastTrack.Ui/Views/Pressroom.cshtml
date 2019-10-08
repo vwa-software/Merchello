@@ -1,0 +1,404 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using System.Web.Mvc.Html;
+@using System.Linq;
+@using RJP.MultiUrlPicker.Models;
+@using ETC.B2B.WEB;
+
+@{
+	Layout = "Master.cshtml";
+}
+
+
+@{
+
+	string productsHomeId = "24396";
+	IPublishedContent productsHomeNode = Umbraco.TypedContent(productsHomeId);
+	string seasonHomeId = "24457";
+	string seasonFirstFilter = Umbraco.TypedContent(seasonHomeId).Children.Any() ? Umbraco.TypedContent(seasonHomeId).FirstChild().Id.ToString() : "";
+	string logosHomeId = "24472";
+	string curPageId = Request["page"];
+
+	//string categoryId = Request["category"] ?? productsHomeId;
+	string categoryId = Request["category"];
+	if (String.IsNullOrEmpty(categoryId))
+	{
+		categoryId = productsHomeId;
+	}
+
+	string seasonId = Request["se"];
+	if (String.IsNullOrEmpty(seasonId))
+	{
+		seasonId = seasonFirstFilter;
+	}
+	string logoBool = Request["logo"] ?? "";
+	string documentsBool = Request["docs"] ?? "";
+
+	IPublishedContent productsHome = Umbraco.TypedContent(productsHomeId);
+	IEnumerable<IPublishedContent> productsQuery = null;
+
+	if (String.IsNullOrEmpty(logoBool) && String.IsNullOrEmpty(documentsBool))
+	{
+		if (!String.IsNullOrEmpty(categoryId) && !String.IsNullOrEmpty(seasonId))
+		{
+			productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
+				.Where(x => x.GetPropertyValue<IEnumerable<IPublishedContent>>("filter").Any(a => a.Id.ToString() == seasonId) && x.GetPropertyValue<bool>("enable"));
+		}
+		else if (!String.IsNullOrEmpty(categoryId) && String.IsNullOrEmpty(seasonId))
+		{
+			productsQuery = Umbraco.TypedContent(categoryId).Descendants("pressroom_Product")
+						.Where(x => x.GetPropertyValue<bool>("enable"));
+		}
+
+	}
+	else if (logoBool == "1")
+	{
+		productsQuery = Umbraco.TypedContent(logosHomeId).Descendants("pressroom_Logo");
+	}
+	else if (documentsBool == "1")
+	{
+		productsQuery = Umbraco.TypedContent(logosHomeId).Descendants("pressroom_Logo");
+	}
+
+	//IEnumerable<IPublishedContent> products = (productsQuery.Count() > 0) ? productsQuery : productsHome.Descendants("pressroom_Product");
+	IEnumerable<IPublishedContent> products = productsQuery;
+
+}
+
+@{
+	// calculate pager
+
+	string baseUrlRenderPaging = "?category=" + categoryId + "&se=" + seasonId + "&page=";
+
+	int pageSize = 20;
+	int curPageInt = 0;
+	int.TryParse(curPageId, out curPageInt);
+
+	var paging = new Paging(pageSize);
+	int total = 0;
+	if (products != null)
+	{
+		total = products.Count();
+	}
+	paging.CalculatePages(total);
+	int productListStartIndex = curPageInt * pageSize - pageSize;
+}
+
+@*
+	<p>paging @paging</p>
+	<p>curpage @curPageId</p>
+	<p>productListStartIndex @productListStartIndex</p>
+*@
+
+
+<iframe id="pres-dwnldframe"></iframe>
+
+@* fullpage front image viewer *@
+
+<div class="pres-fullsc-front-image-container pres-front-image-closed">
+    <div class="pres-fullsc-front-image-container-inner"> 
+        <div class="pres-fullsc-front-image-container-close">
+            <p>Close</p>
+            @*<i id="front-image-container-close-overlay-btn" class="fas fa-times-circle"></i>*@
+        </div>    
+    </div>
+</div>    
+
+@* end fullpage front image viewer *@
+
+<!--ftCategoryView -->
+<div class="container-fluid hk_collections hk_category t" id="hk_pressroom">
+	<div class="row">
+		<div class="col-12 hk_categorie_media hk_categorie_media_top">
+			@*@Html.GetGridHtml(Model, "collectionGridTop")*@
+		</div>
+		@* left side catalog *@
+		<div class="col-4 col-xl-3 col-md-3 r-catalog-left fixSafari-radio-container">
+
+			@*@Html.Partial("hkSearch")*@
+			@*@RenderSearchForm(paging)*@
+			@*@Html.Partial("hkCategories")*@
+
+			@Html.Partial("hkPressroomCategories")
+		</div>
+		@* left side catalog button to open left side menu *@
+		<div class="r-catalog-left-button">
+			<div class="r-catalog-left-button-inner">
+				<div class="r-catalog-left-button-icon">
+					&nbsp;
+				</div>
+			</div>
+		</div>
+		<div class="col-8 col-xl-9 col-md-9 r-catalog-right">
+			<div class="row">
+				<div class="col-md-6 hk_sort">
+					@*@RenderSortingDropDown(paging)*@
+				</div>
+				<div class="col-md-6 text-right hk_sort">
+					@*@RenderItemsDropDown(paging)*@
+				</div>
+			</div>
+			<div class="product-box-list">
+				<div class="row">
+					@{
+
+						@* PRODUCTBOX *@
+						if (products != null)
+						{
+							int productCount = 0;
+							foreach (IPublishedContent product in products.Skip(productListStartIndex))
+							{
+								++productCount;
+								if (productCount > pageSize)
+								{
+									break;
+								}
+
+
+								string productName = product.GetPropertyValue<string>("prName") ?? "";
+								string productSku = product.HasProperty("sKU") ? product.GetPropertyValue<string>("sKU") : "";
+								string productUrl = product.Url;
+
+
+								IPublishedContent image = null;
+								if (!String.IsNullOrEmpty(logoBool))
+								{
+									image = product.GetPropertyValue<IPublishedContent>("highResolution");
+								}
+								else
+								{
+									image = product.GetPropertyValue<IPublishedContent>("imageFront");
+								}
+
+								string imageUrl = (image != null) ? image.Url : "";
+
+								<div class="col-6 col-xl-3 col-md-6 col-lg-3">
+
+									<div class="hk_product-box" data-productId="@product.Id">
+										<div class="caption">
+											@*<a href="@imageUrl" alt="@productName"><img class="img-responsive" src="@imageUrl" alt="@productName"></a>*@
+                                            <img class="img-responsive" src="@imageUrl" alt="@productName">
+											<h2 class="hk_pr_Naam">@productName</h2>
+											<p class="hk_pr_Artikelnummer">@productSku</p>
+
+										</div>
+										<h3 style="width:80%;border-bottom:2px solid #e9e9e9;margin:auto;"> </h3>
+										<div class="press-productbox-controls">
+
+											@{
+												string ctrlVers = "";
+												if (logoBool == "1" || documentsBool == "1")
+												{
+													ctrlVers = "pres-ctrl-logo";
+												}
+											}
+											@* send to mail *@
+											<div class="press-productbox-control-inner @ctrlVers">
+
+												<div class="press-productbox-control-inner-img"></div>
+
+												<div class="productbox-control-inner-label">
+													<p>Send to email</p>
+												</div>
+												<div class="producuctbox-control-enter-email">
+													<div class="producuctbox-control-email-sent">
+														<p>Email sent</p>
+													</div>
+													<div class="producuctbox-control-enter-email-top">
+														<div class="producuctbox-control-enter-email-top-inner">
+															<input type="email" name="emailaddress" placeholder="Enter Email Adress">
+														</div>
+													</div>
+													<div class="producuctbox-control-enter-email-left">
+														<div class="producuctbox-control-enter-email-left-inner">
+															<p>x</p>
+														</div>
+													</div>
+													<div class="producuctbox-control-enter-email-right">
+														<div class="producuctbox-control-enter-email-right-inner">
+															@*
+																<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "sendMail"})" >
+															*@
+															<p>Send</p>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											@* direct download all *@
+											<div class="press-productbox-control-inner @ctrlVers">
+												@*<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "downloadAll"})" >*@
+												<div class="press-productbox-control-inner-img productbox-download-zip-all"></div>
+												@*</a>*@
+												<div class="productbox-control-inner-label">
+													<p>Download as zip</p>
+												</div>
+											</div>
+
+											@* download only documents *@
+
+											@if (logoBool != "1" && documentsBool != "1")
+											{
+												<div class="press-productbox-control-inner @ctrlVers">
+													@*<a href="@Url.Action("CreateZip", "PressroomMail", new { ProductId = product.Id , Quality = "highResolution" , Action = "downloadDocs"})" >*@
+													<div class="press-productbox-control-inner-img productbox-download-docs-only"></div>
+													@*</a>*@
+													<div class="productbox-control-inner-label">
+														<p>Download documents</p>
+													</div>
+												</div>
+											}
+
+											@* select product*@
+
+											<div class="press-productbox-control-inner" @ctrlVers>
+												<input type="checkbox" name="selectProduct">
+
+												<div style="visibility:hidden" class="productbox-control-inner-label">
+													<p>Select</p>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+									@* END PRODUCT BOX *@
+								</div>
+							}
+						}
+
+					}
+				</div>
+			</div>
+			@* end productbox list *@
+
+			@*@Html.Partial("_ProductBoxList", products)*@
+			<div class="row col-12 pagination">
+				<nav aria-label="Page navigation" class="hk_pagination">
+					<ul class="pagination">
+						@RenderPaging(paging, paging.CurrentPage, baseUrlRenderPaging)
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-12 hk_categorie_media">
+	@*Html.GetGridHtml(product, "collectionGrid")*@
+</div>
+
+@section Breadcrumbs {
+	@{
+		IPublishedContent category = Umbraco.TypedContent(categoryId);
+		string categoryName = " ";
+		if (category != null)
+		{
+
+			int maxCount = 0;
+			IPublishedContent _parent = category.Parent;
+			//while (_parent != null && category.Ancestors().Where(x => x.Id.ToString() == productsHomeId).Any() && maxCount != 20) {
+			for (int i=0; i < 2; i++) {
+				if (_parent != null && _parent.Ancestors().Where(x => x.Id.ToString() == productsHomeId).Any()) {
+					categoryName = _parent.Name + " \\ " + categoryName;
+					_parent = _parent.Parent;
+					maxCount++;
+				} else {
+					break;
+				}
+			}
+
+		}
+		<div class="hk_breadcrumb">
+			<div class="">
+				<div class="row">
+					<div class="col-xl-12">
+						<ul class="breadcrumb">
+							<li>@categoryName</li> 
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+
+@helper RenderPaging(Paging paging, long currentId, string baseUrlRenderPaging)
+{
+
+	<li class="page-item"><a class="@(paging.CurrentPage > 1 ? "" : "disabled") fas fa-step-backward" @(paging.CurrentPage > 1 ? "href="+baseUrlRenderPaging + paging.PreviousPage : "disabled")>&nbsp;</a></li>
+
+	if (paging.StartPageToShow > 1)
+	{
+		<li class="page-item"><a href="@(baseUrlRenderPaging)1">1..</a><text>&nbsp;</text></li>
+	}
+
+	for (var i = paging.StartPageToShow; i <= paging.EndPageToShow; i++)
+	{
+		if (paging.CurrentPage == i)
+		{
+			<span><span>@i</span></span>
+		}
+		else
+		{
+			<li class="page-item"><a href="@(baseUrlRenderPaging)@i">@i</a><text>&nbsp;</text></li>
+		}
+	}
+
+	if (paging.EndPageToShow < paging.TotalPages)
+	{
+		<li class="page-item"><a href="@(baseUrlRenderPaging)@paging.TotalPages">...@paging.TotalPages</a><text>&nbsp;</text></li>
+	}
+
+	<li class="page-item"><a class="@(paging.CurrentPage < paging.TotalPages ? "" : "disabled") fas fa-step-forward" @(paging.CurrentPage < paging.TotalPages ? "href="+baseUrlRenderPaging + paging.NextPage : "disabled")>&nbsp;</a></li>
+
+}
+
+
+@helper RenderSortingDropDown(ETC.B2B.WEB.Paging paging)
+{
+	<div class="dropdown">
+		<button class="form-control form-sort" type="button" data-toggle="dropdown">
+			@{
+				// determine selected sortname
+				string sortname = string.Empty;
+				switch (paging.SortTerm.ToLower())
+				{
+					case "priceasc":
+						sortname = "Price ascending";
+						break;
+
+					case "pricedesc":
+						sortname = "Price descending";
+						break;
+					default:
+						sortname = "sort products";
+						break;
+				}
+			}
+			@sortname
+			<i class="fa fa-caret-down"></i>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="?q=@(paging.SearchTerm)&page=@paging.CurrentPage">sort products</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=priceasc">Price ascending</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=@(paging.ItemsPerPage)&SortTerm=pricedesc">Price descending</a></li>
+		</ul>
+	</div>
+}
+@*btn btn-primary dropdown-toggle*@
+@helper RenderItemsDropDown(ETC.B2B.WEB.Paging paging)
+{
+	<div class="dropdown">
+		<button class="form-control form-sort" type="button" data-toggle="dropdown">
+			show @paging.ItemsPerPage results
+			<i class="fa fa-caret-down"></i>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=20&SortTerm=@(paging.SortTerm)">show 20 results</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=40&SortTerm=@(paging.SortTerm)">show 40 results</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=60&SortTerm=@(paging.SortTerm)">show 60 results</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=80&SortTerm=@(paging.SortTerm)">show 80 results</a></li>
+			<li><a href="?q=@(paging.SearchTerm)&page=@(paging.CurrentPage)&ItemsPerPage=100&SortTerm=@(paging.SortTerm)">show 100 results</a></li>
+		</ul>
+	</div>
+}

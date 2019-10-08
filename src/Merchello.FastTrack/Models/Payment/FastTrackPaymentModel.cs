@@ -25,6 +25,9 @@
 		[DataType(DataType.MultilineText)]
 		public string Remarks2 { get; set; }
 
-
-	}
+        /// <summary>
+		/// the option chosen
+		/// </summary>
+        public int ShippingAddressIndex { get; set; }
+    }
 }
