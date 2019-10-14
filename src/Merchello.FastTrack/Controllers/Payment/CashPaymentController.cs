@@ -33,13 +33,6 @@
             var choosenAddress = allAddresses.ToArray()[model.ShippingAddressIndex -1];
 
             if (choosenAddress != null) model2 = ShippingFactory.Create((ICustomer)CurrentCustomer, choosenAddress);
-
-   //         var adress = CheckoutManager.Customer.GetShipToAddress();
-
-   //         if (adress == null || string.IsNullOrEmpty(adress.CountryCode))
-			//{
-   //             adress = CheckoutManager.Customer.GetBillToAddress();
-			//}
                        
 			if (choosenAddress != null)
 			{

@@ -6,6 +6,7 @@
 @using System.Web.Mvc.Html
 @using Umbraco.Core.Models
 @using Umbraco.Web
+@using Merchello.FastTrack.Models.Payment
 
 @{
 
@@ -15,29 +16,17 @@
     *@
 string hostname = (HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority).TrimEnd("/");
 
-var dataToDisplay = "";
+string allData = string.Empty;
 
 try
 {
-    var customer = (ICustomer)Model.Invoice.Customer();
-    var adresses = customer.Addresses;
-
-    var addressToShipModel = adresses.FirstOrDefault(a => a.AddressType == AddressType.Shipping);
-
-    if (addressToShipModel != null) {
-        dataToDisplay = addressToShipModel.Company + addressToShipModel.Address1 
-                        + addressToShipModel.Address2 + " " + addressToShipModel.PostalCode + " " +  addressToShipModel.Region
-                        + addressToShipModel.Locality;
-        //var addressToShip = addressToShipModel.ToArray()[model.ShippingAddressIndex -1];;
+    var shipping = Model.Invoice.GetShippingAddresses().FirstOrDefault();
+    if (shipping != null)
+	{
+        allData = shipping.Organization + shipping.Address1 +
+                  shipping.Address2 + " " + shipping.PostalCode + " " + shipping.Region + 
+                  shipping.Locality;
     }
-
-    //var shipping = Model.Invoice.GetShippingAddresses().FirstOrDefault();
-    //if (shipping != null && !string.IsNullOrEmpty(shipping.Address2))
-    //{
-
-    //    addressToShip = shipping.Address2;
-    //    addressToShip = addressToShip.Replace(Environment.NewLine, "<br />");
-    //}
 }
 catch (Exception)
 {
@@ -401,7 +390,7 @@ if (Model.Invoice.Notes != null)
                             </p>
                             <p style="color:#@grayColor">
                                 <strong>SHIPPING ADDRESS</strong><br />
-                                @Html.Raw(dataToDisplay)
+                                @Html.Raw(allData)
                             </p>
 
                             @if (!string.IsNullOrEmpty(notes))

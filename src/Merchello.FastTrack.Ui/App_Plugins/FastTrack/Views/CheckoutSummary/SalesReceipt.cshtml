@@ -8,35 +8,36 @@
 
 @{
 
-	// http://projecten.vwa.nu:888/redmine/issues/5523
+    // http://projecten.vwa.nu:888/redmine/issues/5523
 
-	string notes = string.Empty;
+    string notes = string.Empty;
 
-	var invoice = MerchelloContext.Current.Services.InvoiceService.GetByKey(Model.InvoiceKey);
-	if(invoice.Notes != null)
-	{
-		foreach(var note in invoice.Notes)
-		{
-			notes += note.Message += "<br/>";
-		}
-	}
+    var invoice = MerchelloContext.Current.Services.InvoiceService.GetByKey(Model.InvoiceKey);
+    if(invoice.Notes != null)
+    {
+        foreach(var note in invoice.Notes)
+        {
+            notes += note.Message += "<br/>";
+        }
+    }
 
-	var shipping = Model.ShippingAddress;
-	string remarks = string.Empty;
+    var shipping = Model.ShippingAddress;
+    string fullShippingAddress = string.Empty;
 
-	try
-	{
-		if (shipping != null && !string.IsNullOrEmpty(shipping.Address2))
-		{
-			remarks = shipping.Address2;
-			remarks = remarks.Replace(Environment.NewLine, "<br />");
-		}
-	}
-	catch (Exception)
-	{
-		// ignore
-	}
-	var first = true;
+    try
+    {
+        if (shipping != null)
+        {
+            fullShippingAddress = shipping.Organization + shipping.Address1 +
+                      shipping.Address2 + " " + shipping.PostalCode + " " + shipping.Region +
+                      shipping.Locality;
+        }
+    }
+    catch (Exception)
+    {
+        // ignore
+    }
+    var first = true;
 }
 
 @*Google ecomerce tags*@
@@ -81,11 +82,11 @@
 					@:,
 				}
 				<text>{
-					"sku": @Html.Raw(System.Web.Helpers.Json.Encode(item.Sku)) ,
-				"name": @Html.Raw(System.Web.Helpers.Json.Encode(item.Name)) ,
-				"price": @item.Amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-				"category" : @Html.Raw(System.Web.Helpers.Json.Encode(categoryName)), 
-				"quantity": @item.Quantity
+				    "sku": @Html.Raw(System.Web.Helpers.Json.Encode(item.Sku)) ,
+				    "name": @Html.Raw(System.Web.Helpers.Json.Encode(item.Name)) ,
+				    "price": @item.Amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+				    "category" : @Html.Raw(System.Web.Helpers.Json.Encode(categoryName)), 
+				    "quantity": @item.Quantity
 				}</text>
 				first = false;
 			}
@@ -96,7 +97,6 @@
 <div class="container-fluid hk_order hk_checkout hk_shop_forms">
 	<div class="row">
 		<div class="col-md-12">
-			@*  <h2 class="hk_shop">Sales Receipt</h2*@
 			<h3 style="text-transform:initial;line-height: 20px;">
 				Thank you for your order at HKliving.<br />
 				Your web order number is: @Model.InvoiceNumber <span class="text-right" style="float:right">@Model.InvoiceDate.ToShortDateString()</span>
@@ -116,7 +116,7 @@
 			</div>
 
 		</div>
-		@if (!string.IsNullOrEmpty(remarks))
+		@if (!string.IsNullOrEmpty(fullShippingAddress))
 		{
 			<div class="col-md-4 basket-summary">
 				<div class="panel panel-default">
@@ -124,8 +124,7 @@
 						<h2 class="hk_shop">Shipping Address</h2>
 					</div>
 					<div class="panel-body">
-						@Html.Raw(remarks)
-						@* @Html.Partial("_Address", Model.ShippingAddress)*@
+						@Html.Raw(fullShippingAddress)
 					</div>
 				</div>
 			</div>
@@ -140,7 +139,6 @@
 					</div>
 					<div class="panel-body">
 						@Html.Raw(notes)
-						@* @Html.Partial("_Address", Model.ShippingAddress)*@
 					</div>
 				</div>
 			</div>

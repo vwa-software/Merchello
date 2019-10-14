@@ -422,7 +422,7 @@
         /// </returns>
         [ChildActionOnly]
         [Authorize]
-        public virtual ActionResult GetAllShippingAddresses(string view = "")
+        public virtual ActionResult GetAllShippingAddresses(string view)
         {
             var customer = (ICustomer)CurrentCustomer;
             var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Shipping).ToList().Select(a => ShippingAddressFactory.Create(customer, a));

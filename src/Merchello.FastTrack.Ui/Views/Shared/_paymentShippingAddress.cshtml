@@ -4,27 +4,6 @@
     int index = 0;
 }
     <div>
-        @*<select name="ShippingAddress">
-            @foreach (var address in Model)
-            {
-                index++;
-                <option value="@(address.Organization) @(address.Organization) @(address.Address1) @(address.Address2) @address.Region @address.PostalCode @address.Locality" class="options" id="@(index)">
-                    <div class="row">
-                        <span class="p-org paddings-shipping"> @(address.Organization)</span> |
-                        <span class="p-street-address paddings-shipping"> @address.Address1 @address.Address2</span>  |
-                        @if (!address.Address2.IsNullOrWhiteSpace())
-                        {<span></span>}
-
-                        @if (!address.Region.IsNullOrWhiteSpace())
-                        {<span class="p-street-address paddings-shipping">@address.Region</span>}
-
-                        @if (!address.PostalCode.IsNullOrWhiteSpace())
-                        {<span class="p-postal-code paddings-shipping">@address.PostalCode @address.Locality</span>}
-                    </div>
-                </option>
-            }
-        </select>*@
-
         <select name="ShippingAddressIndex">
             @foreach (var address in Model)
             {

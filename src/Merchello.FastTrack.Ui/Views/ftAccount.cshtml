@@ -148,7 +148,7 @@
                         </div>
 
                         <div class="col-md-12 tab-pane fade" role="tabpanel" id="shipping_address">
-                            @Html.Action("GetAllShippingAddresses", "CustomerMembership", new { area = "FastTrack" })
+                            @Html.Action("GetAllShippingAddresses", "CustomerMembership", new { area = "FastTrack", view = "_AddressShippingBilling"})
                         </div>
 
                         <div class="col-md-12 tab-pane fade in" role="tabpanel" id="complaint">
@@ -232,13 +232,13 @@
 
                         <div class="tab-content">
                             <div class="col-md-12 tab-pane fade in active show" role="tabpanel" id="history">
-                                @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack" })
+                                @Html.Action("CustomerSalesHistory", "CustomerMembership", new { area = "FastTrack"})
                             </div>
                             <div class="col-md-12 tab-pane fade in" role="tabpanel" id="invoices">
-                                @Html.Action("Invoices", "Account", new { area = "ETCConnector" })
+                                @*@Html.Action("Invoices", "Account", new { area = "ETCConnector" })*@
                             </div>
                             <div class="col-md-12 tab-pane fade" role="tabpanel" id="orders">
-                                @Html.Action("Orders", "Account", new { area = "ETCConnector" })
+                                @*@Html.Action("Orders", "Account", new { area = "ETCConnector" })*@
                             </div>
 
                         </div>

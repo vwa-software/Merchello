@@ -13,17 +13,17 @@
 		Example usage:  var product = Merchello.TypedProductContent(YOURPRODUCTKEY);
 	*@
 	string hostname = (HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority).TrimEnd("/");
-	string remarks = string.Empty;
+	string allData = string.Empty;
 
 	try
 	{
 		var shipping = Model.Invoice.GetShippingAddresses().FirstOrDefault();
-		if (shipping != null && !string.IsNullOrEmpty(shipping.Address2))
-		{
-
-			remarks = shipping.Address2;
-			remarks = remarks.Replace(Environment.NewLine, "<br />");
-		}
+        if (shipping != null)
+	    {
+            allData = shipping.Organization + shipping.Address1 +
+                      shipping.Address2 + " " + shipping.PostalCode + " " + shipping.Region + 
+                      shipping.Locality;
+        }
 	}
 	catch (Exception)
 	{
@@ -389,7 +389,7 @@
 
 							<p style="color:#@grayColor">
 								<strong>SHIPPING ADDRESS</strong><br />
-								@Html.Raw(remarks)
+								@Html.Raw(allData)
 							</p>
 
 							@if (!string.IsNullOrEmpty(notes))
