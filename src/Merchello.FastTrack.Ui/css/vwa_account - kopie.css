@@ -1,0 +1,203 @@
+/* ORDER - common style for verey step in the process */
+    
+.hk_order { 
+    width:100%;
+}
+
+input#update-cart,
+input.pull-right {
+    float:right;
+}
+    
+    /* Shipping*/
+
+    .hk_shipping .hk_shop {
+        font-size:14px;
+    }
+
+    /* /Shipping*/
+
+/* /ORDER */
+/* Shop Account */
+
+    .hk_account_forms {
+        font-size:11px;
+    }
+
+       .hk_order label {
+            display:none;
+            visibility:hidden;
+            position:absolute;
+        }
+
+    body.Login .hk_category_name {
+     font-weight: 500;
+     text-transform:lowercase;
+    }
+    body.Login .hk_category_name span:before {
+     font-weight: 500;
+     content: "/ ";
+     text-transform:lowercase;
+    }
+
+    body.Login .hk_category_name:before {
+     font-weight: 800;
+     content: "Dealer ";
+     text-transform:uppercase;
+    }
+    
+    /**/
+    .hk_Checkout label,
+    .hk_content.hk_Login label {
+        display: none;
+        position: absolute;
+        visibility: hidden;
+    }
+
+    .hk_content.hk_Login .dataconsent .umbraco-forms-field-wrapper label {
+        display:inherit;
+        position:inherit;
+        visibility:inherit;
+        font-size: 1.1em;
+    }
+    
+    .hk_content.hk_Complete > .container > .row .col-md-6:first-child,
+    .hk_content.hk_Login > .container > .row .col-md-6:first-child {
+        border-right:1px solid #ebebeb;
+    }
+    
+    .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6:first-child,
+    .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6:first-child{
+        border-right:0px solid #ebebeb;
+    }
+
+    
+    .hk_content.hk_Complete > .container > .row .col-md-6,
+    .hk_content.hk_Login > .container > .row .col-md-6 {
+        padding:40px inherit inherit inherit;
+        -webkit-box-flex: 0!important;
+        -ms-flex: 0 0 50%!important;
+        flex: 0 0 50%!important;
+        max-width: 50%!important;
+        width:50%!important;
+        position:relative!important;
+        float:left!important;
+        display:inline-block!important;
+    }
+ 
+    
+    .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-12,
+    .hk_content.hk_Complete > .container > .row .col-md-6 .row .col-md-6,   
+    .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-12,
+    .hk_content.hk_Login > .container > .row .col-md-6 .row .col-md-6 {
+        padding-left:0px;
+        float:left;
+    }
+
+    .hk_content.hk_Login .container .row .col-md-6 > .hk_account_forms {
+        -webkit-box-flex: 0!important;
+        -ms-flex: 0 0 100%!important;
+        flex: 0 0 100%!important;
+        max-width: 90%!important;
+        width:100%;
+        position:relative!important;
+        float:left!important;
+        display:inline-block!important;
+    }
+
+    .hk_content.hk_Login .container .row .col-md-6:last-child > .hk_account_forms {
+       margin-left:12%;
+    }
+    
+    .hk_content.hk_Login .hk_forgot-password {
+        text-decoration:underline;
+        font-weight:500;
+    }
+    
+    .hk_content.hk_Login input[type="submit"] {
+        margin:0px 0px -21px 20px;
+    }
+
+    .hk_order_summary {
+        /*display:none;*/
+    }
+    .hk_checkout .col-md-12 .row {
+        margin:0px 0px 20px 0px;
+    }
+    
+    .hk_checkout .col-md-12 .col-md-2{
+
+    }
+    .hk_checkout .col-md-12 .col-md-2:first-child {
+        padding-left:0px;
+    }
+    
+    .hk_Account .hk_category_name {
+        text-transform:lowercase;
+        font-weight:100;
+    }
+
+    .hk_Account .hk_category_name:before {
+        content: "Dealer " ;
+        text-transform:uppercase;
+        font-weight:800;
+    }
+
+    .hk_Account .hk_category_name span:before {
+        content: "/" ;
+        padding:0px 10px 0px 10px;
+    }
+    
+    /* Complete order */
+    
+    .hk_Complete.order .col-md-6:first-child {
+        padding-right:24px;
+
+    }
+    .hk_Complete.order .col-md-6:last-child {
+        padding-left:24px;
+
+    }
+
+    .table.table-striped.mui-basket.mui-default tr th:last-child {
+        text-align:right;
+    }
+
+    /* Complete order */
+
+    .btn-hk-custom {
+        display:none;
+    }
+
+    
+    /* /Shop Account */
+
+    /* Forgot Password */
+    
+    .hk_account_forms .col-md-12.form-group {
+        padding-left:0px;
+        padding-right:0px;
+    }
+
+    .hk_account_forms label {
+        display:none;
+
+    }
+
+    /* /Forgot Password */
+
+    /* Validation */
+    
+	.field-validation-error, .validation-summary-errors {
+		color: red;
+	}
+
+	.input-validation-error {
+		border-color: red !important;
+	}
+
+	.validation-summary-errors li {
+		color: red;
+	}
+
+    /* /Validation */

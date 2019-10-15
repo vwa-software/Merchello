@@ -1,0 +1,85 @@
+﻿@model Merchello.Web.Models.Ui.Rendering.ICustomerSalesHistory
+@using System.Web.Mvc.Html
+@using Merchello.Core
+@using Merchello.FastTrack.Ui
+@using Merchello.Web.Models.ContentEditing
+
+@{
+	string currencyCode = string.Empty;
+	if (Model.Count() > 0)
+	{
+		currencyCode = Model.First().CurrencyCode;
+	}
+}
+
+<div class="panel panel-default hk_shop_forms">
+	<div class="panel-heading">
+		<h2 class="hk_shop">Sales History</h2>
+	</div>
+	<div class="panel-body">
+		<table class="table table-striped mui-basket mui-default">
+			<thead>
+				<tr>
+					<th>weborder</th>
+					<th>date</th>
+					@*<th>invoice status</th>
+                    <th>order status</th> *@
+					<th>total</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.OrderByDescending(x => x.InvoiceDate))
+				{
+					<tr>
+						<td>@Html.ActionLink(item.PrefixedInvoiceNumber(), "ViewReceipt", "CustomerMembership", new { key = item.Key, redirectId = ExampleUiHelper.Content.GetReceipt().Id }, null)</td>
+						<td>@item.InvoiceDate.ToString("dd-MM-yyyy")</td>
+						@*<td>@item.InvoiceStatus.Name</td>
+                       <td>@GetOrderStatus(item)</td>*@
+						<td class="text-right">@item.Total.AsFormattedCurrency(item.CurrencyCode)</td>
+					</tr>
+				}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2" class="text-right">
+						total purchases:
+					</td>
+					<td class="text-right"><strong>@Model.TotalPurchases.AsFormattedCurrency(currencyCode)</strong></td>
+				</tr>
+				@if (Model.TotalOutstanding > 0)
+				{
+					<tr>
+						<td colspan="2" class="text-right">
+							total paid:
+						</td>
+						<td class="text-right">@Model.TotalPaid.AsFormattedCurrency(currencyCode)</td>
+					</tr>
+
+					<tr>
+						<td colspan="2" class="text-right">
+							outstanding balance:
+						</td>
+						<td class="text-right"><strong>@Model.TotalOutstanding.AsFormattedCurrency(currencyCode)</strong></td>
+					</tr>
+				}
+
+			</tfoot>
+		</table>
+
+	</div>
+</div>
+
+@functions {
+
+	private string GetOrderStatus(InvoiceDisplay invoice)
+	{
+		// An invoice that has been paid through a provider and has not been viewed yet may not have an order at this point.
+		if (!invoice.Orders.Any() && invoice.InvoiceStatusKey == Merchello.Core.Constants.InvoiceStatus.Paid) return "Waiting";
+		var order = invoice.Orders.FirstOrDefault();
+		if (order != null) return order.OrderStatus.Name;
+		// This should not happen but is here for a final catch
+		return "Please Inquire";
+	}
+
+}
+
