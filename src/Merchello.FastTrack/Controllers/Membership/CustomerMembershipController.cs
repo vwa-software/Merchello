@@ -174,17 +174,22 @@
 						"Login was unsuccessful with the email address and password entered."
 					};
 
-					if (!member.GetPropertyValue<bool>("umbracoMemberApproved")) messages.Add(Umbraco.GetDictionaryValue("Account_disabled"));
-
-					if (member.GetPropertyValue<bool>("umbracoMemberLockedOut"))
+					if (!member.GetPropertyValue<bool>("umbracoMemberApproved"))
 					{
-						messages.Add("This account has been locked due to too many unsucessful login attempts. <br/>Please contact HKLiving to restore your account");
+						messages.Add(Umbraco.GetDictionaryValue("Account_disabled"));
 					}
-					else if (!string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts")))
+					else
 					{
-						if (int.TryParse(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts"), out int failedPasswordAttempts))
+						if (member.GetPropertyValue<bool>("umbracoMemberLockedOut"))
 						{
-							messages.Add(string.Format("You have {0} attempts left.", 5 - failedPasswordAttempts));
+							messages.Add("This account has been locked due to too many unsucessful login attempts. <br/>Please contact HKLiving to restore your account");
+						}
+						else if (!string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts")))
+						{
+							if (int.TryParse(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts"), out int failedPasswordAttempts))
+							{
+								messages.Add(string.Format("You have {0} attempts left.", 5 - failedPasswordAttempts));
+							}
 						}
 					}
 					viewData.Messages = messages;
@@ -406,7 +411,7 @@
         public virtual ActionResult GetAllBillingAddresses(string view = "")
         {
             var customer = (ICustomer)CurrentCustomer;
-            var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Billing).ToList().Select(a => BillingAddressFactory.Create(customer, a));
+			var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Billing).OrderBy(a => a.IsDefault ? 0 : 1).ToList().Select(a => BillingAddressFactory.Create(customer, a));
 
             return view.IsNullOrWhiteSpace() ? PartialView(addresses) : PartialView(view, addresses);
         }
@@ -425,7 +430,7 @@
         public virtual ActionResult GetAllShippingAddresses(string view)
         {
             var customer = (ICustomer)CurrentCustomer;
-            var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Shipping).ToList().Select(a => ShippingAddressFactory.Create(customer, a));
+            var addresses = customer.Addresses.Where(x => x != null && x.AddressType == AddressType.Shipping).OrderBy(a => a.IsDefault ? 0 : 1).Select(a => ShippingAddressFactory.Create(customer, a));
 
             return view.IsNullOrWhiteSpace() ? PartialView(addresses) : PartialView(view, addresses);
         }
