@@ -165,13 +165,13 @@
 
 				if (member == null)
 				{
-					viewData.Messages = new[] { "Account does not exist for this email address." };
+					viewData.Messages = new[] { "There is no account for this email address. Please contact us for further information." };
 				}
 				else
 				{
 					var messages = new List<string>
 					{
-						"Login was unsuccessful with the email address and password entered."
+						
 					};
 
 					if (!member.GetPropertyValue<bool>("umbracoMemberApproved")) messages.Add(Umbraco.GetDictionaryValue("Account_disabled"));
@@ -184,7 +184,7 @@
 					{
 						if (int.TryParse(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts"), out int failedPasswordAttempts))
 						{
-							messages.Add(string.Format("You have {0} attempts left.", 5 - failedPasswordAttempts));
+							messages.Add(string.Format("Login was unsuccessful with the email and password combination you entered. You have {0} attemps left.", 5 - failedPasswordAttempts));
 						}
 					}
 					viewData.Messages = messages;
