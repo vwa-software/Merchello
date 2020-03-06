@@ -459,7 +459,7 @@
 				(model.Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) >= Membership.MinRequiredNonAlphanumericCharacters)))
 			{
 				viewData.Success = false;
-				viewData.Messages = new[] { string.Format("New password invalid. Minimum length {0} characters", Membership.MinRequiredPasswordLength) };
+				viewData.Messages = new[] { string.Format("Must be atleast 10 characters", Membership.MinRequiredPasswordLength) };
 				ViewData["MerchelloViewData"] = viewData;
 				return CurrentUmbracoPage();
 			}

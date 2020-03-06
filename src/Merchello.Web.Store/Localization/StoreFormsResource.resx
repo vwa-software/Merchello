@@ -202,7 +202,7 @@
     <comment>Label for organziation of company field</comment>
   </data>
   <data name="LabelPassword" xml:space="preserve">
-    <value>Password</value>
+    <value>New Password</value>
     <comment>Label for the password field</comment>
   </data>
   <data name="LabelPaymentMethods" xml:space="preserve">
@@ -299,7 +299,7 @@
     <comment>Error message for a required offer code field</comment>
   </data>
   <data name="RequiredPassword" xml:space="preserve">
-    <value>Password is required</value>
+    <value>Password is required. Must be at least 10 characters</value>
     <comment>Error message for a required password field</comment>
   </data>
   <data name="RequiredPostalCode" xml:space="preserve">

@@ -28,7 +28,7 @@
 
             var index = model.ShippingAddressIndex; //index of the chosen address
       
-            var allAddresses = ((ICustomer)this.CurrentCustomer).Addresses.Where(a => a.AddressType == Core.AddressType.Shipping);
+            var allAddresses = ((ICustomer)this.CurrentCustomer).Addresses.Where(a => a.AddressType == Core.AddressType.Shipping).OrderBy(a => a.IsDefault ? 0 : 1);
 
             var choosenAddress = allAddresses.ToArray()[model.ShippingAddressIndex -1];
 

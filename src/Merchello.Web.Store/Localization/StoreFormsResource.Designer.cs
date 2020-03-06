@@ -19,7 +19,7 @@ namespace Merchello.Web.Store.Localization {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class StoreFormsResource {
@@ -259,7 +259,7 @@ namespace Merchello.Web.Store.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password.
+        ///   Looks up a localized string similar to New Password.
         /// </summary>
         public static string LabelPassword {
             get {
@@ -493,7 +493,7 @@ namespace Merchello.Web.Store.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password is required.
+        ///   Looks up a localized string similar to Password is required. Must be at least 10 characters.
         /// </summary>
         public static string RequiredPassword {
             get {
