@@ -274,7 +274,25 @@ namespace Merchello.Web.Pluggable
                     // customer and convert the basket
                     if (isLoggedIn)
                     {
-                        this.EnsureCustomerCreationAndConvertBasket(customer);
+						try
+						{
+							this.EnsureCustomerCreationAndConvertBasket(customer);
+						}
+						catch (Exception ex)
+						{
+							// username changed??
+							CreateAnonymousCustomer();
+							Umbraco.Core.Logging.LogHelper.Error(this.GetType(), "Customer with key could not be converted: " + key, ex);
+
+							try
+							{
+								var user = this.GetMembershipProviderUserName();
+								Umbraco.Core.Logging.LogHelper.Error(this.GetType(), "And with username: " + user, ex);
+							}
+							catch (Exception)
+							{													
+							}
+						}                       
                     }
                 }
                 else if (customer.IsAnonymous == false && isLoggedIn == false)
@@ -356,17 +374,28 @@ namespace Merchello.Web.Pluggable
             var customer = this.CustomerService.GetByLoginName(customerLoginName) ??
                             this.CustomerService.CreateCustomerWithKey(customerLoginName);
 
+			if(customer != null)
+			{
+				this.ContextData.Key = customer.Key;
+				this.ContextData.Pid = membershipId;
 
-            this.ContextData.Key = customer.Key;
-            this.ContextData.Pid = membershipId;
+				try
+				{
+					var customerBasket = Basket.GetBasket(this._merchelloContext, customer);
+
+					//// convert the customer basket
+					ConvertBasket(anonymousBasket, customerBasket);
+					CopyContextData(original, customer);
+				}
+				catch (Exception ex)
+				{
+					Umbraco.Core.Logging.LogHelper.Error(this.GetType(), "Basket could not converted for customer with key:" + customer.Key, ex);
+				}
+			}
+           
 
             //// this.ContextData.Values.Add(new KeyValuePair<string, string>(UmbracoMemberIdDataKey, membershipId));
 
-            var customerBasket = Basket.GetBasket(this._merchelloContext, customer);
-
-            //// convert the customer basket
-            ConvertBasket(anonymousBasket, customerBasket);
-            CopyContextData(original, customer);
 
             this.CacheCustomer(customer);
             this.CurrentCustomer = customer;

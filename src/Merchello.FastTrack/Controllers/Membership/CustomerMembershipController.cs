@@ -182,7 +182,7 @@
 					{
 						if (member.GetPropertyValue<bool>("umbracoMemberLockedOut"))
 						{
-							messages.Add("This account has been locked due to too many unsucessful login attempts. <br/>Please contact HKLiving to restore your account");
+							messages.Add("This account has been locked due to too many unsucessful login attempts. <br/>Please contact HKliving to restore your account");
 						}
 						else if (!string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("umbracoMemberFailedPasswordAttempts")))
 						{
